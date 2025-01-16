@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(schema = "gym", name = "trainers")
+@Table(name = "trainers")
 @EqualsAndHashCode//(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,6 +19,7 @@ import java.util.List;
 @SuperBuilder
 @ToString//(callSuper = true)
 public class Trainer implements Serializable {
+//public class Trainer extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Column(name = "trainer_id", nullable = false, unique = true)

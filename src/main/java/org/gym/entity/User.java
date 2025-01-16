@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.springframework.core.annotation.Order;
 
 import java.io.Serializable;
 
@@ -15,14 +14,14 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(schema = "gym", name = "users")
-//@ToString(exclude = {"firstName", "lastName", "password"})
+@Table(name = "users")
+@ToString
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Column(name = "user_id", nullable = false, unique = true)
     @Column(name = "user_id", unique = true)
-    private long id;
+    private Long id;
 
     @ToString.Exclude
     //@Column(name = "first_name", nullable = false)
@@ -35,7 +34,8 @@ public class User implements Serializable {
     private String lastName;
 
     //@Column(name = "username", nullable = false, unique = true)
-    @Column(name = "username", unique = true)
+    //@Column(name = "username", unique = true)
+    @Column(name = "username")
     private String userName;
 
     @ToString.Exclude

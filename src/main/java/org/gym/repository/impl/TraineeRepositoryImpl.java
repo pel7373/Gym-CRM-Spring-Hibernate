@@ -1,16 +1,10 @@
-package org.gym.dao.impl;
+package org.gym.repository.impl;
 
-import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.gym.dao.TraineeDao;
+import org.gym.repository.TraineeRepository;
 import org.gym.entity.Trainee;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,12 +13,10 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class TraineeDaoImpl implements TraineeDao {
-    //private final SessionFactory sessionFactory;
-    @PersistenceContext(unitName="entityManager")
-    //@Resource("entityManager")
-    //@Qualifier("entityManager")
-    private final EntityManager entityManager;
+public class TraineeRepositoryImpl implements TraineeRepository {
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public List<Trainee> findAll() {
@@ -47,19 +39,19 @@ public class TraineeDaoImpl implements TraineeDao {
 
     @Transactional//(propagation = Propagation.REQUIRED)
     public Trainee save(Trainee trainee) {
-//        getSession().persist(trainee);
-//        return trainee;
         if (trainee == null || trainee.getUser() == null) {
             throw new IllegalArgumentException("Entity cannot be null");
         }
         if (trainee.getUser().getUserName() == null || trainee.getUser().getUserName().isEmpty()) {
             throw new IllegalArgumentException("Username cannot be null or empty");
         }
-        if (trainee.getId() == null) {
-            entityManager.persist(trainee);
-        } else {
-            trainee = entityManager.merge(trainee);
-        }
+        entityManager.merge(trainee);
+
+//        if (trainee.getId() == null) {
+//            entityManager.persist(trainee);
+//        } else {
+//            trainee = entityManager.merge(trainee);
+//        }
         return trainee;
     }
 

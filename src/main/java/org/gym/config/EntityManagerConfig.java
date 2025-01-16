@@ -12,10 +12,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement
-public class JpaConfig {
+public class EntityManagerConfig {
 
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(org.gym.config.PersistenceConfig persistenceConfig) {
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(PersistenceConfig persistenceConfig) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(persistenceConfig.getNonJtaDataSource());
         em.setPackagesToScan("org.gym.entity");

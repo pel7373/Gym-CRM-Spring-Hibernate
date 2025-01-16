@@ -1,12 +1,11 @@
-package org.gym.dao.impl;
+package org.gym.repository.impl;
 
-import lombok.AllArgsConstructor;
-import org.gym.dao.TrainerDao;
-import org.gym.entity.Trainee;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import lombok.RequiredArgsConstructor;
+import org.gym.repository.TrainerRepository;
 import org.gym.entity.Trainer;
 import org.gym.exception.EntityNotFoundException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,10 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-@AllArgsConstructor
-public class TrainerDaoImpl implements TrainerDao {
-    //private final SessionFactory sessionFactory;
+@RequiredArgsConstructor
+public class TrainerRepositoryImpl implements TrainerRepository {
 
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public List<Trainer> findAll() {
@@ -31,7 +31,19 @@ public class TrainerDaoImpl implements TrainerDao {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Trainer save(Trainer trainer) {
-        //getSession().persist(trainer);
+        if (trainer == null || trainer.getUser() == null) {
+            throw new IllegalArgumentException("Entity cannot be null");
+        }
+        if (trainer.getUser().getUserName() == null || trainer.getUser().getUserName().isEmpty()) {
+            throw new IllegalArgumentException("Username cannot be null or empty");
+        }
+        entityManager.merge(trainer);
+
+//        if (trainee.getId() == null) {
+//            entityManager.persist(trainee);
+//        } else {
+//            trainee = entityManager.merge(trainee);
+//        }
         return trainer;
     }
 
