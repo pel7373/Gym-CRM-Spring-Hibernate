@@ -19,15 +19,6 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "org.gym.dao")
 public class PersistenceConfig implements PersistenceUnitInfo {
 
-    @Value("${spring.datasource.url}")
-    private String datasourceUrl;
-
-    @Value("${spring.datasource.username}")
-    private String datasourceUsername;
-
-    @Value("${spring.datasource.password}")
-    private String datasourcePassword;
-
     @Override
     public String getPersistenceUnitName() {
         return "default";
@@ -51,9 +42,10 @@ public class PersistenceConfig implements PersistenceUnitInfo {
     @Override
     public DataSource getNonJtaDataSource() {
         HikariDataSource dataSource = new HikariDataSource();
-        dataSource.setJdbcUrl(datasourceUrl);
-        dataSource.setUsername(datasourceUsername);
-        dataSource.setPassword(datasourcePassword);
+        //dataSource.setDriverClassName("${spring.datasource.driverClassName}");
+        dataSource.setJdbcUrl("${spring.datasource.url}");
+        dataSource.setUsername("${spring.datasource.username}");
+        dataSource.setPassword("${spring.datasource.password}");
         return dataSource;
     }
 
@@ -96,7 +88,7 @@ public class PersistenceConfig implements PersistenceUnitInfo {
     public Properties getProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "create");
-        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL10Dialect");
         properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("hibernate.format_sql", "true");
         properties.setProperty("hibernate.jdbc.lob.non_contextual_creation", "true");

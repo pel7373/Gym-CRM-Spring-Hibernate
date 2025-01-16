@@ -3,6 +3,7 @@ package org.gym.config;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.cfg.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -39,7 +40,7 @@ public class AppConfig {
     public DataSource dataSource() {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setDriverClassName("com.p6spy.engine.spy.P6SpyDriver");
-        dataSource.setJdbcUrl("jdbc:p6spy:mysql://localhost:3306/gym");
+        dataSource.setJdbcUrl("${spring.datasource.url}");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
         dataSource.setMaximumPoolSize(10);
