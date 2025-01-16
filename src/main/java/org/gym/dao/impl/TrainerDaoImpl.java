@@ -16,7 +16,7 @@ import java.util.List;
 @Repository
 @AllArgsConstructor
 public class TrainerDaoImpl implements TrainerDao {
-    private final SessionFactory sessionFactory;
+    //private final SessionFactory sessionFactory;
 
 
     @Override
@@ -31,7 +31,7 @@ public class TrainerDaoImpl implements TrainerDao {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Trainer save(Trainer trainer) {
-        getSession().persist(trainer);
+        //getSession().persist(trainer);
         return trainer;
     }
 
@@ -45,7 +45,7 @@ public class TrainerDaoImpl implements TrainerDao {
         return false;// trainerStorage.isUserNameExist(userName);
     }
 
-    private Session getSession() {
-        return sessionFactory.getCurrentSession();
-    }
+//    private Session getSession() {
+//        return sessionFactory.getCurrentSession();
+//    }
 }

@@ -17,12 +17,12 @@ import java.time.LocalDate;
 public class Main {
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
-        context.registerShutdownHook();
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                context.close();
-            }});
+//        context.registerShutdownHook();
+//        Runtime.getRuntime().addShutdownHook(new Thread() {
+//            @Override
+//            public void run() {
+//                context.close();
+//            }});
 
         Trainee trainee = new Trainee();
         TraineeDao traineeDao = context.getBean(TraineeDao.class);

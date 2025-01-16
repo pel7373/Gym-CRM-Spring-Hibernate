@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(schema = "gym", name = "trainee")
+@Table(schema = "gym", name = "trainees")
 //@EqualsAndHashCode//(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor

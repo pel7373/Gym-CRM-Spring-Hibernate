@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(schema = "gym", name = "training_type")
+//@Entity
+//@Table(schema = "gym", name = "training_types")
 @Immutable
 public class TrainingType implements Serializable {
     @Id

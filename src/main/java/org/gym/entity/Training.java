@@ -11,8 +11,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-@Entity
-@Table(schema = "gym", name = "training")
+//@Entity
+//@Table(schema = "gym", name = "trainings")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
