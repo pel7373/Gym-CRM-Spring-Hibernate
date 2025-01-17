@@ -1,6 +1,5 @@
 package org.gym.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -12,14 +11,13 @@ import java.util.List;
 
 @Entity
 @Table(name = "trainers")
-@EqualsAndHashCode//(callSuper = true)
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @SuperBuilder
-@ToString//(callSuper = true)
+@ToString
 public class Trainer implements Serializable {
-//public class Trainer extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Column(name = "trainer_id", nullable = false, unique = true)

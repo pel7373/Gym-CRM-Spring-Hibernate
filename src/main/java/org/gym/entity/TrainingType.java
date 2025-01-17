@@ -11,8 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-//@Entity
-//@Table(schema = "gym", name = "training_types")
+@Entity
+@Table(name = "training_types")
 @Immutable
 public class TrainingType implements Serializable {
     @Id
@@ -27,7 +27,7 @@ public class TrainingType implements Serializable {
     @OneToOne(mappedBy = "specialization")
     private Trainer trainer;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "trainingType")
-    private List<Training> trainings;
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "trainingType")
+//    private List<Training> trainings;
 }

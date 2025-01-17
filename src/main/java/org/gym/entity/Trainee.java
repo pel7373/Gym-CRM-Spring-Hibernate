@@ -11,20 +11,18 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode//(callSuper = true)
+@EqualsAndHashCode
 @Entity
 @Table(name = "trainees")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @SuperBuilder
-@ToString(callSuper = true)
+@ToString
 public class Trainee implements Serializable {
-//public class Trainee extends User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "trainee_id", nullable = false, unique = true)
-    @Column(name = "trainee_id", unique = true)
+    @Column(name = "trainee_id", nullable = false, unique = true)
     private Long id;
 
     @ToString.Exclude
