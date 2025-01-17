@@ -16,7 +16,6 @@ import java.util.List;
 @Immutable
 public class TrainingType implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "training_type_id", nullable = false, unique = true)
     private Long id;
 

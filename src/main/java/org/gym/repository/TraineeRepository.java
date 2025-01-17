@@ -7,6 +7,5 @@ import java.util.List;
 public interface TraineeRepository extends GenericRepository<Trainee, Long> {
     List<Trainee> findAll();
     Trainee update(Long id, Trainee t);
-    void deleteById(Long id);
-    boolean isUserNameExists(String userName);
+    void deleteByUserName(String userName);
 }

@@ -1,6 +1,5 @@
 package org.gym.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.gym.dto.TrainerDto;
 import org.gym.entity.Trainer;
 import org.gym.entity.TrainingType;
+import org.gym.exception.EntityNotFoundException;
 import org.gym.mapper.TrainerMapper;
 import org.gym.mapper.TrainingTypeMapper;
 import org.gym.repository.TraineeRepository;
@@ -36,129 +36,169 @@ public class TrainerServiceImpl implements TrainerService {
     private final TrainerMapper trainerMapper;
     private final TrainingTypeMapper trainingTypeMapper;
 
-
     @Override
-    public TrainerDto create(@Valid TrainerDto trainerDto) {
-        trainerDto.getUser().setPassword(passwordGeneratorService.generate());
-        trainerDto.getUser()
-                .setUsername(userNameGeneratorService
-                        .generate(trainerDto.getUser().getFirstName(), trainerDto.getUser().getLastName()));
-        String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
-
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
-                () -> new EntityNotFoundException("TrainingType with name " + trainingTypeName + " wasn't found")
-        );
-
-        Trainer trainer = trainerMapper.convertToEntity(trainerDto);
-
-        trainer.setSpecialization(trainingType);
-        Trainer savedTrainer = trainerRepository.save(trainer);
-        LOGGER.info("Created new Trainer with username {}", savedTrainer.getUser().getUserName());
-
-        return trainerMapper.convertToDto(savedTrainer);
+    public TrainerDto create(TrainerDto trainerDTO) {
+        return null;
     }
 
     @Override
-    public TrainerDto select(String username) {
-        LOGGER.info("Selecting trainee with username {}", username);
-        Trainer trainer = trainerRepository.findByUsername(username).orElseThrow(
-                () -> {
-                    LOGGER.debug("Trainee with username {} not found", username);
-                    return new EntityNotFoundException("Trainee with username " + username + " wasn't found");
-                }
-        );
-        return trainerMapper.convertToDto(trainer);
+    public TrainerDto select(String username) throws EntityNotFoundException {
+        return null;
     }
 
     @Override
-    @Transactional
-    public TrainerDto update(String username, @Valid TrainerDto trainerDto) {
-        LOGGER.info("Updating Trainer with username {}", username);
-        Trainer existingTrainer = trainerRepository.findByUsername(username).orElseThrow(
-                () -> new EntityNotFoundException("Trainer with username " + username + " wasn't found")
-        );
-
-        String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
-
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
-                () -> new EntityNotFoundException("TrainingType with name " + trainingTypeName + " wasn't found")
-        );
-
-        existingTrainer.setSpecialization(trainingType);
-        existingTrainer.getUser().setFirstName(trainerDto.getUser().getFirstName());
-        existingTrainer.getUser().setLastName(trainerDto.getUser().getLastName());
-        existingTrainer.getUser().setUsername(userNameGeneratorService.generateUniqueUsername(trainerDto.getUser()));
-        existingTrainer.getUser().setPassword(passwordEncoder.encode(trainerDto.getUser().getPassword()));
-        existingTrainer.setSpecialization(trainingTypeMapper.convertToEntity(trainerDto.getSpecialization()));
-
-        Trainer updatedTrainer = trainerRepository.save(existingTrainer);
-        LOGGER.info("Trainer with username {} updated successfully", updatedTrainer.getUser().getUsername());
-
-        return trainerMapper.convertToDto(updatedTrainer);
+    public TrainerDto update(String username, TrainerDto trainerDto) throws EntityNotFoundException {
+        return null;
     }
 
     @Override
     public boolean authenticateTrainer(String username, String password) {
-        Trainer existingTrainer = trainerRepository.findByUsername(username).orElseThrow(
-                () -> new EntityNotFoundException("TrainingType with username " + username + " wasn't found")
-        );
-        return passwordEncoder.matches(password, existingTrainer.getUser().getPassword());
+        return false;
     }
 
     @Override
-    @Transactional
     public void changeStatus(String username, Boolean isActive) {
-        Trainer existingTrainer = trainerRepository.findByUsername(username).orElseThrow(
-                () -> new EntityNotFoundException("Trainer with username " + username + " wasn't found")
-        );
-        existingTrainer.getUser().setIsActive(isActive);
+
     }
 
     @Override
-    @Transactional
     public void changePassword(String username, String lastPassword, String newPassword) {
-        Trainer existingTrainer = trainerRepository.findByUsername(username).orElseThrow(
-                () -> new EntityNotFoundException("Trainee with username " + username + " wasn't found")
-        );
-        if (passwordEncoder.matches(lastPassword, existingTrainer.getUser().getPassword())) {
-            existingTrainer.getUser().setPassword(newPassword);
-            trainerRepository.save(existingTrainer);
-        } else {
-            throw new IllegalArgumentException("Wrong password");
-        }
+
     }
 
     @Override
     public List<TrainerDto> getUnassignedTrainersList(String traineeUsername) {
-        Trainee existingTrainee = traineeRepository.findByUsername(traineeUsername).orElseThrow(
-                () -> new EntityNotFoundException("Trainee with username " + traineeUsername + " wasn't found")
-        );
-        List<Trainer> trainers = trainerRepository.findAll();
-
-        return trainers.stream()
-                .filter(trainer -> !trainer.getTrainees().contains(existingTrainee))
-                .map(trainerMapper::convertToDto)
-                .toList();
+        return List.of();
     }
 
     @Override
-    @Transactional
     public List<TrainerDto> updateTrainersList(String traineeUsername, List<String> trainersUsernames) {
-        Trainee existingTrainee = traineeRepository.findByUsername(traineeUsername).orElseThrow(
-                () -> new EntityNotFoundException("Trainee with username " + traineeUsername + " wasn't found")
-        );
-
-        List<Trainer> trainers = trainersUsernames.stream()
-                .map(trainerRepository::findByUsername)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
-
-        existingTrainee.setTrainers(trainers);
-        traineeRepository.save(existingTrainee);
-
-        return trainers.stream()
-                .map(trainerMapper::convertToDto)
-                .toList();
+        return List.of();
     }
+
+
+//    @Override
+//    public TrainerDto create(@Valid TrainerDto trainerDto) {
+//        trainerDto.getUser().setPassword(passwordGeneratorService.generate());
+//        trainerDto.getUser()
+//                .setUsername(userNameGeneratorService
+//                        .generate(trainerDto.getUser().getFirstName(), trainerDto.getUser().getLastName()));
+//        String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
+//
+//        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
+//                () -> new EntityNotFoundException("TrainingType with name " + trainingTypeName + " wasn't found")
+//        );
+//
+//        Trainer trainer = trainerMapper.convertToEntity(trainerDto);
+//
+//        trainer.setSpecialization(trainingType);
+//        Trainer savedTrainer = trainerRepository.save(trainer);
+//        LOGGER.info("Created new Trainer with username {}", savedTrainer.getUser().getUserName());
+//
+//        return trainerMapper.convertToDto(savedTrainer);
+//    }
+//
+//    @Override
+//    public TrainerDto select(String userName) {
+//        LOGGER.info("Selecting trainee with username {}", userName);
+//        Trainer trainer = trainerRepository.findByUserName(userName).orElseThrow(
+//                () -> {
+//                    LOGGER.debug("Trainee with username {} not found", userName);
+//                    return new EntityNotFoundException("Trainee with username " + username + " wasn't found");
+//                }
+//        );
+//        return trainerMapper.convertToDto(trainer);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public TrainerDto update(String username, @Valid TrainerDto trainerDto) {
+//        LOGGER.info("Updating Trainer with username {}", username);
+//        Trainer existingTrainer = trainerRepository.findByUsername(username).orElseThrow(
+//                () -> new EntityNotFoundException("Trainer with username " + username + " wasn't found")
+//        );
+//
+//        String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
+//
+//        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
+//                () -> new EntityNotFoundException("TrainingType with name " + trainingTypeName + " wasn't found")
+//        );
+//
+//        existingTrainer.setSpecialization(trainingType);
+//        existingTrainer.getUser().setFirstName(trainerDto.getUser().getFirstName());
+//        existingTrainer.getUser().setLastName(trainerDto.getUser().getLastName());
+//        existingTrainer.getUser().setUsername(userNameGeneratorService.generateUniqueUsername(trainerDto.getUser()));
+//        existingTrainer.getUser().setPassword(passwordEncoder.encode(trainerDto.getUser().getPassword()));
+//        existingTrainer.setSpecialization(trainingTypeMapper.convertToEntity(trainerDto.getSpecialization()));
+//
+//        Trainer updatedTrainer = trainerRepository.save(existingTrainer);
+//        LOGGER.info("Trainer with username {} updated successfully", updatedTrainer.getUser().getUsername());
+//
+//        return trainerMapper.convertToDto(updatedTrainer);
+//    }
+//
+//    @Override
+//    public boolean authenticateTrainer(String userName, String password) {
+//        Trainer existingTrainer = trainerRepository.findByUserName(userName).orElseThrow(
+//                () -> new EntityNotFoundException("TrainingType with username " + username + " wasn't found")
+//        );
+//        return passwordEncoder.matches(password, existingTrainer.getUser().getPassword());
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void changeStatus(String username, Boolean isActive) {
+//        Trainer existingTrainer = trainerRepository.findByUsername(username).orElseThrow(
+//                () -> new EntityNotFoundException("Trainer with username " + username + " wasn't found")
+//        );
+//        existingTrainer.getUser().setIsActive(isActive);
+//    }
+//
+//    @Override
+//    @Transactional
+//    public void changePassword(String username, String lastPassword, String newPassword) {
+//        Trainer existingTrainer = trainerRepository.findByUsername(username).orElseThrow(
+//                () -> new EntityNotFoundException("Trainee with username " + username + " wasn't found")
+//        );
+//        if (passwordEncoder.matches(lastPassword, existingTrainer.getUser().getPassword())) {
+//            existingTrainer.getUser().setPassword(newPassword);
+//            trainerRepository.save(existingTrainer);
+//        } else {
+//            throw new IllegalArgumentException("Wrong password");
+//        }
+//    }
+//
+//    @Override
+//    public List<TrainerDto> getUnassignedTrainersList(String traineeUsername) {
+//        Trainee existingTrainee = traineeRepository.findByUsername(traineeUsername).orElseThrow(
+//                () -> new EntityNotFoundException("Trainee with username " + traineeUsername + " wasn't found")
+//        );
+//        List<Trainer> trainers = trainerRepository.findAll();
+//
+//        return trainers.stream()
+//                .filter(trainer -> !trainer.getTrainees().contains(existingTrainee))
+//                .map(trainerMapper::convertToDto)
+//                .toList();
+//    }
+//
+//    @Override
+//    @Transactional
+//    public List<TrainerDto> updateTrainersList(String traineeUsername, List<String> trainersUsernames) {
+//        Trainee existingTrainee = traineeRepository.findByUsername(traineeUsername).orElseThrow(
+//                () -> new EntityNotFoundException("Trainee with username " + traineeUsername + " wasn't found")
+//        );
+//
+//        List<Trainer> trainers = trainersUsernames.stream()
+//                .map(trainerRepository::findByUsername)
+//                .filter(Optional::isPresent)
+//                .map(Optional::get)
+//                .toList();
+//
+//        existingTrainee.setTrainers(trainers);
+//        traineeRepository.save(existingTrainee);
+//
+//        return trainers.stream()
+//                .map(trainerMapper::convertToDto)
+//                .toList();
+//    }
 }

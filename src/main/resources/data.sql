@@ -1,4 +1,5 @@
-INSERT INTO training_types (training_type_name) VALUES ('Yoga');
-INSERT INTO training_types (training_type_name) VALUES ('Strength Training');
-INSERT INTO training_types (training_type_name) VALUES ('Cardio');
-INSERT INTO training_types (training_type_name) VALUES ('CrossFit');
+INSERT INTO training_types (training_type_id, training_type_name) VALUES (1, 'fitness');
+INSERT INTO training_types (training_type_id, training_type_name) VALUES (2, 'yoga');
+INSERT INTO training_types (training_type_id, training_type_name) VALUES (3, 'Zumba');
+INSERT INTO training_types (training_type_id, training_type_name) VALUES (4, 'stretching');
+INSERT INTO training_types (training_type_id, training_type_name) VALUES (5, 'resistance');
