@@ -1,18 +1,16 @@
 package org.gym.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 
-//@Entity
-//@Table(schema = "gym", name = "trainings")
+@Entity
+@Table(name = "trainings")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

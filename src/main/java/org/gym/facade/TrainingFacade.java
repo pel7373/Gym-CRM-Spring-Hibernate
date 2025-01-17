@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface TrainingFacade {
     TrainingDto addTraining(TrainingDto trainingDto);
-    List<TrainingDto> getTraineeTrainings(String traineeUsername, LocalDate fromDate,
+    List<TrainingDto> getTraineeTrainings(String traineeUserName, LocalDate fromDate,
                                           LocalDate toDate, String traineeName, String trainingType);
-    List<TrainingDto> getTrainerTrainings(String trainerUsername, LocalDate fromDate,
+    List<TrainingDto> getTrainerTrainings(String trainerUserName, LocalDate fromDate,
                                           LocalDate toDate, String trainerName);
 }

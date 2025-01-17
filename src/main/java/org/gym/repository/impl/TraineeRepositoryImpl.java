@@ -43,15 +43,15 @@ public class TraineeRepositoryImpl implements TraineeRepository {
             throw new IllegalArgumentException("Entity cannot be null");
         }
         if (trainee.getUser().getUserName() == null || trainee.getUser().getUserName().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
+            throw new IllegalArgumentException("UserName cannot be null or empty");
         }
-        entityManager.merge(trainee);
+        //entityManager.merge(trainee);
 
-//        if (trainee.getId() == null) {
-//            entityManager.persist(trainee);
-//        } else {
-//            trainee = entityManager.merge(trainee);
-//        }
+        if (trainee.getId() == null) {
+            entityManager.persist(trainee);
+        } else {
+            trainee = entityManager.merge(trainee);
+        }
         return trainee;
     }
 

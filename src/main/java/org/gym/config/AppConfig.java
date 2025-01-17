@@ -3,7 +3,6 @@ package org.gym.config;
 import org.springframework.context.annotation.*;
 
 import java.security.SecureRandom;
-import java.util.Properties;
 
 @Configuration
 public class AppConfig {

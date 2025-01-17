@@ -38,19 +38,19 @@ public class Trainee implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-//    @ToString.Exclude
-//    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Training> trainings;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Training> trainings;
 
-//    @ToString.Exclude
-//    @ManyToMany(cascade = {
-//            CascadeType.PERSIST,
-//            CascadeType.MERGE
-//    })
-//    @JoinTable(
-//            name = "trainee_trainer",
-//            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "user_id")
-//    )
-//    private List<Trainer> trainers = new ArrayList<>();
+    @ToString.Exclude
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(
+            name = "trainee_trainer",
+            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "user_id")
+    )
+    private List<Trainer> trainers = new ArrayList<>();
 }

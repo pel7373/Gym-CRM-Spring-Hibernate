@@ -1,23 +1,21 @@
 package org.gym.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.gymcrmsystem.mapper.TrainingTypeMapper;
-import org.example.gymcrmsystem.entity.Trainee;
-import org.example.gymcrmsystem.entity.TrainingType;
-import org.example.gymcrmsystem.repository.TraineeRepository;
-import org.example.gymcrmsystem.repository.TrainerRepository;
-import org.example.gymcrmsystem.dto.TrainerDto;
-import org.example.gymcrmsystem.exception.EntityNotFoundException;
-import org.example.gymcrmsystem.mapper.TrainerMapper;
-import org.example.gymcrmsystem.entity.Trainer;
-import org.example.gymcrmsystem.repository.TrainingTypeRepository;
-import org.example.gymcrmsystem.service.TrainerService;
-import org.example.gymcrmsystem.utils.PasswordGenerator;
-import org.example.gymcrmsystem.utils.UsernameGenerator;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.gym.dto.TrainerDto;
+import org.gym.entity.Trainer;
+import org.gym.entity.TrainingType;
+import org.gym.mapper.TrainerMapper;
+import org.gym.mapper.TrainingTypeMapper;
+import org.gym.repository.TraineeRepository;
+import org.gym.repository.TrainerRepository;
+import org.gym.repository.TrainingTypeRepository;
+import org.gym.service.PasswordGeneratorService;
+import org.gym.service.TrainerService;
+import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -33,16 +31,18 @@ public class TrainerServiceImpl implements TrainerService {
     private final TraineeRepository traineeRepository;
     private final TrainerRepository trainerRepository;
     private final TrainingTypeRepository trainingTypeRepository;
-    private final UsernameGenerator usernameGenerator;
-    private final PasswordGenerator passwordGenerator;
+    private final UserNameGeneratorService userNameGeneratorService;
+    private final PasswordGeneratorService passwordGeneratorService;
     private final TrainerMapper trainerMapper;
     private final TrainingTypeMapper trainingTypeMapper;
-    private final PasswordEncoder passwordEncoder;
+
 
     @Override
     public TrainerDto create(@Valid TrainerDto trainerDto) {
-        trainerDto.getUser().setPassword(passwordEncoder.encode(passwordGenerator.generateRandomPassword()));
-        trainerDto.getUser().setUsername(usernameGenerator.generateUniqueUsername(trainerDto.getUser()));
+        trainerDto.getUser().setPassword(passwordGeneratorService.generate());
+        trainerDto.getUser()
+                .setUsername(userNameGeneratorService
+                        .generate(trainerDto.getUser().getFirstName(), trainerDto.getUser().getLastName()));
         String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
 
         TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
@@ -53,7 +53,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         trainer.setSpecialization(trainingType);
         Trainer savedTrainer = trainerRepository.save(trainer);
-        LOGGER.info("Created new Trainer with username {}", savedTrainer.getUser().getUsername());
+        LOGGER.info("Created new Trainer with username {}", savedTrainer.getUser().getUserName());
 
         return trainerMapper.convertToDto(savedTrainer);
     }
@@ -87,7 +87,7 @@ public class TrainerServiceImpl implements TrainerService {
         existingTrainer.setSpecialization(trainingType);
         existingTrainer.getUser().setFirstName(trainerDto.getUser().getFirstName());
         existingTrainer.getUser().setLastName(trainerDto.getUser().getLastName());
-        existingTrainer.getUser().setUsername(usernameGenerator.generateUniqueUsername(trainerDto.getUser()));
+        existingTrainer.getUser().setUsername(userNameGeneratorService.generateUniqueUsername(trainerDto.getUser()));
         existingTrainer.getUser().setPassword(passwordEncoder.encode(trainerDto.getUser().getPassword()));
         existingTrainer.setSpecialization(trainingTypeMapper.convertToEntity(trainerDto.getSpecialization()));
 

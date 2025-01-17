@@ -24,23 +24,21 @@ public class Trainer implements Serializable {
     @Column(name = "trainer_id", unique = true)
     private Long id;
 
-//    @OneToOne
-//    //@JoinColumn(name = "specialization", referencedColumnName = "training_type_id", nullable = false)
-//    @JoinColumn(name = "specialization", referencedColumnName = "training_type_id")
-//    private TrainingType specialization;
+    @OneToOne
+    //@JoinColumn(name = "specialization", referencedColumnName = "training_type_id", nullable = false)
+    @JoinColumn(name = "specialization", referencedColumnName = "training_type_id")
+    private TrainingType specialization;
 
     @OneToOne(cascade = CascadeType.ALL)
     //@JoinColumn(name = "user_id", nullable = false)
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ToString.Exclude
+    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Training> trainings;
 
-
-//    @ToString.Exclude
-//    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Training> trainings;
-//
-//    @ToString.Exclude
-//    @ManyToMany(mappedBy = "trainers", fetch = FetchType.LAZY)
-//    private List<Trainee> trainees = new ArrayList<>();
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "trainers", fetch = FetchType.LAZY)
+    private List<Trainee> trainees = new ArrayList<>();
 }

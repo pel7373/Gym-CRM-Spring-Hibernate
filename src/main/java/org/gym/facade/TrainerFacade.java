@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface TrainerFacade {
     TrainerDto createTrainer(TrainerDto trainerDto);
-    TrainerDto getTrainerByUsername(String username);
-    TrainerDto updateTrainer(String username, TrainerDto trainerDto);
-    boolean authenticateTrainer(String username, String password);
-    void changeTrainerStatus(String username, Boolean isActive);
-    void changeTrainerPassword(String username, String lastPassword, String newPassword);
-    List<TrainerDto> getUnassignedTrainers(String traineeUsername);
-    List<TrainerDto> updateTrainersList(String traineeUsername, List<String> trainersUsernames);
+    TrainerDto getTrainerByUserName(String userName);
+    TrainerDto updateTrainer(String userName, TrainerDto trainerDto);
+    boolean authenticateTrainer(String userName, String password);
+    void changeTrainerStatus(String userName, Boolean isActive);
+    void changeTrainerPassword(String userName, String lastPassword, String newPassword);
+    List<TrainerDto> getUnassignedTrainers(String traineeUserName);
+    List<TrainerDto> updateTrainersList(String traineeUserName, List<String> trainersUserNames);
 }

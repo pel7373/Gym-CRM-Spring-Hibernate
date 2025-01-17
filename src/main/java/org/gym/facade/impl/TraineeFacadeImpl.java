@@ -1,6 +1,9 @@
 package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gym.dto.TraineeDto;
+import org.gym.facade.TraineeFacade;
+import org.gym.service.TraineeService;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,8 +18,8 @@ public class TraineeFacadeImpl implements TraineeFacade {
     }
 
     @Override
-    public TraineeDto getTraineeByUsername(String username) {
-        return traineeService.select(username);
+    public TraineeDto getTraineeByUserName(String userName) {
+        return traineeService.select(userName);
     }
 
     @Override
@@ -25,13 +28,13 @@ public class TraineeFacadeImpl implements TraineeFacade {
     }
 
     @Override
-    public void deleteTrainee(String username) {
-        traineeService.delete(username);
+    public void deleteTrainee(String userName) {
+        traineeService.delete(userName);
     }
 
     @Override
-    public void changeTraineeStatus(String username, Boolean isActive) {
-        traineeService.changeStatus(username, isActive);
+    public void changeTraineeStatus(String userName, Boolean isActive) {
+        traineeService.changeStatus(userName, isActive);
     }
 
     @Override

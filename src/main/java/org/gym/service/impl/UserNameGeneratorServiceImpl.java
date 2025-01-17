@@ -3,8 +3,8 @@ package org.gym.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.exception.NullEntityException;
-import org.gym.repository.TraineeRepository;
-import org.gym.repository.TrainerRepository;
+
+import org.gym.repository.UserRepository;
 import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Component;
 
@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
 
-    private TrainerRepository trainerRepository;
-    private TraineeRepository traineeRepository;
+    private UserRepository userRepository;
 
     @Override
     public String generate(String firstName, String lastName) throws NullEntityException {
@@ -26,7 +25,7 @@ public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
         String temporaryUserName = userName;
         int serialNumberForUserName = 0;
 
-        while(isUserNameExists(temporaryUserName)) {
+        while(userRepository.isExistsByUserName(temporaryUserName)) {
             temporaryUserName = userName + serialNumberForUserName++;
         }
 
@@ -35,9 +34,5 @@ public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
 
     private boolean isFirstAndLastNamesNullOrBlank(String firstName, String lastName) {
         return firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank();
-    }
-
-    private boolean isUserNameExists(String userName) {
-        return traineeRepository.isUserNameExists(userName) || trainerRepository.isUserNameExists(userName);
     }
 }

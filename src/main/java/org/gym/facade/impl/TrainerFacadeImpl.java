@@ -1,6 +1,9 @@
 package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gym.dto.TrainerDto;
+import org.gym.facade.TrainerFacade;
+import org.gym.service.TrainerService;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,37 +20,37 @@ public class TrainerFacadeImpl implements TrainerFacade {
     }
 
     @Override
-    public TrainerDto getTrainerByUsername(String username) {
-        return trainerService.select(username);
+    public TrainerDto getTrainerByUserName(String userName) {
+        return trainerService.select(userName);
     }
 
     @Override
-    public TrainerDto updateTrainer(String username, TrainerDto trainerDto) {
-        return trainerService.update(username, trainerDto);
+    public TrainerDto updateTrainer(String userName, TrainerDto trainerDto) {
+        return trainerService.update(userName, trainerDto);
     }
 
     @Override
-    public boolean authenticateTrainer(String username, String password) {
-        return trainerService.authenticateTrainer(username, password);
+    public boolean authenticateTrainer(String userName, String password) {
+        return trainerService.authenticateTrainer(userName, password);
     }
 
     @Override
-    public void changeTrainerStatus(String username, Boolean isActive) {
-        trainerService.changeStatus(username, isActive);
+    public void changeTrainerStatus(String userName, Boolean isActive) {
+        trainerService.changeStatus(userName, isActive);
     }
 
     @Override
-    public void changeTrainerPassword(String username, String lastPassword, String newPassword) {
-        trainerService.changePassword(username, lastPassword, newPassword);
+    public void changeTrainerPassword(String userName, String lastPassword, String newPassword) {
+        trainerService.changePassword(userName, lastPassword, newPassword);
     }
 
     @Override
-    public List<TrainerDto> getUnassignedTrainers(String traineeUsername) {
-        return trainerService.getUnassignedTrainersList(traineeUsername);
+    public List<TrainerDto> getUnassignedTrainers(String traineeUserName) {
+        return trainerService.getUnassignedTrainersList(traineeUserName);
     }
 
     @Override
-    public List<TrainerDto> updateTrainersList(String traineeUsername, List<String> trainersUsernames) {
-        return trainerService.updateTrainersList(traineeUsername, trainersUsernames);
+    public List<TrainerDto> updateTrainersList(String traineeUserName, List<String> trainersUserNames) {
+        return trainerService.updateTrainersList(traineeUserName, trainersUserNames);
     }
 }

@@ -27,7 +27,7 @@ public class TrainingType implements Serializable {
     @OneToOne(mappedBy = "specialization")
     private Trainer trainer;
 
-//    @ToString.Exclude
-//    @OneToMany(mappedBy = "trainingType")
-//    private List<Training> trainings;
+    @ToString.Exclude
+    @OneToMany(mappedBy = "trainingType")
+    private List<Training> trainings;
 }

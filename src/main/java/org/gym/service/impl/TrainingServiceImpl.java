@@ -1,16 +1,16 @@
 package org.gym.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.gymcrmsystem.exception.EntityNotFoundException;
-import org.example.gymcrmsystem.entity.Training;
-import org.example.gymcrmsystem.entity.TrainingType;
-import org.example.gymcrmsystem.repository.TrainingRepository;
-import org.example.gymcrmsystem.dto.TrainingDto;
-import org.example.gymcrmsystem.mapper.TrainingMapper;
-import org.example.gymcrmsystem.repository.TrainingTypeRepository;
-import org.example.gymcrmsystem.service.TrainingService;
+import org.gym.dto.TrainingDto;
+import org.gym.entity.Training;
+import org.gym.entity.TrainingType;
+import org.gym.mapper.TrainingMapper;
+import org.gym.repository.TrainingRepository;
+import org.gym.repository.TrainingTypeRepository;
+import org.gym.service.TrainingService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -45,7 +45,7 @@ public class TrainingServiceImpl implements TrainingService {
     public List<TrainingDto> getTraineeTrainingsListCriteria(String traineeUsername, LocalDate fromDate,
                                                              LocalDate toDate, String trainerName, String trainingType) {
 
-        return trainingRepository.getByTraineeCriteria(traineeUsername, fromDate, toDate, trainerName, trainingType).stream()
+        return trainingRepository.getByTraineeCriteria(traineeUserName, fromDate, toDate, trainerName, trainingType).stream()
                 .map(trainingMapper::convertToDto)
                 .toList();
     }
