@@ -1,9 +1,8 @@
 package org.gym.repository;
 
 import org.gym.entity.Trainee;
+import org.gym.exception.EntityNotFoundException;
 
-import java.util.List;
-
-public interface TraineeRepository extends GenericRepository<Trainee, Long> {
-    void delete(String userName);
+public interface TraineeRepository extends GenericPersonRepository<Trainee, Long> {
+    void delete(String userName) throws EntityNotFoundException;
 }

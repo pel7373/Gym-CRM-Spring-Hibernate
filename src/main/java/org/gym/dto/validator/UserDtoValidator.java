@@ -36,6 +36,9 @@ public class UserDtoValidator  {
             ) {
                 errors.rejectValue("firstName", "field.min.length", new Object[]{},
                         String.format("firstName can't be blank or less than %d chars", minNamesLength));
+            } else if(!u.getFirstName().matches("^[A-Z][a-z]+$")) {
+                errors.rejectValue("firstName", "field.contains.digits", new Object[]{},
+                        String.format("the firstName (%s) must start with a capital letter and then contain only lowercase letters", u.getFirstName()));
             }
 
             if (u.getLastName() == null || u.getLastName().isBlank()
@@ -43,11 +46,14 @@ public class UserDtoValidator  {
             ) {
                 errors.rejectValue("lastName", "field.min.length", new Object[]{},
                         String.format("lastName can't be blank or less than %d chars", minNamesLength));
+            } else if(!u.getLastName().matches("^[A-Z][a-z]+$")) {
+                errors.rejectValue("lastName", "field.contains.digits", new Object[]{},
+                        String.format("the lastName (%s) must start with a capital letter and then contain only lowercase letters", u.getLastName()));
             }
 
             if (u.getIsActive() == null) {
                 errors.rejectValue("isActive", "field.Null", new Object[]{},
-                        "IsActive can't be null");
+                        "isActive can't be null");
             }
         });
     }

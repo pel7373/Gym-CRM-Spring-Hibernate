@@ -1,7 +1,7 @@
 package org.gym.facade;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import org.gym.exception.EntityNotFoundException;
 
 public interface GenericPersonFacade<T> {
     T select(String userName, String password) throws EntityNotFoundException;

@@ -1,13 +1,11 @@
 package org.gym.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
-//import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+import org.gym.exception.EntityNotFoundException;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.entity.Trainee;
 import org.gym.dto.TraineeDto;
-import org.gym.exception.InvalidIdException;
 import org.gym.exception.NullEntityException;
 import org.gym.mapper.TraineeMapper;
 import org.gym.repository.TraineeRepository;
@@ -15,10 +13,6 @@ import org.gym.service.PasswordGeneratorService;
 import org.gym.service.TraineeService;
 import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
-
-import static org.gym.config.AppConfig.ID_CANT_BE_NULL_OR_NEGATIVE;
 
 @Slf4j
 @Service
@@ -30,8 +24,12 @@ public class TraineeServiceImpl implements TraineeService {
     private final PasswordGeneratorService passwordGeneratorService;
 
     @Override
-    public TraineeDto create(@Valid TraineeDto traineeDto) throws NullEntityException {
-        traineeDto.getUser().setPassword(passwordGeneratorService.generate());
+    public TraineeDto select(String userName) throws EntityNotFoundException {
+        return traineeMapper.convertToDto(traineeRepository.findByUserName(userName).get());
+    }
+
+    @Override
+    public TraineeDto create(TraineeDto traineeDto) throws NullEntityException {
         traineeDto.getUser().setUserName(
                 userNameGeneratorService.generate(
                         traineeDto.getUser().getFirstName(),
@@ -39,86 +37,55 @@ public class TraineeServiceImpl implements TraineeService {
                 ));
 
         Trainee trainee = traineeMapper.convertToEntity(traineeDto);
+        trainee.getUser().setPassword(passwordGeneratorService.generate());
         Trainee savedTrainee = traineeRepository.save(trainee);
-        LOGGER.info("Trainee was created with userName {}", savedTrainee.getUser().getUserName());
+        LOGGER.info("create: trainee was created with userName {}", savedTrainee.getUser().getUserName());
         return traineeMapper.convertToDto(savedTrainee);
     }
 
     @Override
-    public TraineeDto select(String userName) throws EntityNotFoundException {
-        return traineeMapper.convertToDto(traineeRepository.findByUserName(userName).get());
-    }
-
-    @Override
-    public TraineeDto update(String userName, TraineeDto traineeDTO) throws EntityNotFoundException {
-        return null;
+    public TraineeDto update(String userName, TraineeDto traineeDto) throws EntityNotFoundException {
+        Trainee oldTrainee = traineeRepository.findByUserName(userName).get();
+        Trainee trainee = traineeMapper.convertToEntity(traineeDto);
+        if(!oldTrainee.getUser().getFirstName().equals(trainee.getUser().getFirstName())
+                || !oldTrainee.getUser().getLastName().equals(trainee.getUser().getLastName())) {
+            trainee.getUser().setUserName(
+                    userNameGeneratorService.generate(trainee.getUser().getFirstName(), trainee.getUser().getLastName()));
+        }
+        trainee.setId(oldTrainee.getId());
+        trainee.getUser().setPassword(oldTrainee.getUser().getPassword());
+        LOGGER.info("update: updating trainee with userName {}", userName);
+        return traineeMapper.convertToDto(traineeRepository.save(trainee));
     }
 
     @Override
     public void delete(String userName) throws EntityNotFoundException {
+        Trainee trainee = traineeRepository.findByUserName(userName).get();
 
     }
 
     @Override
     public void changeStatus(String userName, Boolean isActive) {
-
+        Trainee trainee = traineeRepository.findByUserName(userName).get();
+        if(!trainee.getUser().getIsActive().equals(isActive)) {
+            trainee.getUser().setIsActive(isActive);
+            traineeRepository.save(trainee);
+        }
     }
 
     @Override
     public boolean authenticate(String userName, String password) throws EntityNotFoundException {
+
         return false;
     }
 
     @Override
-    public void changePassword(String userName, String newPassword) throws EntityNotFoundException, IllegalArgumentException {
+    public void changePassword(String userName, String newPassword) {
 
     }
 
 
-//    @Override
-//    public TraineeDto getById(Long id) throws InvalidIdException, EntityNotFoundException {
-//        if(id == null || id < 0) {
-//            throw new InvalidIdException(String.format(ID_CANT_BE_NULL_OR_NEGATIVE, "getById"));
-//        }
-//
-//        LOGGER.info("getById is finding trainee with id {}", id);
-//        return traineeMapper.convertToDto(traineeRepository.findById(id));
-//    }
 
-//    @Override
-//    public TraineeDto save(TraineeDto traineeDto) throws NullEntityException {
-//        if(traineeDto == null) {
-//            throw new NullEntityException(String.format(ENTITY_CANT_BE_NULL, "save"));
-//        }
-//
-//        Trainee trainee = traineeMapper.convertToEntity(traineeDto);
-//        trainee.setUserName(userNameGeneratorService.generate(trainee.getFirstName(), trainee.getLastName()));
-//        trainee.setPassword(passwordGeneratorService.generate());
-//
-//        Trainee savedTrainee = traineeRepository.save(trainee);
-//        LOGGER.info("save has saved trainee {}", savedTrainee);
-//        return traineeMapper.convertToDto(savedTrainee);
-//    }
-//
-//    @Override
-//    public TraineeDto update(Long id, TraineeDto traineeDto) throws InvalidIdException, NullEntityException, EntityNotFoundException {
-//        if(id == null || id < 0) {
-//            throw new InvalidIdException(String.format(ID_CANT_BE_NULL_OR_NEGATIVE, "update"));
-//        }
-//
-//        if(traineeDto == null) {
-//            throw new NullEntityException(String.format(ENTITY_CANT_BE_NULL, "update"));
-//        }
-//
-//        Trainee oldTrainee = traineeRepository.findById(id);
-//        Trainee trainee = traineeMapper.convertToEntity(traineeDto);
-//        trainee.setUserName(userNameGeneratorService.generate(trainee.getFirstName(), trainee.getLastName()));
-//        trainee.setId(id);
-//        trainee.setPassword(oldTrainee.getPassword());
-//        LOGGER.info("update is updating trainee with id {}", id);
-//        return traineeMapper.convertToDto(traineeRepository.update(id, trainee));
-//    }
-//
 //    @Override
 //    public void deleteById(Long id) throws InvalidIdException {
 //        if(id == null || id < 0) {

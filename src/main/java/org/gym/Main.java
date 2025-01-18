@@ -1,15 +1,11 @@
 package org.gym;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.dto.TraineeDto;
 import org.gym.dto.UserDto;
 import org.gym.facade.TraineeFacade;
-import org.gym.repository.TraineeRepository;
-import org.gym.repository.TrainerRepository;
 import org.gym.entity.Trainee;
-import org.gym.entity.Trainer;
 import org.gym.entity.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,8 +20,8 @@ public class Main {
     public static void main(String[] args) throws JsonProcessingException {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
 
-        UserDto userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", "", true);
-        UserDto userDto2 = new UserDto("Pa", "Pa", "Maria.Petrenko2", "", null);
+        UserDto userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
+        UserDto userDto2 = new UserDto("Pa", "Pa", "Maria.Petrenko2", null);
 
         User user = new User(null, "Ma", "Petrenko", "Maria.Petrenko", "", null);
         User user2 = new User(null, "Pa", "Petrenko2", "Maria.Petrenko2", "", null);
@@ -57,9 +53,9 @@ public class Main {
         System.out.println(traineeDto);
         TraineeDto savedTraineeDto = traineeFacade.create(traineeDto);
         System.out.println(savedTraineeDto);
-        System.out.println(traineeDto2);
-        TraineeDto savedTraineeDto2 = traineeFacade.create(traineeDto2);
-        System.out.println(savedTraineeDto2);
+//        System.out.println(traineeDto2);
+//        TraineeDto savedTraineeDto2 = traineeFacade.create(traineeDto2);
+//        System.out.println(savedTraineeDto2);
 //        String userName = savedTraineeDto.getUser().getUserName();
 //        System.out.println("savedTrainee userName: " + userName);
 

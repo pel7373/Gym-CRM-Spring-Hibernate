@@ -13,9 +13,11 @@ import java.text.SimpleDateFormat;
 
 @Configuration
 public class AppConfig {
-    public static final String ID_CANT_BE_NULL_OR_NEGATIVE = "%s: id can't be null or negative";
-    public static final String ENTITY_CANT_BE_NULL = "%s: entity can't be null";
-    public static final String ACCESS_DENIED = "\\{\\}: access denied to \\{\\}";
+    public static final String ENTITY_CANT_BE_NULL = "{}: entity can't be null";
+    public static final String ACCESS_DENIED = "{}: access denied to {}";
+    public static final String USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK = "{}: userName ({}) or/and password ({}) can't be null or blank";
+    public static final String ENTITY_NOT_FOUND = "{}: entity not found by userName {}";
+    public static final String ENTITY_NOT_FOUND_EXCEPTION = "%s: entity not found by userName %s";
 
     @Bean
     public SecureRandom secureRandom() {

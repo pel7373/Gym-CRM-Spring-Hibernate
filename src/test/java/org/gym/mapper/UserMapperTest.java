@@ -29,7 +29,6 @@ class UserMapperTest {
         assertEquals(user.getFirstName(), userDto.getFirstName());
         assertEquals(user.getLastName(), userDto.getLastName());
         assertEquals(user.getUserName(), userDto.getUserName());
-        assertEquals(user.getPassword(), userDto.getPassword());
         assertEquals(user.getIsActive(), userDto.getIsActive());
     }
 
@@ -44,7 +43,6 @@ class UserMapperTest {
         UserDto userDto = UserDto.builder()
                 .firstName("FirstName")
                 .lastName("LastName")
-                .password("password")
                 .userName("FirstName.LastName")
                 .isActive(true)
                 .build();
@@ -55,7 +53,6 @@ class UserMapperTest {
         assertEquals(userDto.getFirstName(), user.getFirstName());
         assertEquals(userDto.getLastName(), user.getLastName());
         assertEquals(userDto.getUserName(), user.getUserName());
-        assertEquals(userDto.getPassword(), user.getPassword());
         assertEquals(userDto.getIsActive(), user.getIsActive());
 
     }

@@ -11,14 +11,13 @@ import org.gym.exception.EntityNotFoundException;
 import org.gym.exception.NullEntityException;
 import org.gym.repository.TraineeRepository;
 import org.gym.entity.Trainee;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Optional;
+
+import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
 public class TraineeRepositoryImpl implements TraineeRepository {
@@ -28,9 +27,6 @@ public class TraineeRepositoryImpl implements TraineeRepository {
 
     @Override
     public Optional<Trainee> findByUserName(String userName) throws EntityNotFoundException {
-        if (userName == null) {
-            throw new NullEntityException("findByUserName: userName cannot be null");
-        }
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Trainee> query = criteriaBuilder.createQuery(Trainee.class);
         Root<Trainee> root = query.from(Trainee.class);
@@ -39,39 +35,28 @@ public class TraineeRepositoryImpl implements TraineeRepository {
         try {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
-            return Optional.empty();
+            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
         }
     }
 
     @Override
     @Transactional
-    public Trainee save(@Valid Trainee trainee) {
-        if (trainee == null || trainee.getUser() == null) {
-            throw new NullEntityException("Entity cannot be null");
-        }
-        if (trainee.getUser().getUserName() == null || trainee.getUser().getUserName().isEmpty()) {
-            throw new IllegalArgumentException("UserName cannot be null or empty");
-        }
-
+    public Trainee save(Trainee trainee) {
         Trainee savedTrainee = trainee;
         if (trainee.getId() == null) {
-            //System.out.println("Repo save persist: " + trainee);
+            System.out.println("Repo save persist: " + trainee);
             entityManager.persist(trainee);
         } else {
-            //System.out.println("Repo save merge: " + trainee);
+            System.out.println("Repo save merge: " + trainee);
             savedTrainee = entityManager.merge(trainee);
         }
-        //System.out.println("Repo save saved: " + savedTrainee);
+        System.out.println("Repo save saved: " + savedTrainee);
         return savedTrainee;
     }
 
     @Override
-    public Trainee update(String userName, Trainee t) {
-        return null;
-    }
-
-    @Override
-    public void delete(String userName) {
-
+    @Transactional
+    public void delete(String userName) throws EntityNotFoundException {
+        findByUserName(userName).ifPresent(entityManager::remove);
     }
 }

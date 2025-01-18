@@ -2,12 +2,10 @@ package org.gym.repository.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
 import org.gym.entity.Trainee;
 import org.gym.repository.TrainerRepository;
 import org.gym.entity.Trainer;
 import org.gym.exception.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,8 +40,4 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         return trainer;
     }
 
-    @Override
-    public Trainee update(String UserName, Trainer trainer) {
-        return null;
-    }
 }
