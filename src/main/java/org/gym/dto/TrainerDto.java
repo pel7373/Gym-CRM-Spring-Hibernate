@@ -9,7 +9,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrainerDto implements Serializable {
+public class TrainerDto {
 
     @NotNull(message = "User cannot be null")
     private UserDto user;

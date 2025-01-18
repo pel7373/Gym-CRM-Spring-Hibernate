@@ -20,13 +20,13 @@ import java.util.List;
 public class Trainer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "trainer_id", nullable = false, unique = true)
-    @Column(name = "trainer_id", unique = true)
+    //@Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", unique = true)
     private Long id;
 
     @OneToOne
-    //@JoinColumn(name = "specialization", referencedColumnName = "training_type_id", nullable = false)
-    @JoinColumn(name = "specialization", referencedColumnName = "training_type_id")
+    //@JoinColumn(name = "specialization", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "specialization", referencedColumnName = "id")
     private TrainingType specialization;
 
     @OneToOne(cascade = CascadeType.ALL)

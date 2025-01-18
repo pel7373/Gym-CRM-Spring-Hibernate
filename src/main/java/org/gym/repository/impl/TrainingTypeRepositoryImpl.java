@@ -9,16 +9,19 @@ import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.gym.entity.TrainingType;
 import org.gym.repository.TrainingTypeRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
 public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
 
-    @PersistenceContext
     private final EntityManager entityManager;
+
+    public TrainingTypeRepositoryImpl(@Qualifier("entityManager") EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public Optional<TrainingType> findByName(String trainingTypeName) {

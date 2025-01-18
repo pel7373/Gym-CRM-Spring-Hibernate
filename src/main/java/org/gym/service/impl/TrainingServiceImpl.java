@@ -28,7 +28,7 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingMapper trainingMapper;
 
     @Override
-    public TrainingDto add(@Valid TrainingDto trainingDto) {
+    public TrainingDto create(TrainingDto trainingDto) {
         String trainingTypeName = trainingDto.getTrainingType().getTrainingTypeName();
         TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
                 () -> new EntityNotFoundException("TrainingType with name " + trainingTypeName + " wasn't found")
@@ -45,16 +45,18 @@ public class TrainingServiceImpl implements TrainingService {
     public List<TrainingDto> getTraineeTrainingsListCriteria(String traineeUsername, LocalDate fromDate,
                                                              LocalDate toDate, String trainerName, String trainingType) {
 
-        return trainingRepository.getByTraineeCriteria(traineeUserName, fromDate, toDate, trainerName, trainingType).stream()
-                .map(trainingMapper::convertToDto)
-                .toList();
+//        return trainingRepository.getByTraineeCriteria(traineeUserName, fromDate, toDate, trainerName, trainingType).stream()
+//                .map(trainingMapper::convertToDto)
+//                .toList();
+        return null;
     }
 
     public List<TrainingDto> getTrainerTrainingsListCriteria(String trainerUsername, LocalDate fromDate,
                                                              LocalDate toDate, String traineeName) {
 
-        return trainingRepository.getByTrainerCriteria(trainerUsername, fromDate, toDate, traineeName).stream()
-                .map(trainingMapper::convertToDto)
-                .toList();
+//        return trainingRepository.getByTrainerCriteria(trainerUsername, fromDate, toDate, traineeName).stream()
+//                .map(trainingMapper::convertToDto)
+//                .toList();
+        return null;
     }
 }

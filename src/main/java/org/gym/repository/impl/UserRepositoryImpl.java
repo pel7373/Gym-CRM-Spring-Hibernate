@@ -9,16 +9,17 @@ import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.gym.entity.User;
 import org.gym.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
     public boolean isExistsByUserName(String userName) {
@@ -30,7 +31,7 @@ public class UserRepositoryImpl implements UserRepository {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> root = query.from(User.class);
-        query.select(root).where(criteriaBuilder.equal(root.get("username"), userName));
+        query.select(root).where(criteriaBuilder.equal(root.get("userName"), userName));
 
         try {
             return Optional.of(entityManager.createQuery(query).getSingleResult());

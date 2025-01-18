@@ -1,20 +1,19 @@
 package org.gym.repository.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.gym.repository.TrainingRepository;
 import org.gym.entity.Training;
 import org.gym.exception.EntityNotFoundException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@AllArgsConstructor
 public class TrainingRepositoryImpl implements TrainingRepository {
-//    private final TrainingStorage trainingStorage;
-//
-    @Override
-    public Training findById(Long id) throws EntityNotFoundException {
-        return new Training();// trainingStorage.findById(id);
-    }
+
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public Training save(Training training) {

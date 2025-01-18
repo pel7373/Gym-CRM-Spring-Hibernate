@@ -1,6 +1,7 @@
 package org.gym.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Cascade;
@@ -19,10 +20,10 @@ import java.util.List;
 @Data
 @SuperBuilder
 @ToString
-public class Trainee implements Serializable {
+public class Trainee  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "trainee_id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
     @ToString.Exclude
@@ -34,12 +35,14 @@ public class Trainee implements Serializable {
     private String address;
 
     @OneToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_id", nullable = false)
+    //@JoinColumn(name = "id", nullable = false)
     @JoinColumn(name = "user_id")
     private User user;
 
     @ToString.Exclude
-    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany
+            ( cascade = CascadeType.ALL, orphanRemoval = false)
+    @JoinColumn(name = "trainee_id")
     private List<Training> trainings;
 
     @ToString.Exclude
@@ -49,8 +52,8 @@ public class Trainee implements Serializable {
     })
     @JoinTable(
             name = "trainee_trainer",
-            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "user_id")
+            joinColumns = @JoinColumn(name = "trainee_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "trainer_id", referencedColumnName = "id")
     )
     private List<Trainer> trainers = new ArrayList<>();
 }

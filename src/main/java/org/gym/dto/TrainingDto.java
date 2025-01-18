@@ -8,14 +8,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrainingDto implements Serializable {
+public class TrainingDto {
 
     @NotNull(message = "Trainee id is required")
     private TraineeDto trainee;

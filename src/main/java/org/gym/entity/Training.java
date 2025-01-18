@@ -18,12 +18,12 @@ import java.time.LocalDate;
 public class Training implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "training_id", nullable = false, unique = true)
-    @Column(name = "training_id", unique = true)
+    //@Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id", unique = true)
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "trainee_id")
+    //@JoinColumn(name = "trainee_id")
     private Trainee trainee;
 
     @ManyToOne(fetch = FetchType.EAGER)

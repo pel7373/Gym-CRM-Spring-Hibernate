@@ -1,19 +1,19 @@
 package org.gym.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+
 import lombok.*;
 
-import java.io.Serializable;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TraineeDto implements Serializable {
+public class TraineeDto {
 
-    @NotNull(message = "User is required")
+    @NotNull(message = "UserDto is required")
     private UserDto user;
 
     @Past(message = "Date of birth should be in the past")

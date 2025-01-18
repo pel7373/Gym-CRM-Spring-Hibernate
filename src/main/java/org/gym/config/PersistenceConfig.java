@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.net.URL;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Properties;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "org.gym.repository")
+
 public class PersistenceConfig implements PersistenceUnitInfo {
 
     @Autowired

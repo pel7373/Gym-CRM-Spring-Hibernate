@@ -1,10 +1,8 @@
 package org.gym.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.validation.constraints.Min;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
@@ -20,12 +18,13 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //@Column(name = "user_id", nullable = false, unique = true)
-    @Column(name = "user_id", unique = true)
+    @Column(name = "id", unique = true)
     private Long id;
 
     @ToString.Exclude
     //@Column(name = "first_name", nullable = false)
     @Column(name = "first_name")
+    @Min(value = 4, message = "firstName should be min 4 chars")
     private String firstName;
 
     @ToString.Exclude
@@ -46,12 +45,4 @@ public class User implements Serializable {
     //@Column(name = "is_active", nullable = false)
     @Column(name = "is_active")
     private Boolean isActive;
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private Trainee trainee;
-
-    @OneToOne(mappedBy = "user", fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private Trainer trainer;
 }

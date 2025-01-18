@@ -8,6 +8,7 @@ import org.gym.dto.TrainerDto;
 import org.gym.entity.Trainer;
 import org.gym.entity.TrainingType;
 import org.gym.exception.EntityNotFoundException;
+import org.gym.exception.NullEntityException;
 import org.gym.mapper.TrainerMapper;
 import org.gym.mapper.TrainingTypeMapper;
 import org.gym.repository.TraineeRepository;
@@ -37,7 +38,7 @@ public class TrainerServiceImpl implements TrainerService {
     private final TrainingTypeMapper trainingTypeMapper;
 
     @Override
-    public TrainerDto create(TrainerDto trainerDTO) {
+    public TrainerDto create(TrainerDto trainerDTO) throws NullEntityException {
         return null;
     }
 
@@ -52,7 +53,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public boolean authenticateTrainer(String username, String password) {
+    public boolean authenticate(String username, String password) {
         return false;
     }
 

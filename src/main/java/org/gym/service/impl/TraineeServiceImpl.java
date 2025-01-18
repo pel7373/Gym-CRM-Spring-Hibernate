@@ -1,6 +1,8 @@
 package org.gym.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
+//import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.entity.Trainee;
@@ -13,6 +15,8 @@ import org.gym.service.PasswordGeneratorService;
 import org.gym.service.TraineeService;
 import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import static org.gym.config.AppConfig.ID_CANT_BE_NULL_OR_NEGATIVE;
 
@@ -26,13 +30,23 @@ public class TraineeServiceImpl implements TraineeService {
     private final PasswordGeneratorService passwordGeneratorService;
 
     @Override
-    public TraineeDto create(TraineeDto traineeDTO) {
-        return null;
+    public TraineeDto create(@Valid TraineeDto traineeDto) throws NullEntityException {
+        traineeDto.getUser().setPassword(passwordGeneratorService.generate());
+        traineeDto.getUser().setUserName(
+                userNameGeneratorService.generate(
+                        traineeDto.getUser().getFirstName(),
+                        traineeDto.getUser().getLastName()
+                ));
+
+        Trainee trainee = traineeMapper.convertToEntity(traineeDto);
+        Trainee savedTrainee = traineeRepository.save(trainee);
+        LOGGER.info("Trainee was created with userName {}", savedTrainee.getUser().getUserName());
+        return traineeMapper.convertToDto(savedTrainee);
     }
 
     @Override
     public TraineeDto select(String userName) throws EntityNotFoundException {
-        return null;
+        return traineeMapper.convertToDto(traineeRepository.findByUserName(userName).get());
     }
 
     @Override
@@ -51,12 +65,12 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public boolean authenticateTrainee(String userName, String password) throws EntityNotFoundException {
+    public boolean authenticate(String userName, String password) throws EntityNotFoundException {
         return false;
     }
 
     @Override
-    public void changePassword(String userName, String oldPassword, String newPassword) throws EntityNotFoundException, IllegalArgumentException {
+    public void changePassword(String userName, String newPassword) throws EntityNotFoundException, IllegalArgumentException {
 
     }
 

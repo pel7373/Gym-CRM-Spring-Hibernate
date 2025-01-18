@@ -16,7 +16,7 @@ import java.util.List;
 @Immutable
 public class TrainingType implements Serializable {
     @Id
-    @Column(name = "training_type_id", nullable = false, unique = true)
+    @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
     @Column(name = "training_type_name", nullable = false, unique = true)

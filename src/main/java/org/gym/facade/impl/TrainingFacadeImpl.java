@@ -2,6 +2,7 @@ package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.gym.dto.TrainingDto;
+import org.gym.entity.Training;
 import org.gym.facade.TrainingFacade;
 import org.gym.service.TrainingService;
 import org.springframework.stereotype.Component;
@@ -16,8 +17,8 @@ public class TrainingFacadeImpl implements TrainingFacade {
     private final TrainingService trainingService;
 
     @Override
-    public TrainingDto addTraining(TrainingDto trainingDto) {
-        return trainingService.add(trainingDto);
+    public TrainingDto create(TrainingDto trainingDto) {
+        return trainingService.create(trainingDto);
     }
 
     @Override

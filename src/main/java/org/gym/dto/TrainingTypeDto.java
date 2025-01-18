@@ -6,13 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TrainingTypeDto implements Serializable {
+public class TrainingTypeDto {
 
     @NotNull(message = "Training type name cannot be null")
     private String trainingTypeName;
