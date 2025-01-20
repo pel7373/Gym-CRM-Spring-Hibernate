@@ -16,9 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TrainerMapperTest {
 
-//    private UserMapper userMapper = new UserMapperImpl();
-//    private TrainerMapper trainerMapper = new TrainerMapperImpl();
-
     private static TrainerMapper trainerMapper;
     private static AnnotationConfigApplicationContext context;
 
@@ -32,57 +29,63 @@ class TrainerMapperTest {
     void convertToDto() {
         Trainer trainer = Trainer.builder()
                 .user(User.builder()
-                        .firstName("FirstName")
-                        .lastName("LastName")
-                        .userName("FirstName.LastName")
+                        .firstName("Maria")
+                        .lastName("Petrenko")
+                        .userName("Maria.Petrenko")
                         .password("password")
                         .isActive(true)
                         .build())
                 .specialization(TrainingType.builder().id(2L).trainingTypeName("yoga").build())
                 .build();
 
-        TrainerDto trainerDto = trainerMapper.convertToDto(trainer);
+        TrainerDto createdTrainerDto = trainerMapper.convertToDto(trainer);
 
-        assertNotNull(trainerDto);
-        assertEquals(trainer.getUser().getFirstName(), trainerDto.getUser().getFirstName());
-        assertEquals(trainer.getUser().getLastName(), trainerDto.getUser().getLastName());
-        assertEquals(trainer.getUser().getUserName(), trainerDto.getUser().getUserName());
-        assertEquals(trainer.getUser().getIsActive(), trainerDto.getUser().getIsActive());
-        assertEquals(trainer.getSpecialization().getTrainingTypeName(), trainerDto.getSpecialization().getTrainingTypeName());
+        assertNotNull(createdTrainerDto);
+        assertAll(
+                "Grouped assertions of created trainerDto",
+                () -> assertEquals(trainer.getUser().getFirstName(), createdTrainerDto.getUser().getFirstName(), "check firstName"),
+                () -> assertEquals(trainer.getUser().getLastName(), createdTrainerDto.getUser().getLastName(), "check lastName"),
+                () -> assertEquals(trainer.getUser().getUserName(), createdTrainerDto.getUser().getUserName(), "check userName"),
+                () -> assertEquals(trainer.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(), "check isActive"),
+                () -> assertEquals(trainer.getSpecialization().getTrainingTypeName(), createdTrainerDto.getSpecialization().getTrainingTypeName(), "check specialization")
+        );
     }
 
     @Test
-    void convertToDtoWithNullTrainee() {
+    void convertToDtoWithNullTrainer() {
         TrainerDto trainerDto = trainerMapper.convertToDto(null);
-        assertNull(trainerDto, "Expected convertToDto to return null when input is null");
+        assertNull(trainerDto, "ConvertToDto: null when input is null");
     }
 
     @Test
     void convertToEntity() {
         TrainerDto trainerDto = TrainerDto.builder()
                 .user(UserDto.builder()
-                        .firstName("FirstName")
-                        .lastName("LastName")
-                        .userName("FirstName.LastName")
+                        .firstName("Maria")
+                        .lastName("Petrenko")
+                        .userName("Maria.Petrenko")
                         .isActive(true)
                         .build())
                 .specialization(TrainingTypeDto.builder()
                         .trainingTypeName("yoga").build())
                 .build();
 
-        Trainer trainer = trainerMapper.convertToEntity(trainerDto);
+        Trainer createdTrainer = trainerMapper.convertToEntity(trainerDto);
 
-        assertNotNull(trainer);
-        assertEquals(trainerDto.getUser().getFirstName(), trainer.getUser().getFirstName());
-        assertEquals(trainerDto.getUser().getLastName(), trainer.getUser().getLastName());
-        assertEquals(trainerDto.getUser().getUserName(), trainer.getUser().getUserName());
-        assertEquals(trainerDto.getUser().getIsActive(), trainer.getUser().getIsActive());
-        assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), trainer.getSpecialization().getTrainingTypeName());
+        assertNotNull(createdTrainer);
+        assertAll(
+                "Grouped assertions of created trainerDto",
+                () -> assertEquals(trainerDto.getUser().getFirstName(), createdTrainer.getUser().getFirstName(), "check firstName"),
+                () -> assertEquals(trainerDto.getUser().getLastName(), createdTrainer.getUser().getLastName(), "check lastName"),
+                () -> assertEquals(trainerDto.getUser().getUserName(), createdTrainer.getUser().getUserName(), "check userName"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainer.getUser().getIsActive(), "check isActive"),
+                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), createdTrainer.getSpecialization().getTrainingTypeName(), "check specialization")
+        );
     }
 
     @Test
-    void convertToEntityWithNullTraineeDto() {
+    void convertToEntityWithNullTrainerDto() {
         Trainer trainer = trainerMapper.convertToEntity(null);
-        assertNull(trainer, "Expected convertToEntity to return null when input is null");
+        assertNull(trainer, "ConvertToEntity: null when input is null");
     }
 }

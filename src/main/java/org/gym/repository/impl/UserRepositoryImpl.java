@@ -26,8 +26,7 @@ public class UserRepositoryImpl implements UserRepository {
         return findByUserName(userName).isPresent();
     }
 
-    //@Override
-    public Optional<User> findByUserName(String userName) {
+    private Optional<User> findByUserName(String userName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> query = criteriaBuilder.createQuery(User.class);
         Root<User> root = query.from(User.class);

@@ -53,13 +53,13 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public void changeStatus(String username, Boolean isActive) {
-
+    public TrainerDto changeStatus(String username, Boolean isActive) {
+return null;
     }
 
     @Override
-    public void changePassword(String username,  String newPassword) {
-
+    public TrainerDto changePassword(String username,  String newPassword) {
+        return null;
     }
 
     @Override

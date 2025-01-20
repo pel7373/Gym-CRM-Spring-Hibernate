@@ -18,31 +18,31 @@ import java.time.LocalDate;
 public class Training implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "id", nullable = false, unique = true)
-    @Column(name = "id", unique = true)
+    @Column(name = "id", nullable = false, unique = true)
+    //@Column(name = "id", unique = true)
     private long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    //@JoinColumn(name = "trainee_id")
+    @JoinColumn(name = "trainee_id")
     private Trainee trainee;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
-    //@Column(name = "training_name", nullable = false)
-    @Column(name = "training_name")
+    @Column(name = "training_name", nullable = false)
+    //@Column(name = "training_name")
     private String trainingName;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "training_type_id")
     private TrainingType trainingType;
 
-    //@Column(name = "date", nullable = false)
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
+    //@Column(name = "date")
     private LocalDate date;
 
-    //@Column(name = "duration", nullable = false)
-    @Column(name = "duration")
+    @Column(name = "duration", nullable = false)
+    //@Column(name = "duration")
     private Integer duration;
 }

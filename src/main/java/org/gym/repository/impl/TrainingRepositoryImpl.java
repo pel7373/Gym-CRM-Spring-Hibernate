@@ -17,6 +17,6 @@ public class TrainingRepositoryImpl implements TrainingRepository {
 
     @Override
     public Training save(Training training) {
-        return new Training(); //trainingStorage.save(training);
+        return new Training();
     }
 }

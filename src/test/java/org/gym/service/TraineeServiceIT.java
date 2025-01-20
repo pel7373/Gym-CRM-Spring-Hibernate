@@ -1,0 +1,224 @@
+package org.gym.service;
+
+import org.gym.Main;
+import org.gym.config.TestConfig;
+import org.gym.dto.TraineeDto;
+import org.gym.dto.UserDto;
+import org.gym.entity.Trainee;
+import org.gym.exception.EntityNotFoundException;
+import org.gym.facade.impl.TraineeFacadeImpl;
+import org.gym.repository.TraineeRepository;
+import org.gym.service.impl.TraineeServiceImpl;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.time.LocalDate;
+
+import static org.gym.config.AppConfig.ENTITY_CANT_BE_NULL;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+
+@ExtendWith(SpringExtension.class)
+@TestPropertySource(locations = "classpath:application-test.properties")
+@ContextConfiguration(classes = {Main.class, TestConfig.class})
+public class TraineeServiceIT {
+    
+    @Autowired
+    private TraineeServiceImpl traineeService;
+
+    @Autowired
+    private TraineeRepository traineeRepository;
+
+    private TraineeDto traineeDto;
+    private TraineeDto traineeDto2;
+    private TraineeDto traineeDtoNotValid;
+    private String userNameForTrainee;
+
+    {
+        UserDto userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
+        UserDto userDto2 = new UserDto("Petro", "Ivanenko", "Petro.Ivanenko", true);
+
+        traineeDto = TraineeDto.builder()
+                .user(userDto)
+                .dateOfBirth(LocalDate.of(1995, 1, 23))
+                .address("Vinnitsya, Soborna str. 35, ap. 26")
+                .build();
+
+        traineeDto2 = TraineeDto.builder()
+                .user(userDto2)
+                .dateOfBirth(LocalDate.of(1985, 1, 23))
+                .address("Kyiv, Soborna str. 35, ap. 26")
+                .build();
+    }
+
+    @Test
+    void createTraineeSuccessfully() {
+        TraineeDto createdTraineeDto = traineeService.create(traineeDto);
+        userNameForTrainee = createdTraineeDto.getUser().getUserName();
+
+        assertNotNull(createdTraineeDto);
+        assertNotNull(createdTraineeDto.getUser());
+        assertAll(
+                "Grouped assertions of created traineeDto",
+                () -> assertEquals("Maria", createdTraineeDto.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals("Petrenko", createdTraineeDto.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertTrue(createdTraineeDto.getUser().getIsActive(), "isActive should be true"),
+                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTraineeDto.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+        );
+
+        Trainee createdTrainee = traineeRepository.findByUserName(createdTraineeDto.getUser().getUserName()).get();
+        assertNotNull(createdTrainee);
+        assertNotNull(createdTrainee.getUser());
+        assertAll(
+                "Grouped assertions of created trainee",
+                () -> assertEquals("Maria", createdTrainee.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals("Petrenko", createdTrainee.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertTrue(createdTrainee.getUser().getIsActive(), "isActive should be true"),
+                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+        );
+
+        traineeRepository.delete(userNameForTrainee);
+    }
+
+    @Test
+    void selectTraineeSuccessfully() {
+        TraineeDto createdTraineeDto = traineeService.create(traineeDto);
+        userNameForTrainee = createdTraineeDto.getUser().getUserName();
+        String passwordForCreatedTrainee = traineeRepository.findByUserName(userNameForTrainee).get().getUser().getPassword();
+        TraineeDto selectedTraineeDto = traineeService.select(userNameForTrainee);
+        String passwordForSelectedTrainee = traineeRepository.findByUserName(userNameForTrainee).get().getUser().getPassword();
+
+        assertNotNull(createdTraineeDto);
+        assertNotNull(createdTraineeDto.getUser());
+        assertNotNull(selectedTraineeDto);
+        assertNotNull(selectedTraineeDto);
+        assertAll(
+                "Grouped assertions of selected traineeDto",
+                () -> assertEquals("Maria", selectedTraineeDto.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals("Petrenko", selectedTraineeDto.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals(passwordForCreatedTrainee, passwordForSelectedTrainee, "password should be equal"),
+                () -> assertTrue(selectedTraineeDto.getUser().getIsActive(), "isActive should be true"),
+                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", selectedTraineeDto.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+        );
+
+        Trainee selectedTrainee = traineeRepository.findByUserName(selectedTraineeDto.getUser().getUserName()).get();
+        assertNotNull(selectedTrainee);
+        assertNotNull(selectedTrainee.getUser());
+        assertAll(
+                "Grouped assertions of created trainee",
+                () -> assertEquals("Maria", selectedTrainee.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals("Petrenko", selectedTrainee.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals(passwordForCreatedTrainee, passwordForSelectedTrainee, "password should be equal"),
+                () -> assertTrue(selectedTrainee.getUser().getIsActive(), "isActive should be true"),
+                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", selectedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+        );
+
+        traineeRepository.delete(userNameForTrainee);
+    }
+
+    @Test
+    void updateTraineeSuccessfully() {
+        TraineeDto createdTraineeDto = traineeService.create(traineeDto);
+        userNameForTrainee = createdTraineeDto.getUser().getUserName();
+        TraineeDto updatedTraineeDto = traineeService.update(userNameForTrainee, traineeDto2);
+        userNameForTrainee = updatedTraineeDto.getUser().getUserName();
+
+        assertNotNull(updatedTraineeDto);
+        assertNotNull(updatedTraineeDto.getUser());
+        assertAll(
+                "Grouped assertions of selected traineeDto",
+                () -> assertEquals("Petro", updatedTraineeDto.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTraineeDto.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertTrue(updatedTraineeDto.getUser().getIsActive(), "isActive should be true"),
+                () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTraineeDto.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+        );
+
+        Trainee updatedTrainee = traineeRepository.findByUserName(updatedTraineeDto.getUser().getUserName()).get();
+        assertNotNull(updatedTrainee);
+        assertNotNull(updatedTrainee.getUser());
+        assertAll(
+                "Grouped assertions of created trainee",
+                () -> assertEquals("Petro", updatedTrainee.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTrainee.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertTrue(updatedTrainee.getUser().getIsActive(), "isActive should be true"),
+                () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+        );
+
+        traineeRepository.delete(userNameForTrainee);
+    }
+
+    @Test
+    void deleteTraineeSuccessfully() {
+        TraineeDto createdTraineeDto = traineeService.create(traineeDto);
+        userNameForTrainee = createdTraineeDto.getUser().getUserName();
+
+        assertNotNull(createdTraineeDto);
+        assertNotNull(createdTraineeDto.getUser());
+        traineeService.delete(userNameForTrainee);
+        String message = String.format(ENTITY_CANT_BE_NULL, "findByUserName", userNameForTrainee);
+        assertThrows(EntityNotFoundException.class, () -> traineeRepository.findByUserName(userNameForTrainee), message);
+    }
+
+    @Test
+    void changeStatusSuccessfully() {
+        TraineeDto createdTraineeDto = traineeService.create(traineeDto);
+        userNameForTrainee = createdTraineeDto.getUser().getUserName();
+
+        assertNotNull(createdTraineeDto);
+        assertNotNull(createdTraineeDto.getUser());
+
+        boolean oldStatus = createdTraineeDto.getUser().getIsActive();
+        boolean newStatus = !oldStatus;
+        TraineeDto changedTraineeDto = traineeService.changeStatus(userNameForTrainee, newStatus);
+
+        assertNotNull(changedTraineeDto);
+        assertNotNull(changedTraineeDto.getUser());
+        assertEquals(newStatus, changedTraineeDto.getUser().getIsActive());
+    }
+
+    @Test
+    void changeStatusTheSecondTimeDoesntChange() {
+        TraineeDto createdTraineeDto = traineeService.create(traineeDto);
+        userNameForTrainee = createdTraineeDto.getUser().getUserName();
+
+        assertNotNull(createdTraineeDto);
+        assertNotNull(createdTraineeDto.getUser());
+
+        boolean oldStatus = createdTraineeDto.getUser().getIsActive();
+        boolean newStatus = !oldStatus;
+        TraineeDto changedTraineeDto = traineeService.changeStatus(userNameForTrainee, newStatus);
+
+        assertNotNull(changedTraineeDto);
+        assertNotNull(changedTraineeDto.getUser());
+        assertEquals(newStatus, changedTraineeDto.getUser().getIsActive());
+
+        TraineeDto changedagainTraineeDto = traineeService.changeStatus(userNameForTrainee, newStatus);
+
+        assertNotNull(changedTraineeDto);
+        assertNotNull(changedTraineeDto.getUser());
+        assertEquals(newStatus, changedagainTraineeDto.getUser().getIsActive());
+    }
+
+    @Test
+    void changePasswordSuccessfully() {
+        TraineeDto createdTraineeDto = traineeService.create(traineeDto);
+        userNameForTrainee = createdTraineeDto.getUser().getUserName();
+        String password = traineeRepository.findByUserName(userNameForTrainee).get().getUser().getPassword();
+
+        assertNotNull(createdTraineeDto);
+        assertNotNull(createdTraineeDto.getUser());
+
+        String newPassword = "1111111111";
+
+        TraineeDto changedTraineeDto = traineeService.changePassword(userNameForTrainee, newPassword);
+        String changedPassword = traineeRepository.findByUserName(userNameForTrainee).get().getUser().getPassword();
+
+        assertNotNull(changedTraineeDto);
+        assertNotNull(changedTraineeDto.getUser());
+        assertEquals(newPassword, changedPassword);
+    }
+}

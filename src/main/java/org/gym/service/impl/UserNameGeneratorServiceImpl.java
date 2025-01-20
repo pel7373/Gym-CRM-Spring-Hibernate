@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public String generate(String firstName, String lastName) throws NullEntityException {

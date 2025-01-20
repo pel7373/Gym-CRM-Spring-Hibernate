@@ -1,11 +1,14 @@
 package org.gym.facade.impl;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class UserNamePasswordValidator {
-    boolean isNullOrBlank(String userName, String password) {
+    public boolean isNullOrBlank(String userName, String password) {
         return userName == null || userName.isBlank() || password == null || password.isBlank();
     }
 
-    boolean isNewPasswordNullOrBlank(String newPassword) {
+    public boolean isNewPasswordNullOrBlank(String newPassword) {
         return newPassword == null || newPassword.isBlank();
     }
 }

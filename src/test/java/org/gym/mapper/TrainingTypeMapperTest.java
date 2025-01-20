@@ -28,7 +28,7 @@ class TrainingTypeMapperTest {
     @Test
     void convertToDtoWithNullTrainee() {
         TrainingTypeDto trainingTypeDto = trainingTypeMapper.convertToDto(null);
-        assertNull(trainingTypeDto, "Expected convertToDto to return null when input is null");
+        assertNull(trainingTypeDto, "ConvertToDto: null when input is null");
     }
 
     @Test
@@ -46,6 +46,6 @@ class TrainingTypeMapperTest {
     @Test
     void convertToEntityWithNullTraineeDto() {
         TrainingType trainingType = trainingTypeMapper.convertToEntity(null);
-        assertNull(trainingType, "Expected convertToEntity to return null when input is null");
+        assertNull(trainingType, "ConvertToEntity: null when input is null");
     }
 }

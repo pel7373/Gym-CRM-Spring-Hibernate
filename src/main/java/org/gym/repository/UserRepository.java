@@ -6,5 +6,4 @@ import java.util.Optional;
 
 public interface UserRepository {
     boolean isExistsByUserName(String userName);
-    //Optional<User> findByUserName(String userName);
 }

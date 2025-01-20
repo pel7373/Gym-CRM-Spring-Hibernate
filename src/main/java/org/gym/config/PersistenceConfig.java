@@ -44,6 +44,7 @@ public class PersistenceConfig implements PersistenceUnitInfo {
         properties.setProperty("spring.jpa.defer-datasource-initialization", env.getProperty("spring.jpa.defer-datasource-initialization"));
         properties.setProperty("spring.sql.init.platform", env.getProperty("spring.sql.init.platform"));
         properties.setProperty("spring.sql.init.mode", env.getProperty("spring.sql.init.mode"));
+        properties.setProperty("hibernate.hbm2ddl.import_files", env.getProperty("hibernate.hbm2ddl.import_files"));
         properties.setProperty("jakarta.persistence.sql-load-script-source", env.getProperty("jakarta.persistence.sql-load-script-source"));
         return properties;
     }

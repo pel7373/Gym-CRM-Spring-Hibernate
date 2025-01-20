@@ -46,53 +46,51 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public TraineeDto update(String userName, TraineeDto traineeDto) throws EntityNotFoundException {
         Trainee oldTrainee = traineeRepository.findByUserName(userName).get();
-        Trainee trainee = traineeMapper.convertToEntity(traineeDto);
-        if(!oldTrainee.getUser().getFirstName().equals(trainee.getUser().getFirstName())
-                || !oldTrainee.getUser().getLastName().equals(trainee.getUser().getLastName())) {
-            trainee.getUser().setUserName(
-                    userNameGeneratorService.generate(trainee.getUser().getFirstName(), trainee.getUser().getLastName()));
+        if(!oldTrainee.getUser().getFirstName().equals(traineeDto.getUser().getFirstName())
+                || !oldTrainee.getUser().getLastName().equals(traineeDto.getUser().getLastName())) {
+            oldTrainee.getUser().setUserName(
+                    userNameGeneratorService.generate(traineeDto.getUser().getFirstName(), traineeDto.getUser().getLastName()));
+            oldTrainee.getUser().setFirstName(traineeDto.getUser().getFirstName());
+            oldTrainee.getUser().setLastName(traineeDto.getUser().getLastName());
         }
-        trainee.setId(oldTrainee.getId());
-        trainee.getUser().setPassword(oldTrainee.getUser().getPassword());
+        oldTrainee.getUser().setIsActive(traineeDto.getUser().getIsActive());
+        oldTrainee.setDateOfBirth(traineeDto.getDateOfBirth());
+        oldTrainee.setAddress(traineeDto.getAddress());
         LOGGER.info("update: updating trainee with userName {}", userName);
-        return traineeMapper.convertToDto(traineeRepository.save(trainee));
+        return traineeMapper.convertToDto(traineeRepository.save(oldTrainee));
     }
 
     @Override
     public void delete(String userName) throws EntityNotFoundException {
-        Trainee trainee = traineeRepository.findByUserName(userName).get();
-
+        traineeRepository.delete(userName);
     }
 
     @Override
-    public void changeStatus(String userName, Boolean isActive) {
+    public TraineeDto changeStatus(String userName, Boolean isActive) {
         Trainee trainee = traineeRepository.findByUserName(userName).get();
         if(!trainee.getUser().getIsActive().equals(isActive)) {
             trainee.getUser().setIsActive(isActive);
-            traineeRepository.save(trainee);
+            return traineeMapper.convertToDto(traineeRepository.save(trainee));
         }
+        return traineeMapper.convertToDto(trainee);
     }
 
     @Override
-    public boolean authenticate(String userName, String password) throws EntityNotFoundException {
+    public boolean authenticate(String userName, String password) {
+        Trainee trainee;
+        try {
+            trainee = traineeRepository.findByUserName(userName).get();
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
 
-        return false;
+        return trainee.getUser().getPassword().equals(password);
     }
 
     @Override
-    public void changePassword(String userName, String newPassword) {
-
+    public TraineeDto changePassword(String userName, String newPassword) {
+        Trainee trainee = traineeRepository.findByUserName(userName).get();
+        trainee.getUser().setPassword(newPassword);
+        return traineeMapper.convertToDto(traineeRepository.save(trainee));
     }
-
-
-
-//    @Override
-//    public void deleteById(Long id) throws InvalidIdException {
-//        if(id == null || id < 0) {
-//            throw new InvalidIdException(String.format(ID_CANT_BE_NULL_OR_NEGATIVE, "delete"));
-//        }
-//
-//        LOGGER.info("deleteById is deleting trainee with id {}", id);
-//        traineeRepository.deleteById(id);
-//    }
 }

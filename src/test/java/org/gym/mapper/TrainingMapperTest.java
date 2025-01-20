@@ -1,7 +1,9 @@
 package org.gym.mapper;
 
+import org.gym.Main;
 import org.gym.dto.*;
 import org.gym.entity.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -13,27 +15,33 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TrainingMapperTest {
 
-    private TrainingMapper trainingMapper = new TrainingMapperImpl();
+    private static TrainingMapper trainingMapper;
+    private static AnnotationConfigApplicationContext context;
 
+    @BeforeAll
+    public static void setUp() {
+        context = new AnnotationConfigApplicationContext(Main.class);
+        trainingMapper = context.getBean(TrainingMapper.class);
+    }
     @Test
     void convertToDto() {
 
         Training training = Training.builder()
                 .trainee(Trainee.builder()
                         .user(User.builder()
-                                .firstName("FirstName")
-                                .lastName("LastName")
-                                .userName("FirstName.LastName")
+                                .firstName("Maria")
+                                .lastName("Petrenko")
+                                .userName("Maria.Petrenko")
                                 .password("password")
                                 .isActive(true).build())
                         .dateOfBirth(LocalDate.of(2020, 1, 1))
-                        .address("123 Main St")
+                        .address("Vinnitsya, Soborna str. 35, ap. 26")
                         .build())
                 .trainer(Trainer.builder()
                         .user(User.builder()
-                                .firstName("FirstName")
-                                .lastName("LastName")
-                                .userName("FirstName.LastName")
+                                .firstName("Maria")
+                                .lastName("Petrenko")
+                                .userName("Maria.Petrenko")
                                 .password("password")
                                 .isActive(true)
                                 .build())
@@ -63,7 +71,7 @@ class TrainingMapperTest {
     @Test
     void convertToDtoWithNullTrainee() {
         TrainingDto trainingDto = trainingMapper.convertToDto(null);
-        assertNull(trainingDto, "Expected convertToDto to return null when input is null");
+        assertNull(trainingDto, "ConvertToDto: null when input is null");
     }
 
     @Test
@@ -71,18 +79,18 @@ class TrainingMapperTest {
         TrainingDto trainingDto = TrainingDto.builder()
                 .trainee(TraineeDto.builder()
                         .user(UserDto.builder()
-                                .firstName("FirstName")
-                                .lastName("LastName")
-                                .userName("FirstName.LastName")
+                                .firstName("Maria")
+                                .lastName("Petrenko")
+                                .userName("Maria.Petrenko")
                                 .isActive(true).build())
                         .dateOfBirth(LocalDate.of(2020, 1, 1))
-                        .address("123 Main St")
+                        .address("Vinnitsya, Soborna str. 35, ap. 26")
                         .build())
                 .trainer(TrainerDto.builder()
                         .user(UserDto.builder()
-                                .firstName("FirstName")
-                                .lastName("LastName")
-                                .userName("FirstName.LastName")
+                                .firstName("Maria")
+                                .lastName("Petrenko")
+                                .userName("Maria.Petrenko")
                                 .isActive(true)
                                 .build())
                         .specialization(TrainingTypeDto.builder().trainingTypeName("Yoga").build())
@@ -111,6 +119,6 @@ class TrainingMapperTest {
     @Test
     void convertToEntityWithNullTraineeDto() {
         Training training = trainingMapper.convertToEntity(null);
-        assertNull(training, "Expected convertToEntity to return null when input is null");
+        assertNull(training, "ConvertToEntity: null when input is null");
     }
 }

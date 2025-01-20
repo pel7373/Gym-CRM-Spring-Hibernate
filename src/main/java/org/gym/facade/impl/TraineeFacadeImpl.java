@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.dto.TraineeDto;
-import org.gym.dto.validator.UserDtoValidator;
+import org.gym.validator.UserDtoValidator;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.facade.TraineeFacade;
 import org.gym.service.TraineeService;
@@ -21,7 +21,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     private final TraineeService traineeService;
     private final UserDtoValidator userDtoValidator;
-    private UserNamePasswordValidator userNamePasswordValidator = new UserNamePasswordValidator();
+    private final UserNamePasswordValidator userNamePasswordValidator;
 
     @Override
     public TraineeDto create(@Valid TraineeDto traineeDto) {
@@ -42,11 +42,6 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public TraineeDto select(String userName, String password) {
-        if(userNamePasswordValidator.isNullOrBlank(userName, password)) {
-            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "select", userName, password);
-            return null;
-        }
-
         if(authenticate(userName, password)) {
             try {
                 return traineeService.select(userName);
@@ -61,13 +56,13 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public TraineeDto update(String userName, String password, TraineeDto traineeDto) {
-        if(userNamePasswordValidator.isNullOrBlank(userName, password)) {
-            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "update", userName, password);
+        if(traineeDto == null) {
+            LOGGER.warn(ENTITY_CANT_BE_NULL, "create");
             return null;
         }
 
-        if(traineeDto == null) {
-            LOGGER.warn(ENTITY_CANT_BE_NULL, "update");
+        if(!userDtoValidator.validate(traineeDto.getUser())) {
+            LOGGER.warn(userDtoValidator.getErrorMessage(traineeDto.getUser()));
             return null;
         }
 
@@ -75,6 +70,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
             LOGGER.warn(ACCESS_DENIED, "update", userName);
             return null;
         }
+
         try {
             return traineeService.update(userName, traineeDto);
         } catch (EntityNotFoundException e) {
@@ -85,11 +81,6 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public void delete(String userName, String password) {
-        if(userNamePasswordValidator.isNullOrBlank(userName, password)) {
-            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "delete", userName, password);
-            return;
-        }
-
         if(authenticate(userName, password)) {
             traineeService.delete(userName);
         } else {
@@ -98,21 +89,17 @@ public class TraineeFacadeImpl implements TraineeFacade {
     }
 
     @Override
-    public void changeStatus(String userName, String password, Boolean isActive) {
-        if(userNamePasswordValidator.isNullOrBlank(userName, password)) {
-            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "changeStatus", userName, password);
-            return;
-        }
-
+    public TraineeDto changeStatus(String userName, String password, Boolean isActive) {
         if(isActive == null) {
             LOGGER.warn("changeStatus: isActive can't be null");
-            return;
+            return null;
         }
 
         if(authenticate(userName, password)) {
-            traineeService.changeStatus(userName, isActive);
+            return traineeService.changeStatus(userName, isActive);
         } else {
             LOGGER.warn(ACCESS_DENIED, "changeStatus", userName);
+            return null;
         }
     }
 
@@ -127,21 +114,17 @@ public class TraineeFacadeImpl implements TraineeFacade {
     }
 
     @Override
-    public void changePassword(String userName, String password, String newPassword) {
-        if(userNamePasswordValidator.isNullOrBlank(userName, password)) {
-            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "changePassword", userName, password);
-            return;
-        }
-
+    public TraineeDto changePassword(String userName, String password, String newPassword) {
         if(userNamePasswordValidator.isNewPasswordNullOrBlank(newPassword)) {
             LOGGER.warn("{}: new password ({}) can't be null or blank", "changePassword", newPassword);
-            return;
+            return null;
         }
 
         if(authenticate(userName, password)) {
-            traineeService.changePassword(userName, newPassword);
+            return traineeService.changePassword(userName, newPassword);
         } else {
             LOGGER.warn(ACCESS_DENIED, "changePassword", userName);
+            return null;
         }
     }
 }

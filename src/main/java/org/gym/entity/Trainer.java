@@ -20,18 +20,18 @@ import java.util.List;
 public class Trainer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "id", nullable = false, unique = true)
-    @Column(name = "id", unique = true)
+    @Column(name = "id", nullable = false, unique = true)
+    //@Column(name = "id", unique = true)
     private Long id;
 
     @OneToOne
-    //@JoinColumn(name = "specialization", referencedColumnName = "id", nullable = false)
-    @JoinColumn(name = "specialization", referencedColumnName = "id")
+    @JoinColumn(name = "specialization", referencedColumnName = "id", nullable = false)
+    //@JoinColumn(name = "specialization", referencedColumnName = "id")
     private TrainingType specialization;
 
     @OneToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "user_id", nullable = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
+    //@JoinColumn(name = "user_id")
     private User user;
 
     @ToString.Exclude

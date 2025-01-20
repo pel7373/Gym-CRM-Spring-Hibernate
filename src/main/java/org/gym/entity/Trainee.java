@@ -23,6 +23,7 @@ import java.util.List;
 public class Trainee  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@Column(name = "id", unique = true)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
@@ -35,8 +36,8 @@ public class Trainee  {
     private String address;
 
     @OneToOne(cascade = CascadeType.ALL)
-    //@JoinColumn(name = "id", nullable = false)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
+    //@JoinColumn(name = "user_id")
     private User user;
 
     @ToString.Exclude

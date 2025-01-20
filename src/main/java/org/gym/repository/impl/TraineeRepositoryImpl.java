@@ -44,13 +44,10 @@ public class TraineeRepositoryImpl implements TraineeRepository {
     public Trainee save(Trainee trainee) {
         Trainee savedTrainee = trainee;
         if (trainee.getId() == null) {
-            System.out.println("Repo save persist: " + trainee);
             entityManager.persist(trainee);
         } else {
-            System.out.println("Repo save merge: " + trainee);
             savedTrainee = entityManager.merge(trainee);
         }
-        System.out.println("Repo save saved: " + savedTrainee);
         return savedTrainee;
     }
 

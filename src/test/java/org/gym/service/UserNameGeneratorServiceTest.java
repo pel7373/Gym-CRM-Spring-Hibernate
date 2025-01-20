@@ -1,9 +1,9 @@
 package org.gym.service;
 
+import org.gym.Main;
 import org.gym.exception.NullEntityException;
 import org.gym.repository.UserRepository;
 import org.gym.service.impl.UserNameGeneratorServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,12 +11,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = Main.class)
 class UserNameGeneratorServiceTest {
 
     @Mock
@@ -25,11 +27,8 @@ class UserNameGeneratorServiceTest {
     @InjectMocks
     private UserNameGeneratorServiceImpl userNameGeneratorService;
 
-    @BeforeEach
-    void setUp() {
+    {
         MockitoAnnotations.openMocks(this);
-        userNameGeneratorService
-                = new UserNameGeneratorServiceImpl(userRepository);
     }
 
     @Test

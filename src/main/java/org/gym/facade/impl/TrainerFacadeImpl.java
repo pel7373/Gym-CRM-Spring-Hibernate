@@ -32,21 +32,19 @@ public class TrainerFacadeImpl implements TrainerFacade {
         return trainerService.update(userName, trainerDto);
     }
 
-
     @Override
     public boolean authenticate(String userName, String password) {
         return trainerService.authenticate(userName, password);
     }
 
-
     @Override
-    public void changeStatus(String userName, String password, Boolean isActive) {
-        trainerService.changeStatus(userName, isActive);
+    public TrainerDto changeStatus(String userName, String password, Boolean isActive) {
+        return trainerService.changeStatus(userName, isActive);
     }
 
     @Override
-    public void changePassword(String userName, String password, String newPassword) {
-       // trainerService.changePassword(userName, newPassword);
+    public TrainerDto changePassword(String userName, String password, String newPassword) {
+       return trainerService.changePassword(userName, newPassword);
     }
 
     @Override

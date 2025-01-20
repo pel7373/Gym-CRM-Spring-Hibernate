@@ -16,9 +16,9 @@ class UserMapperTest {
     @Test
     void convertToDto() {
         User user = User.builder()
-                .firstName("FirstName")
-                .lastName("LastName")
-                .userName("FirstName.LastName")
+                .firstName("Maria")
+                .lastName("Petrenko")
+                .userName("Maria.Petrenko")
                 .password("password")
                 .isActive(true)
                 .build();
@@ -35,15 +35,15 @@ class UserMapperTest {
     @Test
     void convertToDtoWithNullTrainee() {
         UserDto userDto = userMapper.convertToDto(null);
-        assertNull(userDto, "Expected convertToDto to return null when input is null");
+        assertNull(userDto, "ConvertToDto: null when input is null");
     }
 
     @Test
     void convertToEntity() {
         UserDto userDto = UserDto.builder()
-                .firstName("FirstName")
-                .lastName("LastName")
-                .userName("FirstName.LastName")
+                .firstName("Maria")
+                .lastName("Petrenko")
+                .userName("Maria.Petrenko")
                 .isActive(true)
                 .build();
 
@@ -60,6 +60,6 @@ class UserMapperTest {
     @Test
     void convertToEntityWithNullTraineeDto() {
         User user = userMapper.convertToEntity(null);
-        assertNull(user, "Expected convertToEntity to return null when input is null");
+        assertNull(user, "ConvertToEntity: null when input is null");
     }
 }
