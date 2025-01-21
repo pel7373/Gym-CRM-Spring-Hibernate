@@ -4,7 +4,7 @@ import org.gym.Main;
 import org.gym.dto.*;
 import org.gym.entity.*;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -33,7 +33,8 @@ class TrainingMapperTest {
                                 .lastName("Petrenko")
                                 .userName("Maria.Petrenko")
                                 .password("password")
-                                .isActive(true).build())
+                                .isActive(true)
+                                .build())
                         .dateOfBirth(LocalDate.of(2020, 1, 1))
                         .address("Vinnitsya, Soborna str. 35, ap. 26")
                         .build())
@@ -45,7 +46,10 @@ class TrainingMapperTest {
                                 .password("password")
                                 .isActive(true)
                                 .build())
-                        .specialization(TrainingType.builder().id(1L).trainingTypeName("Yoga").build())
+                        .specialization(TrainingType.builder()
+                                .id(1L)
+                                .trainingTypeName("Yoga")
+                                .build())
                         .build())
                 .trainingType(TrainingType.builder()
                         .trainingTypeName("yoga")
@@ -82,8 +86,9 @@ class TrainingMapperTest {
                                 .firstName("Maria")
                                 .lastName("Petrenko")
                                 .userName("Maria.Petrenko")
-                                .isActive(true).build())
-                        .dateOfBirth(LocalDate.of(2020, 1, 1))
+                                .isActive(true)
+                                .build())
+                        .dateOfBirth(LocalDate.of(1990, 1, 1))
                         .address("Vinnitsya, Soborna str. 35, ap. 26")
                         .build())
                 .trainer(TrainerDto.builder()
@@ -93,7 +98,7 @@ class TrainingMapperTest {
                                 .userName("Maria.Petrenko")
                                 .isActive(true)
                                 .build())
-                        .specialization(TrainingTypeDto.builder().trainingTypeName("Yoga").build())
+                        .specialization(TrainingType.builder().trainingTypeName("Yoga").build())
                         .build())
                 .trainingType(TrainingTypeDto.builder()
                         .trainingTypeName("Yoga")

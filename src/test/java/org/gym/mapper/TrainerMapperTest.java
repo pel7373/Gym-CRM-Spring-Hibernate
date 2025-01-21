@@ -66,8 +66,9 @@ class TrainerMapperTest {
                         .userName("Maria.Petrenko")
                         .isActive(true)
                         .build())
-                .specialization(TrainingTypeDto.builder()
-                        .trainingTypeName("yoga").build())
+                .specialization(TrainingType.builder()
+                        .trainingTypeName("yoga")
+                        .build())
                 .build();
 
         Trainer createdTrainer = trainerMapper.convertToEntity(trainerDto);

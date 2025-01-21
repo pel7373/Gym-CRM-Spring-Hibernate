@@ -1,8 +1,10 @@
 package org.gym.validator;
 
 import org.gym.dto.TrainingDto;
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Validator;
 
+@Component
 public class TrainingDtoValidator extends EntityValidator<TrainingDto> {
     Validator getValidator() {
         return Validator.forInstanceOf(TrainingDto.class, (t, errors) -> {

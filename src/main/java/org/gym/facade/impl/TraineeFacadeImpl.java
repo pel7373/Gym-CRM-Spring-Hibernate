@@ -35,9 +35,14 @@ public class TraineeFacadeImpl implements TraineeFacade {
             return null;
         }
 
-        TraineeDto traineeDtoResult = traineeService.create(traineeDto);
-        LOGGER.trace("create: {} was created", traineeDtoResult);
-        return traineeDtoResult;
+        try {
+            TraineeDto traineeDtoResult = traineeService.create(traineeDto);
+            LOGGER.trace("create: {} was created", traineeDtoResult);
+            return traineeDtoResult;
+        } catch (EntityNotFoundException e) {
+            LOGGER.warn("Trainee doesn't found");
+        }
+        return null;
     }
 
     @Override

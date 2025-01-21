@@ -1,6 +1,8 @@
 package org.gym.service;
 
+import jakarta.transaction.Transactional;
 import org.gym.Main;
+import org.gym.config.AppConfig;
 import org.gym.config.TestConfig;
 import org.gym.dto.TraineeDto;
 import org.gym.dto.UserDto;
@@ -11,6 +13,7 @@ import org.gym.service.impl.TraineeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -20,9 +23,12 @@ import java.time.LocalDate;
 import static org.gym.config.AppConfig.ENTITY_CANT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
 
+//@Testcontainers
 @ExtendWith(SpringExtension.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
-@ContextConfiguration(classes = {Main.class, TestConfig.class})
+//@ContextConfiguration(classes = {AppConfig.class, TestConfig.class})
+@ContextConfiguration(classes = AppConfig.class)
+@Transactional
+@ActiveProfiles("test")
 public class TraineeServiceIT {
     
     @Autowired

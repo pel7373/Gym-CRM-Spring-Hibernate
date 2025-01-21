@@ -2,6 +2,7 @@ package org.gym.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class TrainingDto {
     @NotNull(message = "Trainer id is required")
     private TrainerDto trainer;
 
+    @Pattern(regexp = "^[A-Z][a-z.:0-9]+$", message = "Training name must start with a capital letter and then contain only lowercase letters, dots and colons")
     @NotNull(message = "Training name is required")
     private String trainingName;
 

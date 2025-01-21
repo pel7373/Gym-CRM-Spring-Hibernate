@@ -1,23 +1,30 @@
 package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.gym.dto.TraineeDto;
 import org.gym.dto.TrainingDto;
 import org.gym.entity.Training;
 import org.gym.facade.TrainingFacade;
 import org.gym.service.TrainingService;
+import org.gym.validator.TrainingDtoValidator;
+import org.gym.validator.UserDtoValidator;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.gym.config.AppConfig.ENTITY_CANT_BE_NULL;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
+@Validated
 public class TrainingFacadeImpl implements TrainingFacade {
 
     private final TrainingService trainingService;
+    private final TrainingDtoValidator trainingDtoValidator;
 
     @Override
     public TrainingDto create(TrainingDto trainingDto) {
@@ -26,15 +33,14 @@ public class TrainingFacadeImpl implements TrainingFacade {
             return null;
         }
 
-        if(!userDtoValidator.validate(traineeDto.getUser())) {
-            LOGGER.warn(userDtoValidator.getErrorMessage(traineeDto.getUser()));
+        if(!trainingDtoValidator.validate(trainingDto)) {
+            LOGGER.warn(trainingDtoValidator.getErrorMessage(trainingDto));
             return null;
         }
 
-        TraineeDto traineeDtoResult = traineeService.create(traineeDto);
-        LOGGER.trace("create: {} was created", traineeDtoResult);
-        return traineeDtoResult;
-        return trainingService.create(trainingDto);
+        TrainingDto trainingDtoResult = trainingService.create(trainingDto);
+        LOGGER.trace("create: {} was created", trainingDtoResult);
+        return trainingDtoResult;
     }
 
     @Override

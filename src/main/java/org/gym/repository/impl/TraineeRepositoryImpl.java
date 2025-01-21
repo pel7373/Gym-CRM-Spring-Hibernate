@@ -9,6 +9,7 @@ import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TraineeRepository;
 import org.gym.entity.Trainee;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
+@Transactional
 public class TraineeRepositoryImpl implements TraineeRepository {
 
     @PersistenceContext
