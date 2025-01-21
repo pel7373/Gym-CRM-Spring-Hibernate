@@ -19,8 +19,7 @@ public class Training implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
-    //@Column(name = "id", unique = true)
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "trainee_id")
@@ -31,7 +30,6 @@ public class Training implements Serializable {
     private Trainer trainer;
 
     @Column(name = "training_name", nullable = false)
-    //@Column(name = "training_name")
     private String trainingName;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -39,10 +37,8 @@ public class Training implements Serializable {
     private TrainingType trainingType;
 
     @Column(name = "date", nullable = false)
-    //@Column(name = "date")
     private LocalDate date;
 
     @Column(name = "duration", nullable = false)
-    //@Column(name = "duration")
     private Integer duration;
 }

@@ -1,6 +1,7 @@
 package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.gym.dto.TraineeDto;
 import org.gym.dto.TrainingDto;
 import org.gym.entity.Training;
 import org.gym.facade.TrainingFacade;
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.gym.config.AppConfig.ENTITY_CANT_BE_NULL;
+
 @Component
 @RequiredArgsConstructor
 public class TrainingFacadeImpl implements TrainingFacade {
@@ -18,6 +21,19 @@ public class TrainingFacadeImpl implements TrainingFacade {
 
     @Override
     public TrainingDto create(TrainingDto trainingDto) {
+        if(trainingDto == null) {
+            LOGGER.warn(ENTITY_CANT_BE_NULL, "create");
+            return null;
+        }
+
+        if(!userDtoValidator.validate(traineeDto.getUser())) {
+            LOGGER.warn(userDtoValidator.getErrorMessage(traineeDto.getUser()));
+            return null;
+        }
+
+        TraineeDto traineeDtoResult = traineeService.create(traineeDto);
+        LOGGER.trace("create: {} was created", traineeDtoResult);
+        return traineeDtoResult;
         return trainingService.create(trainingDto);
     }
 

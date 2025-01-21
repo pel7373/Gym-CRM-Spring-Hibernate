@@ -6,7 +6,6 @@ import org.gym.dto.TraineeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
 import org.gym.exception.EntityNotFoundException;
-import org.gym.facade.impl.TraineeFacadeImpl;
 import org.gym.repository.TraineeRepository;
 import org.gym.service.impl.TraineeServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -20,7 +19,6 @@ import java.time.LocalDate;
 
 import static org.gym.config.AppConfig.ENTITY_CANT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(locations = "classpath:application-test.properties")
@@ -35,7 +33,6 @@ public class TraineeServiceIT {
 
     private TraineeDto traineeDto;
     private TraineeDto traineeDto2;
-    private TraineeDto traineeDtoNotValid;
     private String userNameForTrainee;
 
     {

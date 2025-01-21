@@ -8,11 +8,14 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.gym.entity.TrainingType;
+import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TrainingTypeRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+
+import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
 public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
@@ -34,7 +37,7 @@ public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
         try {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
-            return Optional.empty();
+            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName",trainingTypeName));
         }
     }
 }

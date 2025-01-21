@@ -1,20 +1,16 @@
 package org.gym.repository.impl;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import jakarta.validation.Valid;
 import org.gym.exception.EntityNotFoundException;
-import org.gym.exception.NullEntityException;
 import org.gym.repository.TraineeRepository;
 import org.gym.entity.Trainee;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
@@ -34,13 +30,12 @@ public class TraineeRepositoryImpl implements TraineeRepository {
 
         try {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
-        } catch (NoResultException e) {
+        } catch (NoSuchElementException e) {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
         }
     }
 
     @Override
-    @Transactional
     public Trainee save(Trainee trainee) {
         Trainee savedTrainee = trainee;
         if (trainee.getId() == null) {
@@ -52,7 +47,6 @@ public class TraineeRepositoryImpl implements TraineeRepository {
     }
 
     @Override
-    @Transactional
     public void delete(String userName) throws EntityNotFoundException {
         findByUserName(userName).ifPresent(entityManager::remove);
     }

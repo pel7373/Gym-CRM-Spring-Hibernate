@@ -27,11 +27,11 @@ public class Trainee  {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @ToString.Exclude
+    //@ToString.Exclude
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @ToString.Exclude
+    //@ToString.Exclude
     @Column(name = "address")
     private String address;
 

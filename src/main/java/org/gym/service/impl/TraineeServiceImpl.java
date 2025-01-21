@@ -13,10 +13,14 @@ import org.gym.service.PasswordGeneratorService;
 import org.gym.service.TraineeService;
 import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional
 public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
     private final TraineeMapper traineeMapper;
@@ -56,8 +60,9 @@ public class TraineeServiceImpl implements TraineeService {
         oldTrainee.getUser().setIsActive(traineeDto.getUser().getIsActive());
         oldTrainee.setDateOfBirth(traineeDto.getDateOfBirth());
         oldTrainee.setAddress(traineeDto.getAddress());
-        LOGGER.info("update: updating trainee with userName {}", userName);
-        return traineeMapper.convertToDto(traineeRepository.save(oldTrainee));
+        Trainee trainee = traineeRepository.save(oldTrainee);
+        TraineeDto traineeDtoResult = traineeMapper.convertToDto(trainee);
+        return traineeDtoResult;
     }
 
     @Override

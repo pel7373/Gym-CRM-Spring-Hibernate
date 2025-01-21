@@ -2,8 +2,7 @@ package org.gym.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.io.Serializable;
+import org.gym.entity.TrainingType;
 
 @Data
 @NoArgsConstructor
@@ -15,5 +14,5 @@ public class TrainerDto {
     private UserDto user;
 
     @NotNull(message = "specialization is required")
-    private TrainingTypeDto specialization;
+    private TrainingType specialization;
 }
