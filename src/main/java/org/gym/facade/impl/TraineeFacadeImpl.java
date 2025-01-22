@@ -11,7 +11,7 @@ import org.gym.service.TraineeService;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
-import static org.gym.config.AppConfig.*;
+import static org.gym.config.Config.*;
 
 @Slf4j
 @Component
@@ -25,6 +25,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public TraineeDto create(@Valid TraineeDto traineeDto) {
+        System.out.println("facade: " + traineeDto);
         if(traineeDto == null) {
             LOGGER.warn(ENTITY_CANT_BE_NULL, "create");
             return null;
@@ -35,14 +36,15 @@ public class TraineeFacadeImpl implements TraineeFacade {
             return null;
         }
 
+        TraineeDto traineeDtoResult = null;
         try {
-            TraineeDto traineeDtoResult = traineeService.create(traineeDto);
+            traineeDtoResult = traineeService.create(traineeDto);
             LOGGER.trace("create: {} was created", traineeDtoResult);
             return traineeDtoResult;
         } catch (EntityNotFoundException e) {
             LOGGER.warn("Trainee doesn't found");
         }
-        return null;
+        return traineeDtoResult;
     }
 
     @Override

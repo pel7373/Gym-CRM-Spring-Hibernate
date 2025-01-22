@@ -2,11 +2,9 @@ package org.gym.repository.impl;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import lombok.RequiredArgsConstructor;
 import org.gym.entity.TrainingType;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TrainingTypeRepository;
@@ -15,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
+import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
 public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {

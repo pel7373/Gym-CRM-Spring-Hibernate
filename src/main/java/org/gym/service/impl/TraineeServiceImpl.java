@@ -20,7 +20,6 @@ import java.util.Optional;
 @Slf4j
 @Service
 @AllArgsConstructor
-@Transactional
 public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
     private final TraineeMapper traineeMapper;
@@ -97,5 +96,10 @@ public class TraineeServiceImpl implements TraineeService {
         Trainee trainee = traineeRepository.findByUserName(userName).get();
         trainee.getUser().setPassword(newPassword);
         return traineeMapper.convertToDto(traineeRepository.save(trainee));
+    }
+
+    @Override
+    public String getPasswordTopSecretMethod(String userName) {
+        return traineeRepository.findByUserName(userName).get().getUser().getPassword();
     }
 }

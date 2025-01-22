@@ -1,23 +1,22 @@
 package org.gym;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import lombok.extern.slf4j.Slf4j;
+import org.gym.config.Config;
 import org.gym.dto.TraineeDto;
 import org.gym.dto.UserDto;
 import org.gym.facade.TraineeFacade;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Configuration
-@ComponentScan(basePackages = "org.gym")
 public class Main {
+    @Transactional
     public static void main(String[] args) throws JsonProcessingException {
         System.setProperty("spring.profiles.active", "prod");
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Config.class);
 
         TraineeDto traineeDto;
         TraineeDto traineeDto2;
@@ -46,6 +45,7 @@ public class Main {
                     "Kyiv, Soborna str. 35, ap. 26");
 
             TraineeFacade traineeFacade = context.getBean(TraineeFacade.class);
-            traineeFacade.create(traineeDto);
+            //TraineeDto createdTraineeDto = traineeFacade.create(traineeDto);
+            traineeFacade.delete("Maria.Petrenko", "T[6iFaDNA5");
     }
 }

@@ -2,20 +2,17 @@ package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gym.dto.TraineeDto;
 import org.gym.dto.TrainingDto;
-import org.gym.entity.Training;
 import org.gym.facade.TrainingFacade;
 import org.gym.service.TrainingService;
 import org.gym.validator.TrainingDtoValidator;
-import org.gym.validator.UserDtoValidator;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.gym.config.AppConfig.ENTITY_CANT_BE_NULL;
+import static org.gym.config.Config.ENTITY_CANT_BE_NULL;
 
 @Slf4j
 @Component

@@ -3,9 +3,6 @@ package org.gym.facade.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gym.dto.TraineeDto;
-import org.gym.dto.TrainerDto;
-import org.gym.dto.TrainerDto;
 import org.gym.dto.TrainerDto;
 import org.gym.entity.TrainingType;
 import org.gym.facade.TrainerFacade;
@@ -16,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-import static org.gym.config.AppConfig.*;
+import static org.gym.config.Config.*;
 
 @Slf4j
 @Component

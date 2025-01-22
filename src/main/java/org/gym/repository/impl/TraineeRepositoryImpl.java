@@ -1,6 +1,7 @@
 package org.gym.repository.impl;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -9,15 +10,14 @@ import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TraineeRepository;
 import org.gym.entity.Trainee;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
+import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
-@Transactional
+//@Transactional
 public class TraineeRepositoryImpl implements TraineeRepository {
 
     @PersistenceContext
@@ -32,8 +32,9 @@ public class TraineeRepositoryImpl implements TraineeRepository {
 
         try {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NoResultException e) {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
+            //return Optional.empty();
         }
     }
 

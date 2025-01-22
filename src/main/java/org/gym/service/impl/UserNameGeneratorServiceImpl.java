@@ -2,6 +2,7 @@ package org.gym.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gym.exception.EntityNotFoundException;
 import org.gym.exception.NullEntityException;
 
 import org.gym.repository.UserRepository;
@@ -25,7 +26,7 @@ public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
         String temporaryUserName = userName;
         int serialNumberForUserName = 0;
 
-        while(userRepository.isExistsByUserName(temporaryUserName)) {
+        while(isExistsByUserName(temporaryUserName)) {
             temporaryUserName = userName + serialNumberForUserName++;
         }
 
@@ -34,5 +35,13 @@ public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
 
     private boolean isFirstAndLastNamesNullOrBlank(String firstName, String lastName) {
         return firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank();
+    }
+
+    private boolean isExistsByUserName(String temporaryUserName) {
+        try {
+            return userRepository.isExistsByUserName(temporaryUserName);
+        } catch (EntityNotFoundException e) {
+            return false;
+        }
     }
 }

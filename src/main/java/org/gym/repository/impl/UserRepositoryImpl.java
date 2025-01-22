@@ -6,17 +6,14 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import lombok.RequiredArgsConstructor;
 import org.gym.entity.User;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
+import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -39,6 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
+            //return Optional.empty();
         }
     }
 }

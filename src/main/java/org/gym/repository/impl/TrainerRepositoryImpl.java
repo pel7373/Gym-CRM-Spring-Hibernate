@@ -1,25 +1,24 @@
 package org.gym.repository.impl;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import org.gym.entity.Trainee;
 import org.gym.repository.TrainerRepository;
 import org.gym.entity.Trainer;
 import org.gym.exception.EntityNotFoundException;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.gym.config.AppConfig.ENTITY_NOT_FOUND_EXCEPTION;
+import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
-@Transactional
+
 public class TrainerRepositoryImpl implements TrainerRepository {
 
     @PersistenceContext
@@ -34,12 +33,13 @@ public class TrainerRepositoryImpl implements TrainerRepository {
 
         try {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | NoResultException e) {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
         }
     }
 
-    @Transactional
+    @Override
+    //@Transactional
     public Trainer save(Trainer trainer) {
         Trainer savedTrainer = trainer;
         if (trainer.getId() == null) {
@@ -47,6 +47,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         } else {
             savedTrainer = entityManager.merge(trainer);
         }
+
         return savedTrainer;
     }
 
