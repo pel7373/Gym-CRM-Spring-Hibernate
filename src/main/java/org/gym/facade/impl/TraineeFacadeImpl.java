@@ -21,7 +21,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     private final TraineeService traineeService;
     private final UserDtoValidator userDtoValidator;
-    private final UserNamePasswordValidator userNamePasswordValidator;
+    private final UserNameAndPasswordChecker userNameAndPasswordChecker;
 
     @Override
     public TraineeDto create(@Valid TraineeDto traineeDto) {
@@ -111,7 +111,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public boolean authenticate(String userName, String password) {
-        if(userNamePasswordValidator.isNullOrBlank(userName, password)) {
+        if(userNameAndPasswordChecker.isNullOrBlank(userName, password)) {
             LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "authenticate", userName, password);
             return false;
         }
@@ -121,7 +121,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public TraineeDto changePassword(String userName, String password, String newPassword) {
-        if(userNamePasswordValidator.isNewPasswordNullOrBlank(newPassword)) {
+        if(userNameAndPasswordChecker.isNullOrBlank(newPassword)) {
             LOGGER.warn("{}: new password ({}) can't be null or blank", "changePassword", newPassword);
             return null;
         }

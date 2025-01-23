@@ -34,7 +34,6 @@ public class TraineeRepositoryImpl implements TraineeRepository {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
         } catch (NoSuchElementException | NoResultException e) {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
-            //return Optional.empty();
         }
     }
 

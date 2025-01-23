@@ -8,6 +8,7 @@ import org.gym.entity.Trainee;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TraineeRepository;
 import org.gym.service.impl.TraineeServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,14 @@ public class TraineeServiceIT {
                 .build();
     }
 
+    @AfterEach
+    void destroy() {
+        try {
+            traineeRepository.delete(userNameForTrainee);
+        } catch (EntityNotFoundException ignored) {
+        }
+    }
+
     @Test
     void createTraineeSuccessfully() {
         TraineeDto createdTraineeDto = traineeService.create(traineeDto);
@@ -80,8 +89,6 @@ public class TraineeServiceIT {
                 () -> assertTrue(createdTrainee.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -116,8 +123,6 @@ public class TraineeServiceIT {
                 () -> assertTrue(selectedTrainee.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", selectedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -147,8 +152,6 @@ public class TraineeServiceIT {
                 () -> assertTrue(updatedTrainee.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test

@@ -299,6 +299,8 @@
             <exclude>org/gym/entity/*</exclude>
             <exclude>org/gym/dto/*</exclude>
             <exclude>org/gym/exception/*</exclude>
+            <exclude>org/gym/exception/*</exclude>
+            <exclude>org/gym/config/*</exclude>
           </excludes>
         </configuration>
         <executions>

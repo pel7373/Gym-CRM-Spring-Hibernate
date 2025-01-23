@@ -22,8 +22,8 @@ public class TrainingDtoValidator extends EntityValidator<TrainingDto> {
             }
 
             if (t.getDate() == null) {
-                errors.rejectValue("traininDate", "field.traininDate.notNull", new Object[]{},
-                        "the traininDate can't be null");
+                errors.rejectValue("trainingDate", "field.trainingDate.notNull", new Object[]{},
+                        "the trainingDate can't be null");
             }
 
             if (t.getDuration() == null || t.getDuration() < minDuration) {

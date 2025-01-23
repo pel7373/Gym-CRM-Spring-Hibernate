@@ -105,9 +105,4 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.getUser().setPassword(newPassword);
         return traineeMapper.convertToDto(traineeRepository.save(trainee));
     }
-
-    @Override
-    public String getPasswordTopSecretMethod(String userName) {
-        return traineeRepository.findByUserName(userName).get().getUser().getPassword();
-    }
 }

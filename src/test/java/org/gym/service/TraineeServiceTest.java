@@ -47,9 +47,6 @@ class TraineeServiceTest {
     @Mock
     private TraineeMapper traineeMapper;
 
-    @Mock
-    private EntityManager entityManager;
-
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
@@ -67,8 +64,6 @@ class TraineeServiceTest {
     UserDto userDto;
     User user;
 
-    @BeforeEach
-    void setUp()
     {
         userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
         user = new User(null, "Maria", "Petrenko", "Maria.Petrenko", "AAAAAAAAAA", true);
@@ -192,7 +187,6 @@ class TraineeServiceTest {
         traineeService.delete(userNameForTrainee);
 
         verify(traineeRepository, times(1)).delete(userNameForTrainee);
-
     }
 
     @Test

@@ -5,7 +5,7 @@ import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
 import org.gym.entity.User;
 import org.gym.facade.impl.TraineeFacadeImpl;
-import org.gym.facade.impl.UserNamePasswordValidator;
+import org.gym.facade.impl.UserNameAndPasswordChecker;
 import org.gym.mapper.TraineeMapper;
 import org.gym.service.TraineeService;
 import org.gym.validator.UserDtoValidator;
@@ -35,7 +35,7 @@ class TraineeFacadeTest {
     private UserDtoValidator userDtoValidator;
 
     @Mock
-    private UserNamePasswordValidator userNamePasswordValidator;
+    private UserNameAndPasswordChecker userNameAndPasswordChecker;
 
     @InjectMocks
     private TraineeFacadeImpl traineeFacade;
@@ -109,7 +109,7 @@ class TraineeFacadeTest {
     @Test
     void selectTraineeSuccessfully() {
         String userNameForTraineeDto = traineeDto.getUser().getFirstName();
-        when(userNamePasswordValidator.isNullOrBlank(any(String.class), any(String.class))).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(any(String.class), any(String.class))).thenReturn(false);
         when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
         when(traineeService.select(userNameForTraineeDto)).thenReturn(traineeDto);
 
@@ -122,7 +122,7 @@ class TraineeFacadeTest {
 
     @Test
     void selectTraineeNotFound() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.select(userNameNotFound)).thenReturn(traineeDto);
 
@@ -135,14 +135,14 @@ class TraineeFacadeTest {
 
     @Test
     void updateTraineeSuccessfully() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
         when(userDtoValidator.validate(traineeDto.getUser())).thenReturn(true);
         when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
         when(traineeService.update(userNameForTraineeDto, traineeDto)).thenReturn(traineeDto);
 
         traineeFacade.update(userNameForTraineeDto, passwordForUser, traineeDto);
 
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any(String.class), any(String.class));
         verify(userDtoValidator, times(1)).validate(traineeDto.getUser());
         verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).update(userNameForTraineeDto, traineeDto);
@@ -161,35 +161,35 @@ class TraineeFacadeTest {
     @Test
     void updateTraineeNotValidFail() {
         when(userDtoValidator.validate(traineeDtoNotValid.getUser())).thenReturn(false);
-        when(userNamePasswordValidator.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
         TraineeDto createdTraineeDto = traineeFacade.update("aaa", "aaa", traineeDtoNotValid);
 
         assertNull(createdTraineeDto);
         verify(userDtoValidator, times(1)).validate(traineeDtoNotValid.getUser());
-        verify(userNamePasswordValidator, never()).isNullOrBlank(userNameForTraineeDto, passwordForUser);
+        verify(userNameAndPasswordChecker, never()).isNullOrBlank(userNameForTraineeDto, passwordForUser);
         verify(traineeService, never()).update("aaa", traineeDtoNotValid);
     }
 
     @Test
     void deleteTraineeSuccessfully() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
 
         traineeFacade.delete(userNameForTraineeDto, passwordForUser);
 
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any(String.class), any(String.class));
         verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).delete(userNameForTraineeDto);
     }
 
     @Test
     void deleteTraineeNotValidFail() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
 
         traineeFacade.delete(userNameNotFound, passwordForUser);
 
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
         verify(traineeService, never()).delete(userNameNotFound);
     }
 
@@ -203,35 +203,35 @@ class TraineeFacadeTest {
 
     @Test
     void changeStatusStatusNullFail() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
         TraineeDto createdTraineeDto = traineeFacade.changeStatus("aaa", "aaa", null);
 
         assertNull(createdTraineeDto);
-        verify(userNamePasswordValidator, never()).isNullOrBlank(userNameForTraineeDto, passwordForUser);
+        verify(userNameAndPasswordChecker, never()).isNullOrBlank(userNameForTraineeDto, passwordForUser);
         verify(traineeService, never()).changeStatus("aaa", null);
     }
 
     @Test
     void changeStatusUserNameNotFoundFail() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
 
         TraineeDto createdTraineeDto = traineeFacade.changeStatus(userNameNotFound, passwordForUser, true);
 
         assertNull(createdTraineeDto);
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
         verify(traineeService, times(1)).authenticate(userNameNotFound, passwordForUser);
         verify(traineeService, never()).changeStatus(userNameNotFound, true);
     }
 
     @Test
     void changeStatusSuccessfully() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
 
         traineeFacade.changeStatus(userNameForTraineeDto, passwordForUser, true);
 
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(userNameForTraineeDto, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).changeStatus(userNameForTraineeDto, true);
     }
@@ -239,70 +239,70 @@ class TraineeFacadeTest {
     @Test
     void authenticateSuccessfully() {
         String userNameForTraineeDto = traineeDto.getUser().getFirstName();
-        when(userNamePasswordValidator.isNullOrBlank(any(String.class), any(String.class))).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(any(String.class), any(String.class))).thenReturn(false);
         when(traineeService.authenticate(any(String.class), any(String.class))).thenReturn(true);
 
         traineeFacade.authenticate(userNameForTraineeDto, passwordForUser);
 
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any(String.class), any(String.class));
         verify(traineeService, times(1)).authenticate(any(String.class), any(String.class));
     }
 
     @Test
     void authenticateNotSuccessfulNullOrBlankUserNameOrPassword() {
-        when(userNamePasswordValidator.isNullOrBlank(any(String.class), any(String.class))).thenReturn(true);
+        when(userNameAndPasswordChecker.isNullOrBlank(any(String.class), any(String.class))).thenReturn(true);
 
         traineeFacade.authenticate("aaa", "aaa");
 
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any(String.class), any(String.class));
         verify(traineeService, never()).authenticate(any(String.class), any(String.class));
     }
 
     @Test
     void authenticateNotSuccessfulUserNameNotFoundOrDoesntMatchWithPassword() {
-        when(userNamePasswordValidator.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
         traineeFacade.authenticate(userNameNotFound, passwordForUser);
 
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
         verify(traineeService, times(1)).authenticate(any(String.class), any(String.class));
     }
 
     @Test
     void changePasswordNewPasswordNullFail() {
-        when(userNamePasswordValidator.isNewPasswordNullOrBlank(null)).thenReturn(true);
+        when(userNameAndPasswordChecker.isNullOrBlank(null)).thenReturn(true);
         TraineeDto createdTraineeDto = traineeFacade.changePassword(userNameForTraineeDto, passwordForUser, null);
 
         assertNull(createdTraineeDto);
-        verify(userNamePasswordValidator, times(1)).isNewPasswordNullOrBlank(null);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(null);
         verify(traineeService, never()).changePassword(userNameForTraineeDto, null);
     }
 
     @Test
     void changePasswordUserNameNotFoundFail() {
-        when(userNamePasswordValidator.isNewPasswordNullOrBlank(newPassword)).thenReturn(false);
-        when(userNamePasswordValidator.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(newPassword)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
 
         TraineeDto createdTraineeDto = traineeFacade.changePassword(userNameNotFound, passwordForUser, newPassword);
 
         assertNull(createdTraineeDto);
-        verify(userNamePasswordValidator, times(1)).isNewPasswordNullOrBlank(newPassword);
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(newPassword);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
         verify(traineeService, times(1)).authenticate(userNameNotFound, passwordForUser);
         verify(traineeService, never()).changePassword(userNameNotFound, newPassword);
     }
 
     @Test
     void changePasswordSuccessfully() {
-        when(userNamePasswordValidator.isNewPasswordNullOrBlank(newPassword)).thenReturn(false);
-        when(userNamePasswordValidator.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(newPassword)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
 
         traineeFacade.changePassword(userNameForTraineeDto, passwordForUser, newPassword);
 
-        verify(userNamePasswordValidator, times(1)).isNewPasswordNullOrBlank(newPassword);
-        verify(userNamePasswordValidator, times(1)).isNullOrBlank(userNameForTraineeDto, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(newPassword);
+        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).changePassword(userNameForTraineeDto, newPassword);
     }

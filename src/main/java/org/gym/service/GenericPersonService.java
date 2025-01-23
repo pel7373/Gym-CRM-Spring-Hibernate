@@ -7,5 +7,4 @@ public interface GenericPersonService<T> {
     T update(String userName, T t) throws EntityNotFoundException;
     boolean authenticate(String userName, String password);
     T changePassword(String userName, String newPassword);
-    String getPasswordTopSecretMethod(String userName);
 }

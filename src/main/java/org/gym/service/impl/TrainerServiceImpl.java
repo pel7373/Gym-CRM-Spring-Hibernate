@@ -138,8 +138,4 @@ public class TrainerServiceImpl implements TrainerService {
                 .map(trainerMapper::convertToDto)
                 .toList();
     }
-
-    public String getPasswordTopSecretMethod(String userName) {
-        return trainerRepository.findByUserName(userName).get().getUser().getPassword();
-    }
 }

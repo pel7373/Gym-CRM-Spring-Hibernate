@@ -1,17 +1,27 @@
 package org.gym.mapper;
 
+import org.gym.config.TestConfig;
 import org.gym.dto.UserDto;
 import org.gym.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
+@ActiveProfiles("test")
 class UserMapperTest {
 
-    private UserMapper userMapper = new UserMapperImpl();
+    @Autowired
+    private UserMapper userMapper;
 
     @Test
     void convertToDto() {

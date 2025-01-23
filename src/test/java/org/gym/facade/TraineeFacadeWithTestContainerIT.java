@@ -8,6 +8,7 @@ import org.gym.exception.EntityNotFoundException;
 import org.gym.facade.impl.TraineeFacadeImpl;
 import org.gym.repository.TraineeRepository;
 import org.gym.service.TraineeService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
-@TestPropertySource(locations = "classpath:application-test.properties")
 class TraineeFacadeWithTestContainerIT {
 
     @Autowired
@@ -57,6 +57,14 @@ class TraineeFacadeWithTestContainerIT {
     @Test
     void isPostgresRunningTest() {
         Assertions.assertTrue(postgres.isRunning());
+    }
+
+    @AfterEach
+    void destroy() {
+        try {
+            traineeService.delete(userNameForTrainee);
+        } catch (EntityNotFoundException ignored) {
+        }
     }
 
     {
@@ -106,8 +114,6 @@ class TraineeFacadeWithTestContainerIT {
                 () -> assertTrue(createdTrainee.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
-
-        traineeService.delete(userNameForTrainee);
     }
 
     @Test
@@ -129,8 +135,6 @@ class TraineeFacadeWithTestContainerIT {
         Trainee trainee = traineeRepository.findByUserName(userNameForTrainee).get();
         boolean result = traineeFacade.authenticate(userNameForTrainee, trainee.getUser().getPassword());
         assertTrue(result, "authentication was successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -141,8 +145,6 @@ class TraineeFacadeWithTestContainerIT {
         boolean result = traineeFacade.authenticate("AAAAAA", trainee.getUser().getPassword());
 
         assertFalse(result, "authentication with wrong userName not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -152,8 +154,6 @@ class TraineeFacadeWithTestContainerIT {
         boolean result = traineeFacade.authenticate(userNameForTrainee, "AAAAAAAAA");
 
         assertFalse(result, "authentication with wrong password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -169,8 +169,6 @@ class TraineeFacadeWithTestContainerIT {
         boolean result = traineeFacade.authenticate(userNameForTrainee, null);
 
         assertFalse(result, "authentication with null password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -180,8 +178,6 @@ class TraineeFacadeWithTestContainerIT {
         boolean result = traineeFacade.authenticate(null, null);
 
         assertFalse(result, "authentication with null username and password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -213,8 +209,6 @@ class TraineeFacadeWithTestContainerIT {
                 () -> assertTrue(selectedTrainee.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", selectedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -245,8 +239,6 @@ class TraineeFacadeWithTestContainerIT {
                 () -> assertTrue(updatedTrainee.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -331,8 +323,6 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto result = traineeFacade.select("AAAAAA", trainee.getUser().getPassword());
 
         assertNull(result, "select with wrong userName not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -342,8 +332,6 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto result = traineeFacade.select(userNameForTrainee, "AAAAAAAAA");
 
         assertNull(result, "select with wrong password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -359,8 +347,6 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto result = traineeFacade.select(userNameForTrainee, null);
 
         assertNull(result, "select with null password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -370,8 +356,6 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto result = traineeFacade.select(null, null);
 
         assertNull(result, "select with null username and password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
 
@@ -384,8 +368,6 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto result = traineeFacade.update("AAAAAA", trainee.getUser().getPassword(), traineeDto);
 
         assertNull(result, "update with wrong userName not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -395,8 +377,6 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto result = traineeFacade.update(userNameForTrainee, "AAAAAAAAA", traineeDto);
 
         assertNull(result, "update with wrong password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test
@@ -412,8 +392,6 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto result = traineeFacade.update(userNameForTrainee, null, traineeDto);
 
         assertNull(result, "update with null password not successful");
-
-        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test

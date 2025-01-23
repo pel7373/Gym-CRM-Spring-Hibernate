@@ -8,6 +8,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @Configuration
 @TestPropertySource(locations = "classpath:application-test.properties")
+@ComponentScan(basePackages = "org.gym")
 public class TestConfig {
 
 }

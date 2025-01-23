@@ -1,9 +1,12 @@
 package org.gym.repository;
 
 import org.gym.Main;
+import org.gym.config.Config;
 import org.gym.config.TestConfig;
 import org.gym.entity.Trainee;
 import org.gym.entity.User;
+import org.gym.exception.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,8 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Transactional
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {Main.class, TestConfig.class})
-@ActiveProfiles("test")
+@ContextConfiguration(classes = {Config.class})
 class TraineeRepositoryTest {
 
     @Autowired
@@ -31,8 +33,7 @@ class TraineeRepositoryTest {
     private Trainee trainee;
     private String userNameDoesntExist = "userNameDoesntExist";
 
-    @BeforeEach
-    void setUp() {
+    {
         trainee = Trainee.builder()
                 .user(User.builder()
                         .firstName("John")
@@ -73,32 +74,33 @@ class TraineeRepositoryTest {
 
     @Test
     void findByUserNameNoResult() {
-        Optional<Trainee> foundTrainee = traineeRepository.findByUserName(userNameDoesntExist);
-        assertFalse(foundTrainee.isPresent());
+        assertThrows(EntityNotFoundException.class, () ->traineeRepository.findByUserName(userNameDoesntExist));
     }
 
     @Test
     void findByUserNameSuccess() {
         Trainee savedTrainee = traineeRepository.save(trainee);
-        Optional<Trainee> foundTrainee = traineeRepository.findByUserName(savedTrainee.getUser().getUserName());
+        Optional<Trainee> foundTrainee =
+                traineeRepository.findByUserName(savedTrainee.getUser().getUserName());
         assertTrue(foundTrainee.isPresent());
-        assertEquals(savedTrainee.getUser().getFirstName(), foundTrainee.get().getUser().getFirstName());
+        assertEquals(savedTrainee.getUser().getFirstName(),
+                foundTrainee.get().getUser().getFirstName());
     }
 
     @Test
     void deleteByUserNameSuccess() {
         Trainee savedTrainee = traineeRepository.save(trainee);
-        Optional<Trainee> foundTrainee = traineeRepository.findByUserName(savedTrainee.getUser().getUserName());
+        Optional<Trainee> foundTrainee =
+                traineeRepository.findByUserName(savedTrainee.getUser().getUserName());
         assertTrue(foundTrainee.isPresent());
         traineeRepository.delete(savedTrainee.getUser().getUserName());
-        foundTrainee = traineeRepository.findByUserName(savedTrainee.getUser().getUserName());
-        assertFalse(foundTrainee.isPresent());
+        assertThrows(EntityNotFoundException.class,
+                () -> traineeRepository.findByUserName(savedTrainee.getUser().getUserName()));
     }
 
     @Test
     void deleteByUserNameDoesNotExist() {
-        traineeRepository.delete(userNameDoesntExist);
-        Optional<Trainee> foundTrainee = traineeRepository.findByUserName(userNameDoesntExist);
-        assertFalse(foundTrainee.isPresent());
+        assertThrows(EntityNotFoundException.class,
+                () ->traineeRepository.delete(userNameDoesntExist));
     }
 }

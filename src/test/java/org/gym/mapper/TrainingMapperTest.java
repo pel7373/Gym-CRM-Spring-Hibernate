@@ -1,28 +1,32 @@
 package org.gym.mapper;
 
 import org.gym.Main;
+import org.gym.config.TestConfig;
 import org.gym.dto.*;
 import org.gym.entity.*;
 import org.junit.jupiter.api.BeforeAll;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = TestConfig.class)
+@ActiveProfiles("test")
 class TrainingMapperTest {
 
-    private static TrainingMapper trainingMapper;
-    private static AnnotationConfigApplicationContext context;
+    @Autowired
+    private TrainingMapper trainingMapper;
 
-    @BeforeAll
-    public static void setUp() {
-        context = new AnnotationConfigApplicationContext(Main.class);
-        trainingMapper = context.getBean(TrainingMapper.class);
-    }
     @Test
     void convertToDto() {
 
