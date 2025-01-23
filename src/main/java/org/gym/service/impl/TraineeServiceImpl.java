@@ -49,10 +49,13 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     public TraineeDto update(String userName, TraineeDto traineeDto) throws EntityNotFoundException {
         Trainee oldTrainee = traineeRepository.findByUserName(userName).get();
-        if(!oldTrainee.getUser().getFirstName().equals(traineeDto.getUser().getFirstName())
-                || !oldTrainee.getUser().getLastName().equals(traineeDto.getUser().getLastName())) {
+        if(isFirstOrLastNamesChanged(traineeDto, oldTrainee)) {
             oldTrainee.getUser().setUserName(
-                    userNameGeneratorService.generate(traineeDto.getUser().getFirstName(), traineeDto.getUser().getLastName()));
+                    userNameGeneratorService
+                            .generate(traineeDto.getUser().getFirstName(),
+                                    traineeDto.getUser().getLastName()
+                            )
+            );
             oldTrainee.getUser().setFirstName(traineeDto.getUser().getFirstName());
             oldTrainee.getUser().setLastName(traineeDto.getUser().getLastName());
         }
@@ -62,6 +65,11 @@ public class TraineeServiceImpl implements TraineeService {
         Trainee trainee = traineeRepository.save(oldTrainee);
         TraineeDto traineeDtoResult = traineeMapper.convertToDto(trainee);
         return traineeDtoResult;
+    }
+
+    private boolean isFirstOrLastNamesChanged(TraineeDto traineeDto, Trainee oldTrainee) {
+        return !oldTrainee.getUser().getFirstName().equals(traineeDto.getUser().getFirstName())
+                || !oldTrainee.getUser().getLastName().equals(traineeDto.getUser().getLastName());
     }
 
     @Override

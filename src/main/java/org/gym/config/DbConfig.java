@@ -16,7 +16,6 @@ import org.springframework.transaction.TransactionManager;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@Profile("prod")
 @Configuration
 @EnableTransactionManagement
 @PropertySource("classpath:application.properties")
@@ -60,7 +59,7 @@ public class DbConfig {
         properties.setProperty("hibernate.format_sql", formatSql);
         properties.setProperty("hibernate.jdbc.lob.non_contextual_creation", lobCreation);
         properties.setProperty("jakarta.persistence.sql-load-script-source", loadScriptSource);
-        //properties.setProperty("hibernate.hbm2ddl.import_files", hibernateHbm2ddlImportFiles);
+        properties.setProperty("hibernate.hbm2ddl.import_files", hibernateHbm2ddlImportFiles);
         return properties;
     }
 

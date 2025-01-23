@@ -4,5 +4,5 @@ services:
     build: .
     environment:
       SPRING_DATASOURCE_URL: jdbc:h2:mem:hibernate
-      SPRING_DATASOURCE_USERNAME: pel
+      SPRING_DATASOURCE_USERNAME: sa
       SPRING_DATASOURCE_PASSWORD: password

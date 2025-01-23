@@ -25,7 +25,6 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public TraineeDto create(@Valid TraineeDto traineeDto) {
-        System.out.println("facade: " + traineeDto);
         if(traineeDto == null) {
             LOGGER.warn(ENTITY_CANT_BE_NULL, "create");
             return null;

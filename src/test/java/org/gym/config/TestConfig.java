@@ -7,7 +7,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 
 @Configuration
-
+@TestPropertySource(locations = "classpath:application-test.properties")
 public class TestConfig {
 
 }

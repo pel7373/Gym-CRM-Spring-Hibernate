@@ -1,6 +1,5 @@
 package org.gym.facade;
 
-import jakarta.persistence.EntityManager;
 import org.gym.config.Config;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -26,11 +24,9 @@ import static org.gym.config.Config.ENTITY_CANT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-@ActiveProfiles("prod")
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
-
 @TestPropertySource(locations = "classpath:application-test.properties")
 class TraineeFacadeWithTestContainerIT {
 

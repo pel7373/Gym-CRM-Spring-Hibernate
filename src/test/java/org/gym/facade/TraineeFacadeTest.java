@@ -1,6 +1,5 @@
 package org.gym.facade;
 
-import jakarta.transaction.Transactional;
 import org.gym.dto.TraineeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
@@ -25,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-//@Transactional
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class TraineeFacadeTest {
