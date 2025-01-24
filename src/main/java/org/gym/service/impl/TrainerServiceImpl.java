@@ -3,17 +3,13 @@ package org.gym.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.dto.TrainerDto;
-import org.gym.dto.TrainerDto;
 import org.gym.entity.Trainee;
 import org.gym.entity.Trainer;
 import org.gym.entity.TrainingType;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.exception.NullEntityException;
 import org.gym.mapper.TrainerMapper;
-import org.gym.mapper.TrainerMapper;
-import org.gym.mapper.TrainingTypeMapper;
 import org.gym.repository.TraineeRepository;
-import org.gym.repository.TrainerRepository;
 import org.gym.repository.TrainerRepository;
 import org.gym.repository.TrainingTypeRepository;
 import org.gym.service.PasswordGeneratorService;
@@ -21,7 +17,6 @@ import org.gym.service.TrainerService;
 import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
@@ -62,23 +57,32 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     public TrainerDto update(String userName, TrainerDto trainerDto) throws EntityNotFoundException {
         Trainer oldTrainer = trainerRepository.findByUserName(userName).get();
-        if (!oldTrainer.getUser().getFirstName().equals(trainerDto.getUser().getFirstName())
-                || !oldTrainer.getUser().getLastName().equals(trainerDto.getUser().getLastName())) {
+        if (isFirstOrLastNamesChanged(trainerDto, oldTrainer)) {
             oldTrainer.getUser().setUserName(
                     userNameGeneratorService.generate(trainerDto.getUser().getFirstName(), trainerDto.getUser().getLastName()));
             oldTrainer.getUser().setFirstName(trainerDto.getUser().getFirstName());
             oldTrainer.getUser().setLastName(trainerDto.getUser().getLastName());
         }
         oldTrainer.getUser().setIsActive(trainerDto.getUser().getIsActive());
+        String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
+        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
+                () -> new EntityNotFoundException(String.format("TrainingType %s wasn't found", trainingTypeName))
+        );
 
-        oldTrainer.setSpecialization(trainerDto.getSpecialization());
+        oldTrainer.setSpecialization(trainingType);
         Trainer trainer = trainerRepository.save(oldTrainer);
-        TrainerDto trainerDtoResult = trainerMapper.convertToDto(trainer);
-        return trainerDtoResult;
+        return trainerMapper.convertToDto(trainer);
     }
 
     @Override
-    public TrainerDto changeSpecialization(String userName, TrainingType trainingType) {
+    public TrainerDto changeStatus(String userName, Boolean isActive) throws EntityNotFoundException {
+        Trainer trainer = trainerRepository.findByUserName(userName).get();
+        trainer.getUser().setIsActive(isActive);
+        return trainerMapper.convertToDto(trainer);
+    }
+
+    @Override
+    public TrainerDto changeSpecialization(String userName, TrainingType trainingType) throws EntityNotFoundException {
         Trainer trainer = trainerRepository.findByUserName(userName).get();
         if (!trainer.getSpecialization().equals(trainingType)) {
             trainer.setSpecialization(trainingType);
@@ -88,7 +92,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public boolean authenticate(String userName, String password) {
+    public boolean authenticate(String userName, String password) throws EntityNotFoundException {
         Trainer trainer;
         try {
             trainer = trainerRepository.findByUserName(userName).get();
@@ -100,17 +104,15 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public TrainerDto changePassword(String userName, String newPassword) {
+    public TrainerDto changePassword(String userName, String newPassword) throws EntityNotFoundException {
         Trainer trainer = trainerRepository.findByUserName(userName).get();
         trainer.getUser().setPassword(newPassword);
         return trainerMapper.convertToDto(trainerRepository.save(trainer));
     }
 
     @Override
-    public List<TrainerDto> getUnassignedTrainersList(String traineeUserName) {
-        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName).orElseThrow(
-                () -> new EntityNotFoundException("Trainee with username " + traineeUserName + " wasn't found")
-        );
+    public List<TrainerDto> getUnassignedTrainersList(String traineeUserName) throws EntityNotFoundException {
+        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName).get();
         List<Trainer> trainers = trainerRepository.findAll();
 
         return trainers.stream()
@@ -120,10 +122,8 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public List<TrainerDto> updateTrainersList(String traineeUserName, List<String> trainersUserNames) {
-        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName).orElseThrow(
-                () -> new EntityNotFoundException("Trainee with userName " + traineeUserName + " wasn't found")
-        );
+    public List<TrainerDto> updateTrainersList(String traineeUserName, List<String> trainersUserNames) throws EntityNotFoundException {
+        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName).get();
 
         List<Trainer> trainers = trainersUserNames.stream()
                 .map(trainerRepository::findByUserName)
@@ -137,5 +137,10 @@ public class TrainerServiceImpl implements TrainerService {
         return trainers.stream()
                 .map(trainerMapper::convertToDto)
                 .toList();
+    }
+
+    private boolean isFirstOrLastNamesChanged(TrainerDto trainerDto, Trainer oldTrainer) {
+        return !oldTrainer.getUser().getFirstName().equals(trainerDto.getUser().getFirstName())
+                || !oldTrainer.getUser().getLastName().equals(trainerDto.getUser().getLastName());
     }
 }

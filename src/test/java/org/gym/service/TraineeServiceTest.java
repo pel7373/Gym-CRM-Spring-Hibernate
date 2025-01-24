@@ -1,6 +1,5 @@
 package org.gym.service;
 
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
@@ -10,7 +9,6 @@ import org.gym.exception.EntityNotFoundException;
 import org.gym.mapper.TraineeMapper;
 import org.gym.repository.TraineeRepository;
 import org.gym.service.impl.TraineeServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +21,6 @@ import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
@@ -50,23 +47,23 @@ class TraineeServiceTest {
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
-    private Trainee trainee;
-    private TraineeDto traineeDto;
+    private final Trainee trainee;
+    private final TraineeDto traineeDto;
     private Trainee traineeForUpdate;
     private Trainee traineeUpdated;
     private TraineeDto traineeDtoUpdated;
-    private String userNameForTrainee;
+    private final String userNameForTrainee;
 
-    private String passwordForUser = "AAAAAAAAAA";
-    private String newPassword = "BBBBBBBBBB";
-    private String userNameNotFound = "bbbbbbb";
+    private final String passwordForUser = "AAAAAAAAAA";
+    private final String newPassword = "BBBBBBBBBB";
+    private final String userNameNotFound = "bbbbbbb";
 
     UserDto userDto;
     User user;
 
     {
         userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
-        user = new User(null, "Maria", "Petrenko", "Maria.Petrenko", "AAAAAAAAAA", true);
+        user = new User(null, "Maria", "Petrenko", "Maria.Petrenko", passwordForUser, true);
 
         traineeDto = TraineeDto.builder()
                 .user(userDto)
@@ -215,17 +212,13 @@ class TraineeServiceTest {
         verify(traineeMapper, times(1)).convertToDto(trainee);
     }
 
-//    @Test
-//    void changePasswordSuccessfully() {
-//        when(userNamePasswordValidator.isNewPasswordNullOrBlank(newPassword)).thenReturn(false);
-//        when(userNamePasswordValidator.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
-//        when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
-//
-//        traineeFacade.changePassword(userNameForTraineeDto, passwordForUser, newPassword);
-//
-//        verify(userNamePasswordValidator, times(1)).isNewPasswordNullOrBlank(newPassword);
-//        verify(userNamePasswordValidator, times(1)).isNullOrBlank(userNameForTraineeDto, passwordForUser);
-//        verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
-//        verify(traineeService, times(1)).changePassword(userNameForTraineeDto, newPassword);
-//    }
+    @Test
+    void changePasswordSuccessfully() {
+        when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.ofNullable(trainee));
+
+        traineeService.changePassword(userNameForTrainee, newPassword);
+
+        verify(traineeRepository, times(1)).findByUserName(userNameForTrainee);
+        verify(traineeRepository, times(1)).save(any(Trainee.class));
+    }
 }

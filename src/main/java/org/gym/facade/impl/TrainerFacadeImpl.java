@@ -82,6 +82,22 @@ public class TrainerFacadeImpl implements TrainerFacade {
     }
 
     @Override
+    public TrainerDto changeStatus(String userName, String password, Boolean isActive) {
+        if(isActive == null) {
+            LOGGER.warn("changeStatus: isActive can't be null");
+            return null;
+        }
+
+        if(authenticate(userName, password)) {
+            return trainerService.changeStatus(userName, isActive);
+        } else {
+            LOGGER.warn(ACCESS_DENIED, "changeStatus", userName);
+            return null;
+        }
+    }
+
+
+    @Override
     public boolean authenticate(String userName, String password) {
         if (userNameAndPasswordChecker.isNullOrBlank(userName, password)) {
             LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "authenticate", userName, password);

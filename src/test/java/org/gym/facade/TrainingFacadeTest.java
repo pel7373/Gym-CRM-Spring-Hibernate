@@ -9,15 +9,5 @@ class TrainingFacadeTest {
     void setUp() {
     }
 
-    @Test
-    void create() {
-    }
 
-    @Test
-    void getTraineeTrainings() {
-    }
-
-    @Test
-    void getTrainerTrainings() {
-    }
 }

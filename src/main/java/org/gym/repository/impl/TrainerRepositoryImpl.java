@@ -18,7 +18,6 @@ import java.util.Optional;
 import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
-
 public class TrainerRepositoryImpl implements TrainerRepository {
 
     @PersistenceContext
@@ -27,19 +26,18 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     @Override
     public Optional<Trainer> findByUserName(String userName) throws EntityNotFoundException {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Trainer> query = criteriaBuilder.createQuery(Trainer.class);
-        Root<Trainer> root = query.from(Trainer.class);
-        query.select(root).where(criteriaBuilder.equal(root.get("user").get("userName"), userName));
+        CriteriaQuery<Trainer> criteriaQuery = criteriaBuilder.createQuery(Trainer.class);
+        Root<Trainer> root = criteriaQuery.from(Trainer.class);
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("user").get("userName"), userName));
 
         try {
-            return Optional.of(entityManager.createQuery(query).getSingleResult());
+            return Optional.of(entityManager.createQuery(criteriaQuery).getSingleResult());
         } catch (NoSuchElementException | NoResultException e) {
             throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
         }
     }
 
     @Override
-    //@Transactional
     public Trainer save(Trainer trainer) {
         Trainer savedTrainer = trainer;
         if (trainer.getId() == null) {

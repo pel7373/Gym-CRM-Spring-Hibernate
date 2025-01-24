@@ -15,11 +15,10 @@ import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional
 public class TraineeServiceImpl implements TraineeService {
     private final TraineeRepository traineeRepository;
     private final TraineeMapper traineeMapper;
@@ -63,13 +62,7 @@ public class TraineeServiceImpl implements TraineeService {
         oldTrainee.setDateOfBirth(traineeDto.getDateOfBirth());
         oldTrainee.setAddress(traineeDto.getAddress());
         Trainee trainee = traineeRepository.save(oldTrainee);
-        TraineeDto traineeDtoResult = traineeMapper.convertToDto(trainee);
-        return traineeDtoResult;
-    }
-
-    private boolean isFirstOrLastNamesChanged(TraineeDto traineeDto, Trainee oldTrainee) {
-        return !oldTrainee.getUser().getFirstName().equals(traineeDto.getUser().getFirstName())
-                || !oldTrainee.getUser().getLastName().equals(traineeDto.getUser().getLastName());
+        return traineeMapper.convertToDto(trainee);
     }
 
     @Override
@@ -78,17 +71,14 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public TraineeDto changeStatus(String userName, Boolean isActive) {
+    public TraineeDto changeStatus(String userName, Boolean isActive) throws EntityNotFoundException {
         Trainee trainee = traineeRepository.findByUserName(userName).get();
-        if(!trainee.getUser().getIsActive().equals(isActive)) {
-            trainee.getUser().setIsActive(isActive);
-            return traineeMapper.convertToDto(traineeRepository.save(trainee));
-        }
+        trainee.getUser().setIsActive(isActive);
         return traineeMapper.convertToDto(trainee);
     }
 
     @Override
-    public boolean authenticate(String userName, String password) {
+    public boolean authenticate(String userName, String password) throws EntityNotFoundException {
         Trainee trainee;
         try {
             trainee = traineeRepository.findByUserName(userName).get();
@@ -100,9 +90,14 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public TraineeDto changePassword(String userName, String newPassword) {
+    public TraineeDto changePassword(String userName, String newPassword) throws EntityNotFoundException {
         Trainee trainee = traineeRepository.findByUserName(userName).get();
         trainee.getUser().setPassword(newPassword);
         return traineeMapper.convertToDto(traineeRepository.save(trainee));
+    }
+
+    private boolean isFirstOrLastNamesChanged(TraineeDto traineeDto, Trainee oldTrainee) {
+        return !oldTrainee.getUser().getFirstName().equals(traineeDto.getUser().getFirstName())
+                || !oldTrainee.getUser().getLastName().equals(traineeDto.getUser().getLastName());
     }
 }

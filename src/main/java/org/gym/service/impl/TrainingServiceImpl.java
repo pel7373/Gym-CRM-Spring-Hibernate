@@ -1,7 +1,6 @@
 package org.gym.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.dto.TrainingDto;
@@ -17,7 +16,6 @@ import org.gym.repository.TrainingTypeRepository;
 import org.gym.service.TrainingService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,23 +36,25 @@ public class TrainingServiceImpl implements TrainingService {
     public TrainingDto create(TrainingDto trainingDto) {
         String trainingTypeName = trainingDto.getTrainingType().getTrainingTypeName();
         TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName)
-                .orElseThrow(() -> new EntityNotFoundException("TrainingType with name " + trainingTypeName + " wasn't found"));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("TrainingType %s  wasn't found", trainingTypeName)));
 
-        Trainer trainer = trainerRepository.findByUserName(trainingDto.getTrainer().getUser().getUserName())
-                .orElseThrow(() -> new EntityNotFoundException("Trainer not found"));
+        String trainerUserName = trainingDto.getTrainer().getUser().getUserName();
+        Trainer trainer = trainerRepository.findByUserName(trainerUserName)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Trainer %s wasn't found", trainerUserName)));
 
-        Trainee trainee = traineeRepository.findByUserName(trainingDto.getTrainee().getUser().getUserName())
-                .orElseThrow(() -> new EntityNotFoundException("Trainee not found"));
+        String traineeUserName = trainingDto.getTrainee().getUser().getUserName();
+        Trainee trainee = traineeRepository.findByUserName(traineeUserName)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Trainee %s wasn't found", traineeUserName)));
 
         Training training = trainingMapper.convertToEntity(trainingDto);
         training.setTrainingType(trainingType);
         training.setTrainer(trainer);
         training.setTrainee(trainee);
 
-        Training addedTraining = trainingRepository.save(training);
-        LOGGER.info("Added new Training with ID {}", addedTraining.getId());
+        Training createdTraining = trainingRepository.save(training);
+        LOGGER.info("Training {} was created", createdTraining);
 
-        return trainingMapper.convertToDto(addedTraining);
+        return trainingMapper.convertToDto(createdTraining);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TrainingServiceImpl implements TrainingService {
                                                              LocalDate toDate, String trainerName, String trainingType) {
 
         traineeRepository.findByUserName(traineeUserName).orElseThrow(
-                () -> new EntityNotFoundException("Trainee with userName " + traineeUserName + " wasn't found")
+                () -> new EntityNotFoundException(String.format("Trainee %s wasn't found", traineeUserName))
         );
 
         return trainingRepository.getByTraineeCriteria(traineeUserName, fromDate, toDate, trainerName, trainingType).stream()
@@ -74,7 +74,7 @@ public class TrainingServiceImpl implements TrainingService {
     public List<TrainingDto> getTrainerTrainingsListCriteria(String trainerUserName, LocalDate fromDate,
                                                              LocalDate toDate, String traineeName) {
         trainerRepository.findByUserName(trainerUserName).orElseThrow(
-                () -> new EntityNotFoundException("Trainer with userName " + trainerUserName + " wasn't found")
+                () -> new EntityNotFoundException(String.format("Trainer %s wasn't found", trainerUserName))
         );
         return trainingRepository.getByTrainerCriteria(trainerUserName, fromDate, toDate, traineeName).stream()
                 .map(trainingMapper::convertToDto)

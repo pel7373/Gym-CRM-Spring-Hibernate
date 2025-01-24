@@ -17,7 +17,6 @@ import java.util.Optional;
 import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
-//@Transactional
 public class TraineeRepositoryImpl implements TraineeRepository {
 
     @PersistenceContext
