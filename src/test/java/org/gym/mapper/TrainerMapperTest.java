@@ -69,7 +69,7 @@ class TrainerMapperTest {
                         .userName("Maria.Petrenko")
                         .isActive(true)
                         .build())
-                .specialization(TrainingType.builder()
+                .specialization(TrainingTypeDto.builder()
                         .trainingTypeName("yoga")
                         .build())
                 .build();

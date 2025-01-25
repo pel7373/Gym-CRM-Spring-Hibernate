@@ -52,6 +52,11 @@ class TraineeFacadeWithTestContainerIT {
         registry.add("datasource.url", postgres::getJdbcUrl);
         registry.add("datasource.username", postgres::getUsername);
         registry.add("datasource.password", postgres::getPassword);
+        registry.add("hibernate.dialect", () -> "org.hibernate.dialect.PostgreSQL10Dialect");
+        registry.add("hibernate.hbm2ddl.auto", () -> "create");
+        registry.add("hibernate.show_sql", () -> true);
+        registry.add("hibernate.format_sql", () -> true);
+        registry.add("hibernate.jdbc.lob.non_contextual_creation", () -> true);
     }
 
     @Test

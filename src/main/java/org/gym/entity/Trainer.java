@@ -19,16 +19,16 @@ import java.util.List;
 public class Trainer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
-
-    @OneToOne
-    @JoinColumn(name = "specialization", referencedColumnName = "id", nullable = false)
-    private TrainingType specialization;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne
+    @JoinColumn(name = "specialization", referencedColumnName = "id", nullable = false)
+    private TrainingType specialization;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -10,11 +10,12 @@ import lombok.RequiredArgsConstructor;
 import org.gym.repository.TrainingRepository;
 import org.gym.entity.Training;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Component
+@Repository
 @RequiredArgsConstructor
 public class TrainingRepositoryImpl implements TrainingRepository {
 
@@ -44,7 +45,7 @@ public class TrainingRepositoryImpl implements TrainingRepository {
         predicates[0] = criteriaBuilder.equal(root.get("trainee").get("user").get("userName"), traineeUserName);
         predicates[1] = criteriaBuilder.greaterThanOrEqualTo(root.get("date"), fromDate);
         predicates[2] = criteriaBuilder.lessThanOrEqualTo(root.get("date"), toDate);
-        predicates[3] = criteriaBuilder.equal(root.get("trainer").get("user").get("firstName"), trainerUserName);
+        predicates[3] = criteriaBuilder.equal(root.get("trainer").get("user").get("userName"), trainerUserName);
         predicates[4] = criteriaBuilder.equal(root.get("trainingType").get("trainingTypeName"), trainingType);
 
         criteriaQuery.select(root).where(predicates);
@@ -60,10 +61,10 @@ public class TrainingRepositoryImpl implements TrainingRepository {
         Root<Training> root = criteriaQuery.from(Training.class);
 
         Predicate[] predicates = new Predicate[4];
-        predicates[0] = criteriaBuilder.equal(root.get("trainer").get("user").get("username"), trainerUserName);
+        predicates[0] = criteriaBuilder.equal(root.get("trainer").get("user").get("userName"), trainerUserName);
         predicates[1] = criteriaBuilder.greaterThanOrEqualTo(root.get("date"), fromDate);
         predicates[2] = criteriaBuilder.lessThanOrEqualTo(root.get("date"), toDate);
-        predicates[3] = criteriaBuilder.equal(root.get("trainee").get("user").get("firstName"), traineeUserName);
+        predicates[3] = criteriaBuilder.equal(root.get("trainee").get("user").get("userName"), traineeUserName);
 
         criteriaQuery.select(root).where(predicates);
         return entityManager.createQuery(criteriaQuery).getResultList();

@@ -6,6 +6,8 @@ import org.springframework.validation.Validator;
 
 @Component
 public class TrainingDtoValidator extends EntityValidator<TrainingDto> {
+
+    @Override
     Validator getValidator() {
         return Validator.forInstanceOf(TrainingDto.class, (t, errors) -> {
             int minNamesLength = 5;
@@ -15,9 +17,9 @@ public class TrainingDtoValidator extends EntityValidator<TrainingDto> {
             ) {
                 errors.rejectValue("TrainingName", "field.min.length", new Object[]{},
                         String.format("the trainingName can't be blank or less than %d chars", minNamesLength));
-            } else if(!t.getTrainingName().matches("^[A-Z][a-z.:0-9]+$")) {
+            } else if(!t.getTrainingName().matches("^[A-Za-z.:0-9]+[\\sA-Za-z.:0-9]*$")) {
                 errors.rejectValue("trainingName", "field.must.contain.letters-digits-dot", new Object[]{},
-                        String.format("the trainingName (%s) must start with a capital letter and then contain only lowercase letters, dots and colons",
+                        String.format("the trainingName (%s) must contain letter, digits, spaces, dots and colons",
                                 t.getTrainingName()));
             }
 

@@ -35,48 +35,43 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public TrainingDto create(TrainingDto trainingDto) {
         String trainingTypeName = trainingDto.getTrainingType().getTrainingTypeName();
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("TrainingType %s  wasn't found", trainingTypeName)));
+        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
 
         String trainerUserName = trainingDto.getTrainer().getUser().getUserName();
-        Trainer trainer = trainerRepository.findByUserName(trainerUserName)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Trainer %s wasn't found", trainerUserName)));
+        Trainer trainer = trainerRepository.findByUserName(trainerUserName).get();
 
         String traineeUserName = trainingDto.getTrainee().getUser().getUserName();
-        Trainee trainee = traineeRepository.findByUserName(traineeUserName)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("Trainee %s wasn't found", traineeUserName)));
+        Trainee trainee = traineeRepository.findByUserName(traineeUserName).get();
 
         Training training = trainingMapper.convertToEntity(trainingDto);
-        training.setTrainingType(trainingType);
-        training.setTrainer(trainer);
+
         training.setTrainee(trainee);
+        training.setTrainer(trainer);
+        training.setTrainingType(trainingType);
 
         Training createdTraining = trainingRepository.save(training);
-        LOGGER.info("Training {} was created", createdTraining);
-
+        LOGGER.info("Training with id {} was created", createdTraining.getId());
         return trainingMapper.convertToDto(createdTraining);
     }
 
     @Override
     public List<TrainingDto> getTraineeTrainingsListCriteria(String traineeUserName, LocalDate fromDate,
-                                                             LocalDate toDate, String trainerName, String trainingType) {
+                                                             LocalDate toDate, String trainerUserName, String trainingType) {
 
-        traineeRepository.findByUserName(traineeUserName).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Trainee %s wasn't found", traineeUserName))
-        );
+        traineeRepository.findByUserName(traineeUserName).get();
 
-        return trainingRepository.getByTraineeCriteria(traineeUserName, fromDate, toDate, trainerName, trainingType).stream()
+        return trainingRepository.getByTraineeCriteria(traineeUserName, fromDate, toDate, trainerUserName, trainingType).stream()
                 .map(trainingMapper::convertToDto)
                 .toList();
     }
 
     @Override
     public List<TrainingDto> getTrainerTrainingsListCriteria(String trainerUserName, LocalDate fromDate,
-                                                             LocalDate toDate, String traineeName) {
+                                                             LocalDate toDate, String traineeUserName) {
         trainerRepository.findByUserName(trainerUserName).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Trainer %s wasn't found", trainerUserName))
         );
-        return trainingRepository.getByTrainerCriteria(trainerUserName, fromDate, toDate, traineeName).stream()
+        return trainingRepository.getByTrainerCriteria(trainerUserName, fromDate, toDate, traineeUserName).stream()
                 .map(trainingMapper::convertToDto)
                 .toList();
     }

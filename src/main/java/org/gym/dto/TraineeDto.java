@@ -5,6 +5,8 @@ import lombok.*;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
@@ -17,9 +19,9 @@ public class TraineeDto {
     private UserDto user;
 
     @Past(message = "Date of birth should be in the past")
-    //@ToString.Exclude
+    @ToString.Exclude
     private LocalDate dateOfBirth;
 
-    //@ToString.Exclude
+    @ToString.Exclude
     private String address;
 }

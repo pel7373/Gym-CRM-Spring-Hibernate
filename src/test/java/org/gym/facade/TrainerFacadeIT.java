@@ -1,6 +1,7 @@
 package org.gym.facade;
 
 import org.gym.config.Config;
+import org.gym.dto.TraineeDto;
 import org.gym.dto.TrainerDto;
 import org.gym.dto.TrainingTypeDto;
 import org.gym.dto.UserDto;
@@ -28,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class TrainerFacadeIT {
     @Autowired
-    private TrainerFacadeImpl trainerFacade;
+    private TrainerFacade trainerFacade;
 
     @Autowired
     private TrainerService trainerService;
@@ -189,7 +190,6 @@ public class TrainerFacadeIT {
                 () -> assertEquals(trainerDto.getUser().getIsActive(), selectedTrainer.getUser().getIsActive(), "isActive should be equal"),
                 () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), selectedTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
         );
-
     }
 
     @Test
@@ -220,7 +220,6 @@ public class TrainerFacadeIT {
                 () -> assertEquals("Ivanenko", updatedTrainer.getUser().getLastName(), "lastName should be Petrenko"),
                 () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainer.getUser().getIsActive(), "isActive should be equal"),
                 () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), updatedTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
-
         );
     }
 
@@ -443,8 +442,6 @@ public class TrainerFacadeIT {
 
     @Test
     void changePasswordNotSuccessfulNullPassword() {
-        TrainerDto createdTrainerDto = trainerFacade.create(trainerDto);
-        userNameForTrainer = createdTrainerDto.getUser().getUserName();
         TrainerDto result = trainerFacade.changePassword(userNameForTrainer, null, "BBBBBB");
 
         assertNull(result, "changePassword with null password not successful");
@@ -452,8 +449,6 @@ public class TrainerFacadeIT {
 
     @Test
     void changePasswordNotSuccessfulNullUserNameAndPassword() {
-        TrainerDto createdTrainerDto = trainerFacade.create(trainerDto);
-        userNameForTrainer = createdTrainerDto.getUser().getUserName();
         TrainerDto result = trainerFacade.changePassword(null, null, "BBBBBB");
 
         assertNull(result, "changePassword with null username and password not successful");

@@ -47,7 +47,10 @@ public class TrainerServiceImpl implements TrainerService {
                         trainerDto.getUser().getLastName()
                 ));
 
+        String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
+        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
         Trainer trainer = trainerMapper.convertToEntity(trainerDto);
+        trainer.setSpecialization(trainingType);
         trainer.getUser().setPassword(passwordGeneratorService.generate());
         Trainer savedTrainer = trainerRepository.save(trainer);
         LOGGER.info("create: trainer was created with userName {}", savedTrainer.getUser().getUserName());
@@ -65,9 +68,7 @@ public class TrainerServiceImpl implements TrainerService {
         }
         oldTrainer.getUser().setIsActive(trainerDto.getUser().getIsActive());
         String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).orElseThrow(
-                () -> new EntityNotFoundException(String.format("TrainingType %s wasn't found", trainingTypeName))
-        );
+        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
 
         oldTrainer.setSpecialization(trainingType);
         Trainer trainer = trainerRepository.save(oldTrainer);
@@ -78,17 +79,14 @@ public class TrainerServiceImpl implements TrainerService {
     public TrainerDto changeStatus(String userName, Boolean isActive) throws EntityNotFoundException {
         Trainer trainer = trainerRepository.findByUserName(userName).get();
         trainer.getUser().setIsActive(isActive);
-        return trainerMapper.convertToDto(trainer);
+        return trainerMapper.convertToDto(trainerRepository.save(trainer));
     }
 
     @Override
     public TrainerDto changeSpecialization(String userName, TrainingType trainingType) throws EntityNotFoundException {
         Trainer trainer = trainerRepository.findByUserName(userName).get();
-        if (!trainer.getSpecialization().equals(trainingType)) {
-            trainer.setSpecialization(trainingType);
-            return trainerMapper.convertToDto(trainerRepository.save(trainer));
-        }
-        return trainerMapper.convertToDto(trainer);
+        trainer.setSpecialization(trainingType);
+        return trainerMapper.convertToDto(trainerRepository.save(trainer));
     }
 
     @Override
@@ -139,7 +137,7 @@ public class TrainerServiceImpl implements TrainerService {
                 .toList();
     }
 
-    private boolean isFirstOrLastNamesChanged(TrainerDto trainerDto, Trainer oldTrainer) {
+    public boolean isFirstOrLastNamesChanged(TrainerDto trainerDto, Trainer oldTrainer) {
         return !oldTrainer.getUser().getFirstName().equals(trainerDto.getUser().getFirstName())
                 || !oldTrainer.getUser().getLastName().equals(trainerDto.getUser().getLastName());
     }

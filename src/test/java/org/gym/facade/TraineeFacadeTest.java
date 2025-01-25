@@ -40,9 +40,6 @@ class TraineeFacadeTest {
     @InjectMocks
     private TraineeFacadeImpl traineeFacade;
 
-    @Mock
-    private TraineeMapper traineeMapper;
-
     private TraineeDto traineeDto;
     private TraineeDto traineeDtoNotValid;
     private Trainee trainee;

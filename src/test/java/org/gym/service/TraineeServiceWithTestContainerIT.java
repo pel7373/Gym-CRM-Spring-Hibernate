@@ -7,24 +7,29 @@ import org.gym.entity.Trainee;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TraineeRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 
 import static org.gym.config.Config.ENTITY_CANT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Testcontainers
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
-@TestPropertySource(locations = "classpath:application-test.properties")
-public class TraineeServiceIT {
-    
+public class TraineeServiceWithTestContainerIT {
+
     @Autowired
     private TraineeService traineeService;
 
@@ -34,6 +39,21 @@ public class TraineeServiceIT {
     private TraineeDto traineeDto;
     private TraineeDto traineeDto2;
     private String userNameForTrainee;
+
+    @Container
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("datasource.url", postgres::getJdbcUrl);
+        registry.add("datasource.username", postgres::getUsername);
+        registry.add("datasource.password", postgres::getPassword);
+    }
+
+    @Test
+    void isPostgresRunningTest() {
+        Assertions.assertTrue(postgres.isRunning());
+    }
 
     {
         UserDto userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
@@ -220,5 +240,4 @@ public class TraineeServiceIT {
         assertNotNull(changedTraineeDto.getUser());
         assertEquals(newPassword, changedPassword);
     }
-
 }

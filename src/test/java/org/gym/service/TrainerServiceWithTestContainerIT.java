@@ -6,20 +6,25 @@ import org.gym.dto.TrainingTypeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainer;
 import org.gym.repository.TrainerRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Testcontainers
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
-@TestPropertySource(locations = "classpath:application-test.properties")
-public class TrainerServiceIT {
+public class TrainerServiceWithTestContainerIT {
 
     @Autowired
     private TrainerService trainerService;
@@ -30,6 +35,21 @@ public class TrainerServiceIT {
     private TrainerDto trainerDto;
     private TrainerDto trainerDto2;
     private String userNameForTrainer;
+
+    @Container
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("datasource.url", postgres::getJdbcUrl);
+        registry.add("datasource.username", postgres::getUsername);
+        registry.add("datasource.password", postgres::getPassword);
+    }
+
+    @Test
+    void isPostgresRunningTest() {
+        Assertions.assertTrue(postgres.isRunning());
+    }
 
     {
         UserDto userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);

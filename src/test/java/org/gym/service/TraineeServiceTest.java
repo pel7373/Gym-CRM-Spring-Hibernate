@@ -1,6 +1,7 @@
 package org.gym.service;
 
 import jakarta.transaction.Transactional;
+import org.gym.dto.TrainerDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
 import org.gym.dto.TraineeDto;
@@ -208,7 +209,7 @@ class TraineeServiceTest {
         traineeService.changeStatus(userNameForTrainee, trainee.getUser().getIsActive());
 
         verify(traineeRepository, times(1)).findByUserName(userNameForTrainee);
-        verify(traineeRepository, never()).save(trainee);
+        verify(traineeRepository, times(1)).save(trainee);
         verify(traineeMapper, times(1)).convertToDto(trainee);
     }
 
@@ -220,5 +221,70 @@ class TraineeServiceTest {
 
         verify(traineeRepository, times(1)).findByUserName(userNameForTrainee);
         verify(traineeRepository, times(1)).save(any(Trainee.class));
+    }
+
+    @Test
+    void authenticateSuccessfully() {
+        when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.ofNullable(trainee));
+
+        boolean isAuthenticate = traineeService.authenticate(userNameForTrainee, passwordForUser);
+
+        assertTrue(isAuthenticate);
+        verify(traineeRepository, times(1)).findByUserName(any(String.class));
+    }
+
+    @Test
+    void authenticateNotValidPasswordNotSuccessful() {
+        when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.ofNullable(trainee));
+
+        boolean isAuthenticate = traineeService.authenticate(userNameForTrainee, "NotValidPassword");
+
+        assertFalse(isAuthenticate);
+        verify(traineeRepository, times(1)).findByUserName(any(String.class));
+    }
+
+    @Test
+    void isFirstOrLastNamesChangedDoesntChangeNames() {
+        UserDto userDto2 = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
+        TraineeDto traineeDto2 = TraineeDto.builder()
+                .user(userDto2)
+                .build();
+
+        boolean result = traineeService.isFirstOrLastNamesChanged(traineeDto2, trainee);
+        assertAll(
+                () -> assertFalse(result),
+                () -> assertEquals(trainee.getUser().getFirstName(), traineeDto2.getUser().getFirstName()),
+                () -> assertEquals(trainee.getUser().getLastName(), traineeDto2.getUser().getLastName())
+        );
+    }
+
+    @Test
+    void isFirstOrLastNamesChangedFirstNames() {
+        UserDto userDto2 = new UserDto("Iryna", "Petrenko", "Maria.Petrenko", true);
+        TraineeDto traineeDto2 = TraineeDto.builder()
+                .user(userDto2)
+                .build();
+
+        boolean result = traineeService.isFirstOrLastNamesChanged(traineeDto2, trainee);
+        assertAll(
+                () -> assertTrue(result),
+                () -> assertNotEquals(trainee.getUser().getFirstName(), traineeDto2.getUser().getFirstName()),
+                () -> assertEquals(trainee.getUser().getLastName(), traineeDto2.getUser().getLastName())
+        );
+    }
+
+    @Test
+    void isFirstOrLastNamesChangedBothNames() {
+        UserDto userDto2 = new UserDto("Iryna", "Sergienko", "Maria.Petrenko", true);
+        TraineeDto traineeDto2 = TraineeDto.builder()
+                .user(userDto2)
+                .build();
+
+        boolean result = traineeService.isFirstOrLastNamesChanged(traineeDto2, trainee);
+        assertAll(
+                () -> assertTrue(result),
+                () -> assertNotEquals(trainee.getUser().getFirstName(), traineeDto2.getUser().getFirstName()),
+                () -> assertNotEquals(trainee.getUser().getLastName(), traineeDto2.getUser().getLastName())
+        );
     }
 }

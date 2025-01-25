@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
+import lombok.RequiredArgsConstructor;
 import org.gym.repository.TrainerRepository;
 import org.gym.entity.Trainer;
 import org.gym.exception.EntityNotFoundException;
@@ -18,6 +19,7 @@ import java.util.Optional;
 import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
+@RequiredArgsConstructor
 public class TrainerRepositoryImpl implements TrainerRepository {
 
     @PersistenceContext

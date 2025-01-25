@@ -1,18 +1,22 @@
-package org.gym.facade;
+package org.gym.service;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.config.Config;
-import org.gym.dto.TrainingDto;
-import org.gym.dto.TrainingTypeDto;
+import org.gym.dto.*;
 import org.gym.entity.*;
 import org.gym.exception.EntityNotFoundException;
+import org.gym.mapper.TraineeMapper;
+import org.gym.mapper.TrainerMapper;
 import org.gym.mapper.TrainingMapper;
+import org.gym.mapper.TrainingTypeMapper;
 import org.gym.repository.TraineeRepository;
 import org.gym.repository.TrainerRepository;
+import org.gym.repository.TrainingRepository;
 import org.gym.repository.TrainingTypeRepository;
-import org.gym.service.PasswordGeneratorService;
-import org.gym.service.TrainingService;
-import org.gym.service.UserNameGeneratorService;
+import org.gym.repository.impl.TraineeRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,10 +37,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class TrainingFacadeIT {
+public class TrainingServiceIT {
 
     @Autowired
-    private TrainingFacade trainingFacade;
+    private TrainingService trainingService;
 
     @Autowired
     private TraineeRepository traineeRepository;
@@ -117,8 +121,7 @@ public class TrainingFacadeIT {
 
     @Test
     void createTrainingSuccessfully() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingDto);
-        assertNotNull(createdTrainingDto);
+        TrainingDto createdTrainingDto = trainingService.create(trainingDto);
 
         assertAll(
                 "Grouped assertions of created trainerDto",
@@ -140,25 +143,23 @@ public class TrainingFacadeIT {
 
     @Test
     void createNotValidTrainingFail() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
-
+        TrainingDto createdTrainingDto = trainingService.create(trainingDto);
         createdTrainingDto.setTrainingType(new TrainingTypeDto("NotValidType"));
+        LOGGER.info("createNotValid: " + createdTrainingDto);
 
-        assertNull(trainingFacade.create(createdTrainingDto),
+        assertThrows(EntityNotFoundException.class, () -> trainingService.create(createdTrainingDto),
                 String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", "NotValidType"));
     }
 
     @Test
     void getByTraineeCriteriaEmptyResult() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
+        trainingService.create(trainingMapper.convertToDto(training));
 
         LocalDate fromDate = LocalDate.of(2030, 3, 5);
         LocalDate toDate = LocalDate.of(2050, 3, 5);
         String differentTrainerName = "";
 
-        List<TrainingDto> trainings = trainingFacade.getTraineeTrainings(
+        List<TrainingDto> trainings = trainingService.getTraineeTrainingsListCriteria(
                 trainee.getUser().getUserName(), fromDate, toDate,
                 differentTrainerName, "stretching");
 
@@ -167,15 +168,14 @@ public class TrainingFacadeIT {
 
     @Test
     void getByTraineeCriteriaSuccessfully() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
+        trainingService.create(trainingMapper.convertToDto(training));
 
         LocalDate fromDate = LocalDate.of(2010, 2, 9);
         LocalDate toDate = LocalDate.of(2035, 3, 9);
         String trainerUserName = trainer.getUser().getUserName();
         TrainingType trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
 
-        List<TrainingDto> trainingsList = trainingFacade.getTraineeTrainings(
+        List<TrainingDto> trainingsList = trainingService.getTraineeTrainingsListCriteria(
                 trainee.getUser().getUserName(), fromDate, toDate,
                 trainerUserName, trainingType.getTrainingTypeName());
 
@@ -189,43 +189,42 @@ public class TrainingFacadeIT {
 
     @Test
     void getByTraineeCriteriaNoResult() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
+        trainingService.create(trainingMapper.convertToDto(training));
 
         LocalDate fromDate = LocalDate.of(2010, 8, 1);
         LocalDate toDate = LocalDate.of(2040, 8, 1);
         String trainerName = trainer.getUser().getFirstName();
         TrainingTypeDto trainingType = new TrainingTypeDto("Roga");
 
-        assertNull(trainingFacade.getTraineeTrainings(
-                        "NotValidUserName", fromDate, toDate, trainerName, trainingType.getTrainingTypeName()),
+        assertThrows(EntityNotFoundException.class,
+                () -> trainingService.getTraineeTrainingsListCriteria(
+                "NotValidUserName", fromDate, toDate, trainerName, trainingType.getTrainingTypeName()),
                 "findByUserName: entity not found by userName NotValidUserName");
     }
 
     @Test
     void getByTrainerCriteriaNoResultAndException() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
+        trainingService.create(trainingMapper.convertToDto(training));
 
         LocalDate fromDate = LocalDate.of(2035, 1, 1);
         LocalDate toDate = LocalDate.of(2036, 1, 1);
         String trainerName = trainer.getUser().getFirstName();
 
-        assertNull(trainingFacade.getTrainerTrainings(
-                        "NotValidTrainer", fromDate, toDate, trainerName),
+        assertThrows(EntityNotFoundException.class,
+                () -> trainingService.getTrainerTrainingsListCriteria(
+                "NotValidTrainer", fromDate, toDate, trainerName),
                 "entity not found by userName NotValidUserName");
     }
 
     @Test
     void getByTrainerCriteriaSuccessfully() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
+        trainingService.create(trainingMapper.convertToDto(training));
 
-        LocalDate fromDate = LocalDate.now().minusYears(10);
-        LocalDate toDate = LocalDate.now().plusYears(10);
+        LocalDate fromDate = LocalDate.of(2020, 1, 1);
+        LocalDate toDate = LocalDate.of(2040, 1, 1);
         String traineeUserName = trainee.getUser().getUserName();
 
-        List<TrainingDto> trainings = trainingFacade.getTrainerTrainings(
+        List<TrainingDto> trainings = trainingService.getTrainerTrainingsListCriteria(
                 trainer.getUser().getUserName(), fromDate, toDate, traineeUserName);
 
         assertAll(
@@ -238,14 +237,13 @@ public class TrainingFacadeIT {
 
     @Test
     void getByTrainerCriteriaEmpty() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
+        trainingService.create(trainingMapper.convertToDto(training));
 
         LocalDate fromDate = LocalDate.of(2050, 9, 8);
         LocalDate toDate = LocalDate.of(2060, 9, 8);
         String invalidTraineeName = "";
 
-        List<TrainingDto> trainings = trainingFacade.getTrainerTrainings(
+        List<TrainingDto> trainings = trainingService.getTrainerTrainingsListCriteria(
                 trainer.getUser().getUserName(), fromDate, toDate, invalidTraineeName);
 
         assertTrue(trainings.isEmpty());

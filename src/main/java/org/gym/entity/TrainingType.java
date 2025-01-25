@@ -16,17 +16,18 @@ import java.util.List;
 @Immutable
 public class TrainingType implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
     @Column(name = "training_type_name", nullable = false, unique = true)
     private String trainingTypeName;
 
-    @ToString.Exclude
-    @OneToOne(mappedBy = "specialization")
-    private Trainer trainer;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "trainingType")
-    private List<Training> trainings;
+//    @ToString.Exclude
+//    @OneToOne(mappedBy = "specialization")
+//    private Trainer trainer;
+//
+//    @ToString.Exclude
+//    @OneToMany(mappedBy = "trainingType")
+//    private List<Training> trainings;
 }

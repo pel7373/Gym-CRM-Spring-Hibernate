@@ -23,14 +23,14 @@ import java.util.List;
 public class Trainee  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, unique = true)
+    @Column(name = "id")
     private Long id;
 
-    //@ToString.Exclude
+    @ToString.Exclude
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    //@ToString.Exclude
+    @ToString.Exclude
     @Column(name = "address")
     private String address;
 

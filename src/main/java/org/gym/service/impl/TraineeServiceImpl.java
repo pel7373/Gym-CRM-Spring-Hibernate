@@ -74,7 +74,7 @@ public class TraineeServiceImpl implements TraineeService {
     public TraineeDto changeStatus(String userName, Boolean isActive) throws EntityNotFoundException {
         Trainee trainee = traineeRepository.findByUserName(userName).get();
         trainee.getUser().setIsActive(isActive);
-        return traineeMapper.convertToDto(trainee);
+        return traineeMapper.convertToDto(traineeRepository.save(trainee));
     }
 
     @Override
@@ -96,7 +96,7 @@ public class TraineeServiceImpl implements TraineeService {
         return traineeMapper.convertToDto(traineeRepository.save(trainee));
     }
 
-    private boolean isFirstOrLastNamesChanged(TraineeDto traineeDto, Trainee oldTrainee) {
+    public boolean isFirstOrLastNamesChanged(TraineeDto traineeDto, Trainee oldTrainee) {
         return !oldTrainee.getUser().getFirstName().equals(traineeDto.getUser().getFirstName())
                 || !oldTrainee.getUser().getLastName().equals(traineeDto.getUser().getLastName());
     }

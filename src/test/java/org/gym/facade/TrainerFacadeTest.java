@@ -273,21 +273,6 @@ class TrainerFacadeTest {
         verify(trainerService, times(1)).changePassword(userNameForTrainerDto, newPassword);
     }
 
-//    @Override
-//    public TrainerDto changeSpecialization(String userName, String password, TrainingType trainingType) {
-//        if(trainingType == null) {
-//            LOGGER.warn("changeSpecialization: trainingType can't be null");
-//            return null;
-//        }
-//
-//        if(authenticate(userName, password)) {
-//            return trainerService.changeSpecialization(userName, trainingType);
-//        } else {
-//            LOGGER.warn(ACCESS_DENIED, "changeStatus", userName);
-//            return null;
-//        }
-//    }
-
     @Test
     void changeSpecializationNullFail() {
         when(userNameAndPasswordChecker.isNullOrBlank(userNameForTrainerDto, passwordForUser)).thenReturn(false);
