@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class TrainingServiceTest {
+class TrainingServiceTest {
 
     @Mock
     private TrainerRepository trainerRepository;
@@ -49,11 +49,8 @@ public class TrainingServiceTest {
     private TrainingServiceImpl trainingService;
 
     private TrainingDto trainingDto;
-    private TrainingTypeDto trainingTypeDto;
     private Trainee trainee;
     private TrainingType trainingType;
-    private TrainerDto trainerDto;
-    private TraineeDto traineeDto;
     private String trainingTypeName;
     private Training training;
     private Trainer trainer;
@@ -61,17 +58,17 @@ public class TrainingServiceTest {
     @BeforeEach
     void setUp() {
         trainingTypeName = "Zumba";
-        trainingTypeDto = TrainingTypeDto.builder()
+        TrainingTypeDto trainingTypeDto = TrainingTypeDto.builder()
                 .trainingTypeName(trainingTypeName)
                 .build();
 
-        traineeDto = TraineeDto.builder()
+        TraineeDto traineeDto = TraineeDto.builder()
                 .user(new UserDto("Maria", "Petrenko", "Maria.Petrenko", true))
                 .dateOfBirth(LocalDate.of(1995, 1, 23))
                 .address("Vinnitsya, Soborna str. 35, ap. 26")
                 .build();
 
-        trainerDto = TrainerDto.builder()
+        TrainerDto trainerDto = TrainerDto.builder()
                 .user(new UserDto("Petro", "Ivanenko", "Petro.Ivanenko", true))
                 .specialization(TrainingTypeDto.builder()
                         .trainingTypeName("Zumba")
@@ -133,10 +130,13 @@ public class TrainingServiceTest {
         assertAll(
                 () -> assertNotNull(createdTrainingDto),
                 () -> assertEquals(trainingDto.getTrainer().getUser().getUserName(),
-                        createdTrainingDto.getTrainer().getUser().getUserName(), "trainer's userNames should be equal"),
+                        createdTrainingDto.getTrainer().getUser().getUserName(),
+                        "trainer's userNames should be equal"),
                 () -> assertEquals(trainingDto.getTrainee().getUser().getUserName(),
-                        createdTrainingDto.getTrainee().getUser().getUserName(), "trainer's userNames should be equal"),
-                () -> assertEquals(trainingDto.getTrainingType().getTrainingTypeName(), createdTrainingDto.getTrainingType().getTrainingTypeName())
+                        createdTrainingDto.getTrainee().getUser().getUserName(),
+                        "trainer's userNames should be equal"),
+                () -> assertEquals(trainingDto.getTrainingType().getTrainingTypeName(),
+                        createdTrainingDto.getTrainingType().getTrainingTypeName())
         );
 
         verify(trainingTypeRepository, times(1)).findByName(trainingTypeName);
@@ -155,11 +155,11 @@ public class TrainingServiceTest {
                 .build());
 
         when(trainingTypeRepository.findByName(notValidTypeName))
-                .thenThrow(new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", notValidTypeName)));
+                .thenThrow(new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, notValidTypeName)));
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
                 () -> trainingService.create(trainingDto));
-        assertEquals(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", notValidTypeName),
+        assertEquals(String.format(ENTITY_NOT_FOUND_EXCEPTION, notValidTypeName),
                 exception.getMessage());
         verify(trainingRepository, never()).save(any(Training.class));
     }

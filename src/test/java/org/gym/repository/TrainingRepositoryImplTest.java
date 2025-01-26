@@ -155,7 +155,7 @@ class TrainingRepositoryImplTest {
         LocalDate fromDate = LocalDate.of(2010, 2, 9);
         LocalDate toDate = LocalDate.of(2035, 3, 9);
         String trainerUserName = trainer.getUser().getUserName();
-        TrainingType trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
+        trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
 
         List<Training> trainingsList = trainingRepository.getByTraineeCriteria(
                 trainee.getUser().getUserName(), fromDate, toDate, trainerUserName, trainingType.getTrainingTypeName());
@@ -175,10 +175,10 @@ class TrainingRepositoryImplTest {
         LocalDate fromDate = LocalDate.of(2010, 8, 1);
         LocalDate toDate = LocalDate.of(2040, 8, 1);
         String trainerName = trainer.getUser().getFirstName();
-        TrainingTypeDto trainingType = new TrainingTypeDto("Yoga");
+        TrainingTypeDto trainingTypeDto = new TrainingTypeDto("Yoga");
 
         List<Training> trainings = trainingRepository.getByTraineeCriteria(
-                "NotValidUserName", fromDate, toDate, trainerName, trainingType.getTrainingTypeName());
+                "NotValidUserName", fromDate, toDate, trainerName, trainingTypeDto.getTrainingTypeName());
 
         assertTrue(trainings.isEmpty());
     }
@@ -215,7 +215,6 @@ class TrainingRepositoryImplTest {
                 () -> assertEquals("Zumba", trainings.get(0).getTrainingType().getTrainingTypeName())
         );
     }
-
 
     @Test
     void getByTrainerCriteriaEmpty() {

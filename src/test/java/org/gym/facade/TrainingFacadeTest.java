@@ -1,18 +1,11 @@
 package org.gym.facade;
 
 import org.gym.dto.*;
-import org.gym.entity.*;
 import org.gym.facade.impl.TrainingFacadeImpl;
 import org.gym.facade.impl.UserNameAndPasswordChecker;
 import org.gym.mapper.TrainingMapper;
-import org.gym.repository.TraineeRepository;
-import org.gym.repository.TrainerRepository;
-import org.gym.repository.TrainingRepository;
-import org.gym.repository.TrainingTypeRepository;
 import org.gym.service.TrainingService;
-import org.gym.service.impl.TrainingServiceImpl;
 import org.gym.validator.TrainingDtoValidator;
-import org.gym.validator.UserDtoValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import java.time.LocalDate;
-import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,29 +41,22 @@ class TrainingFacadeTest {
     private TrainingFacadeImpl trainingFacade;
 
     private TrainingDto trainingDto;
-    private TrainingTypeDto trainingTypeDto;
-    private Trainee trainee;
-    private TrainingType trainingType;
-    private TrainerDto trainerDto;
-    private TraineeDto traineeDto;
     private String trainingTypeName;
-    private Training training;
-    private Trainer trainer;
 
     @BeforeEach
     void setUp() {
         trainingTypeName = "Zumba";
-        trainingTypeDto = TrainingTypeDto.builder()
+        TrainingTypeDto trainingTypeDto = TrainingTypeDto.builder()
                 .trainingTypeName(trainingTypeName)
                 .build();
 
-        traineeDto = TraineeDto.builder()
+        TraineeDto traineeDto = TraineeDto.builder()
                 .user(new UserDto("Maria", "Petrenko", "Maria.Petrenko", true))
                 .dateOfBirth(LocalDate.of(1995, 1, 23))
                 .address("Vinnitsya, Soborna str. 35, ap. 26")
                 .build();
 
-        trainerDto = TrainerDto.builder()
+        TrainerDto trainerDto = TrainerDto.builder()
                 .user(new UserDto("Petro", "Ivanenko", "Petro.Ivanenko", true))
                 .specialization(TrainingTypeDto.builder()
                         .trainingTypeName("Zumba")
@@ -84,33 +69,6 @@ class TrainingFacadeTest {
                 .trainee(traineeDto)
                 .trainingName("Zumba next workout")
                 .trainingType(trainingTypeDto)
-                .date(LocalDate.now().plusDays(3))
-                .duration(45)
-                .build();
-
-        trainee = Trainee.builder()
-                .user(new User(null, "Maria", "Petrenko", "Maria.Petrenko", "", true))
-                .dateOfBirth(LocalDate.of(1995, 1, 23))
-                .address("Vinnitsya, Soborna str. 35, ap. 26")
-                .build();
-
-        trainer = Trainer.builder()
-                .user(new User(null, "Petro", "Ivanenko", "Petro.Ivanenko", "", true))
-                .specialization(TrainingType.builder()
-                        .trainingTypeName(trainingTypeName)
-                        .build())
-                .build();
-
-        trainingType = TrainingType.builder()
-                .trainingTypeName(trainingTypeName)
-                .build();
-
-        training = Training.builder()
-                .trainingType(trainingType)
-                .trainer(trainer)
-                .trainee(trainee)
-                .trainingName("Zumba next workout")
-                .trainingType(trainingType)
                 .date(LocalDate.now().plusDays(3))
                 .duration(45)
                 .build();
@@ -156,8 +114,7 @@ class TrainingFacadeTest {
 
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(false);
 
-        List<TrainingDto> trainingDtoList =
-                trainingFacade.getTraineeTrainings("Name", fromDate, toDate, "Name", any());
+        trainingFacade.getTraineeTrainings("Name", fromDate, toDate, "Name", any());
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
         verify(trainingService, times(1)).getTraineeTrainingsListCriteria(any(), any(), any(), any(), any());
@@ -170,8 +127,7 @@ class TrainingFacadeTest {
 
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(true);
 
-        List<TrainingDto> trainingDtoList =
-                trainingFacade.getTraineeTrainings(null, fromDate, toDate, "Name", any());
+        trainingFacade.getTraineeTrainings(null, fromDate, toDate, "Name", any());
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
         verify(trainingService, never())
@@ -185,8 +141,7 @@ class TrainingFacadeTest {
 
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(false);
 
-        List<TrainingDto> trainingDtoList =
-                trainingFacade.getTrainerTrainings("Name", fromDate, toDate, "Name");
+        trainingFacade.getTrainerTrainings("Name", fromDate, toDate, "Name");
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
         verify(trainingService, times(1))
@@ -200,8 +155,7 @@ class TrainingFacadeTest {
 
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(true);
 
-        List<TrainingDto> trainingDtoList =
-                trainingFacade.getTrainerTrainings(null, fromDate, toDate, "Name");
+        trainingFacade.getTrainerTrainings(null, fromDate, toDate, "Name");
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
         verify(trainingService, never()).getTrainerTrainingsListCriteria(eq("Name"), any(), any(), any());

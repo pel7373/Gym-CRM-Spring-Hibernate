@@ -26,8 +26,8 @@ class TraineeRepositoryTest {
     @Autowired
     private TraineeRepository traineeRepository;
 
-    private Trainee trainee;
-    private String userNameDoesntExist = "userNameDoesntExist";
+    private final Trainee trainee;
+    private final String userNameDoesntExist = "userNameDoesntExist";
 
     {
         trainee = Trainee.builder()

@@ -17,10 +17,10 @@
             <!-- daily rollover -->
             <fileNamePattern>slf4jlogbackexample.%d{yyyy-MM-dd}.log</fileNamePattern>
 
-            <!-- Храним файлы логов 10 дней -->
+            <!-- Store log files for 10 days -->
             <maxHistory>10</maxHistory>
 
-            <!-- Максимальный размер файлов лога 10 гигабайт -->
+            <!-- Max size of log file 10 GB -->
             <totalSizeCap>10GB</totalSizeCap>
 
         </rollingPolicy>

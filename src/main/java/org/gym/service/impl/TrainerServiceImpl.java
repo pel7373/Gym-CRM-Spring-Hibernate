@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,7 +38,10 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public TrainerDto select(String userName) throws EntityNotFoundException {
-        return trainerMapper.convertToDto(trainerRepository.findByUserName(userName).get());
+        return trainerMapper.convertToDto(trainerRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName)))
+        );
     }
 
     @Override
@@ -48,7 +53,10 @@ public class TrainerServiceImpl implements TrainerService {
                 ));
 
         String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
+        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainingTypeName))
+        );
         Trainer trainer = trainerMapper.convertToEntity(trainerDto);
         trainer.setSpecialization(trainingType);
         trainer.getUser().setPassword(passwordGeneratorService.generate());
@@ -59,16 +67,23 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public TrainerDto update(String userName, TrainerDto trainerDto) throws EntityNotFoundException {
-        Trainer oldTrainer = trainerRepository.findByUserName(userName).get();
+        Trainer oldTrainer = trainerRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+        );
         if (isFirstOrLastNamesChanged(trainerDto, oldTrainer)) {
             oldTrainer.getUser().setUserName(
-                    userNameGeneratorService.generate(trainerDto.getUser().getFirstName(), trainerDto.getUser().getLastName()));
+                    userNameGeneratorService.generate(trainerDto.getUser().getFirstName(),
+                            trainerDto.getUser().getLastName()));
             oldTrainer.getUser().setFirstName(trainerDto.getUser().getFirstName());
             oldTrainer.getUser().setLastName(trainerDto.getUser().getLastName());
         }
         oldTrainer.getUser().setIsActive(trainerDto.getUser().getIsActive());
         String trainingTypeName = trainerDto.getSpecialization().getTrainingTypeName();
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
+        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainingTypeName))
+        );
 
         oldTrainer.setSpecialization(trainingType);
         Trainer trainer = trainerRepository.save(oldTrainer);
@@ -77,14 +92,19 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public TrainerDto changeStatus(String userName, Boolean isActive) throws EntityNotFoundException {
-        Trainer trainer = trainerRepository.findByUserName(userName).get();
+        Trainer trainer = trainerRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+        );
         trainer.getUser().setIsActive(isActive);
         return trainerMapper.convertToDto(trainerRepository.save(trainer));
     }
 
     @Override
     public TrainerDto changeSpecialization(String userName, TrainingType trainingType) throws EntityNotFoundException {
-        Trainer trainer = trainerRepository.findByUserName(userName).get();
+        Trainer trainer = trainerRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName)));
         trainer.setSpecialization(trainingType);
         return trainerMapper.convertToDto(trainerRepository.save(trainer));
     }
@@ -93,7 +113,9 @@ public class TrainerServiceImpl implements TrainerService {
     public boolean authenticate(String userName, String password) throws EntityNotFoundException {
         Trainer trainer;
         try {
-            trainer = trainerRepository.findByUserName(userName).get();
+            trainer = trainerRepository.findByUserName(userName)
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            String.format(ENTITY_NOT_FOUND_EXCEPTION, userName)));
         } catch (EntityNotFoundException e) {
             return false;
         }
@@ -103,14 +125,19 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public TrainerDto changePassword(String userName, String newPassword) throws EntityNotFoundException {
-        Trainer trainer = trainerRepository.findByUserName(userName).get();
+        Trainer trainer = trainerRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName)));
         trainer.getUser().setPassword(newPassword);
         return trainerMapper.convertToDto(trainerRepository.save(trainer));
     }
 
     @Override
     public List<TrainerDto> getUnassignedTrainersList(String traineeUserName) throws EntityNotFoundException {
-        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName).get();
+        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
+        );
         List<Trainer> trainers = trainerRepository.findAll();
 
         return trainers.stream()
@@ -121,7 +148,10 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public List<TrainerDto> updateTrainersList(String traineeUserName, List<String> trainersUserNames) throws EntityNotFoundException {
-        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName).get();
+        Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
+        );
 
         List<Trainer> trainers = trainersUserNames.stream()
                 .map(trainerRepository::findByUserName)
@@ -138,7 +168,9 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     public boolean isFirstOrLastNamesChanged(TrainerDto trainerDto, Trainer oldTrainer) {
-        return !oldTrainer.getUser().getFirstName().equals(trainerDto.getUser().getFirstName())
-                || !oldTrainer.getUser().getLastName().equals(trainerDto.getUser().getLastName());
+        return !oldTrainer.getUser().getFirstName()
+                .equals(trainerDto.getUser().getFirstName())
+                || !oldTrainer.getUser().getLastName()
+                .equals(trainerDto.getUser().getLastName());
     }
 }

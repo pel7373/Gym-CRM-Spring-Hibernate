@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.gym.entity.TrainingType;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TrainingTypeRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import java.util.NoSuchElementException;
@@ -36,7 +35,7 @@ public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
         try {
             return Optional.of(entityManager.createQuery(criteriaQuery).getSingleResult());
         } catch (NoSuchElementException | NoResultException e) {
-            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", trainingTypeName));
+            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, trainingTypeName));
         }
     }
 }

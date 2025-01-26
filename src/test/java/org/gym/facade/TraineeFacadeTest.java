@@ -2,11 +2,8 @@ package org.gym.facade;
 
 import org.gym.dto.TraineeDto;
 import org.gym.dto.UserDto;
-import org.gym.entity.Trainee;
-import org.gym.entity.User;
 import org.gym.facade.impl.TraineeFacadeImpl;
 import org.gym.facade.impl.UserNameAndPasswordChecker;
-import org.gym.mapper.TraineeMapper;
 import org.gym.service.TraineeService;
 import org.gym.validator.UserDtoValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +39,6 @@ class TraineeFacadeTest {
 
     private TraineeDto traineeDto;
     private TraineeDto traineeDtoNotValid;
-    private Trainee trainee;
     private String passwordForUser = "AAAAAAAAAA";
     private String newPassword = "BBBBBBBBBB";
     String userNameForTraineeDto;
@@ -53,16 +49,8 @@ class TraineeFacadeTest {
         UserDto userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
         UserDto userDtoNotValid = new UserDto("Pa", "Pa", "Maria.Petrenko2", false);
 
-        User user = new User(null, "Maria", "Petrenko", "Maria.Petrenko", passwordForUser, true);
-
         traineeDto = TraineeDto.builder()
                 .user(userDto)
-                .dateOfBirth(LocalDate.of(1995, 1, 23))
-                .address("Vinnitsya, Soborna str. 35, ap. 26")
-                .build();
-
-        trainee = Trainee.builder()
-                .user(user)
                 .dateOfBirth(LocalDate.of(1995, 1, 23))
                 .address("Vinnitsya, Soborna str. 35, ap. 26")
                 .build();
@@ -105,16 +93,16 @@ class TraineeFacadeTest {
 
     @Test
     void selectTraineeSuccessfully() {
-        String userNameForTraineeDto = traineeDto.getUser().getFirstName();
+        String gotUserNameForTraineeDto = traineeDto.getUser().getFirstName();
         when(userNameAndPasswordChecker.isNullOrBlank(any(String.class), any(String.class))).thenReturn(false);
-        when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
-        when(traineeService.select(userNameForTraineeDto)).thenReturn(traineeDto);
+        when(traineeService.authenticate(gotUserNameForTraineeDto, passwordForUser)).thenReturn(true);
+        when(traineeService.select(gotUserNameForTraineeDto)).thenReturn(traineeDto);
 
-        traineeFacade.select(userNameForTraineeDto, passwordForUser);
+        traineeFacade.select(gotUserNameForTraineeDto, passwordForUser);
 
         verify(traineeService, times(1)).authenticate(any(String.class), any(String.class));
         verify(traineeService, times(1)).authenticate(any(String.class), any(String.class));
-        verify(traineeService, times(1)).select(userNameForTraineeDto);
+        verify(traineeService, times(1)).select(gotUserNameForTraineeDto);
     }
 
     @Test
@@ -174,7 +162,8 @@ class TraineeFacadeTest {
 
         traineeFacade.delete(userNameForTraineeDto, passwordForUser);
 
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(any(String.class), any(String.class));
         verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).delete(userNameForTraineeDto);
     }
@@ -186,7 +175,8 @@ class TraineeFacadeTest {
 
         traineeFacade.delete(userNameNotFound, passwordForUser);
 
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(userNameNotFound, passwordForUser);
         verify(traineeService, never()).delete(userNameNotFound);
     }
 
@@ -213,36 +203,44 @@ class TraineeFacadeTest {
         when(userNameAndPasswordChecker.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
 
-        TraineeDto createdTraineeDto = traineeFacade.changeStatus(userNameNotFound, passwordForUser, true);
+        TraineeDto createdTraineeDto = traineeFacade.changeStatus(
+                userNameNotFound, passwordForUser, true);
 
         assertNull(createdTraineeDto);
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
-        verify(traineeService, times(1)).authenticate(userNameNotFound, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(traineeService, times(1))
+                .authenticate(userNameNotFound, passwordForUser);
         verify(traineeService, never()).changeStatus(userNameNotFound, true);
     }
 
     @Test
     void changeStatusSuccessfully() {
-        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser)).thenReturn(false);
+        when(userNameAndPasswordChecker.isNullOrBlank(userNameForTraineeDto, passwordForUser))
+                .thenReturn(false);
         when(traineeService.authenticate(userNameForTraineeDto, passwordForUser)).thenReturn(true);
 
         traineeFacade.changeStatus(userNameForTraineeDto, passwordForUser, true);
 
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameForTraineeDto, passwordForUser);
-        verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(userNameForTraineeDto, passwordForUser);
+        verify(traineeService, times(1))
+                .authenticate(userNameForTraineeDto, passwordForUser);
         verify(traineeService, times(1)).changeStatus(userNameForTraineeDto, true);
     }
 
     @Test
     void authenticateSuccessfully() {
-        String userNameForTraineeDto = traineeDto.getUser().getFirstName();
+        String gotUserNameForTraineeDto = traineeDto.getUser().getFirstName();
         when(userNameAndPasswordChecker.isNullOrBlank(any(String.class), any(String.class))).thenReturn(false);
         when(traineeService.authenticate(any(String.class), any(String.class))).thenReturn(true);
 
-        traineeFacade.authenticate(userNameForTraineeDto, passwordForUser);
+        traineeFacade.authenticate(gotUserNameForTraineeDto, passwordForUser);
 
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any(String.class), any(String.class));
-        verify(traineeService, times(1)).authenticate(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(any(String.class), any(String.class));
+        verify(traineeService, times(1))
+                .authenticate(any(String.class), any(String.class));
     }
 
     @Test
@@ -251,7 +249,8 @@ class TraineeFacadeTest {
 
         traineeFacade.authenticate("aaa", "aaa");
 
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(any(String.class), any(String.class));
         verify(traineeService, never()).authenticate(any(String.class), any(String.class));
     }
 
@@ -261,14 +260,17 @@ class TraineeFacadeTest {
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
         traineeFacade.authenticate(userNameNotFound, passwordForUser);
 
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
-        verify(traineeService, times(1)).authenticate(any(String.class), any(String.class));
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(traineeService, times(1))
+                .authenticate(any(String.class), any(String.class));
     }
 
     @Test
     void changePasswordNewPasswordNullFail() {
         when(userNameAndPasswordChecker.isNullOrBlank(null)).thenReturn(true);
-        TraineeDto createdTraineeDto = traineeFacade.changePassword(userNameForTraineeDto, passwordForUser, null);
+        TraineeDto createdTraineeDto = traineeFacade.changePassword(
+                userNameForTraineeDto, passwordForUser, null);
 
         assertNull(createdTraineeDto);
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(null);
@@ -281,12 +283,15 @@ class TraineeFacadeTest {
         when(userNameAndPasswordChecker.isNullOrBlank(userNameNotFound, passwordForUser)).thenReturn(false);
         when(traineeService.authenticate(userNameNotFound, passwordForUser)).thenReturn(false);
 
-        TraineeDto createdTraineeDto = traineeFacade.changePassword(userNameNotFound, passwordForUser, newPassword);
+        TraineeDto createdTraineeDto = traineeFacade.changePassword(
+                userNameNotFound, passwordForUser, newPassword);
 
         assertNull(createdTraineeDto);
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(newPassword);
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameNotFound, passwordForUser);
-        verify(traineeService, times(1)).authenticate(userNameNotFound, passwordForUser);
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(userNameNotFound, passwordForUser);
+        verify(traineeService, times(1))
+                .authenticate(userNameNotFound, passwordForUser);
         verify(traineeService, never()).changePassword(userNameNotFound, newPassword);
     }
 
@@ -299,8 +304,11 @@ class TraineeFacadeTest {
         traineeFacade.changePassword(userNameForTraineeDto, passwordForUser, newPassword);
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(newPassword);
-        verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(userNameForTraineeDto, passwordForUser);
-        verify(traineeService, times(1)).authenticate(userNameForTraineeDto, passwordForUser);
-        verify(traineeService, times(1)).changePassword(userNameForTraineeDto, newPassword);
+        verify(userNameAndPasswordChecker, times(1))
+                .isNullOrBlank(userNameForTraineeDto, passwordForUser);
+        verify(traineeService, times(1))
+                .authenticate(userNameForTraineeDto, passwordForUser);
+        verify(traineeService, times(1))
+                .changePassword(userNameForTraineeDto, newPassword);
     }
 }

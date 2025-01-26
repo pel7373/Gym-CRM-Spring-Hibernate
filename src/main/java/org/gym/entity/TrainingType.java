@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
 
-import java.io.Serializable;
-import java.util.List;
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -14,7 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "training_types")
 @Immutable
-public class TrainingType implements Serializable {
+public class TrainingType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
@@ -22,12 +19,4 @@ public class TrainingType implements Serializable {
 
     @Column(name = "training_type_name", nullable = false, unique = true)
     private String trainingTypeName;
-
-//    @ToString.Exclude
-//    @OneToOne(mappedBy = "specialization")
-//    private Trainer trainer;
-//
-//    @ToString.Exclude
-//    @OneToMany(mappedBy = "trainingType")
-//    private List<Training> trainings;
 }

@@ -15,11 +15,14 @@ import org.gym.service.UserNameGeneratorService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
+
 @Slf4j
 @Service
 @AllArgsConstructor
 @Transactional
 public class TraineeServiceImpl implements TraineeService {
+
     private final TraineeRepository traineeRepository;
     private final TraineeMapper traineeMapper;
     private final UserNameGeneratorService userNameGeneratorService;
@@ -27,7 +30,10 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public TraineeDto select(String userName) throws EntityNotFoundException {
-        return traineeMapper.convertToDto(traineeRepository.findByUserName(userName).get());
+        return traineeMapper.convertToDto(traineeRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+        ));
     }
 
     @Override
@@ -47,7 +53,10 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public TraineeDto update(String userName, TraineeDto traineeDto) throws EntityNotFoundException {
-        Trainee oldTrainee = traineeRepository.findByUserName(userName).get();
+        Trainee oldTrainee = traineeRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+        );
         if(isFirstOrLastNamesChanged(traineeDto, oldTrainee)) {
             oldTrainee.getUser().setUserName(
                     userNameGeneratorService
@@ -72,7 +81,10 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public TraineeDto changeStatus(String userName, Boolean isActive) throws EntityNotFoundException {
-        Trainee trainee = traineeRepository.findByUserName(userName).get();
+        Trainee trainee = traineeRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+        );
         trainee.getUser().setIsActive(isActive);
         return traineeMapper.convertToDto(traineeRepository.save(trainee));
     }
@@ -81,7 +93,10 @@ public class TraineeServiceImpl implements TraineeService {
     public boolean authenticate(String userName, String password) throws EntityNotFoundException {
         Trainee trainee;
         try {
-            trainee = traineeRepository.findByUserName(userName).get();
+            trainee = traineeRepository.findByUserName(userName)
+                    .orElseThrow(() -> new EntityNotFoundException(
+                            String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+            );
         } catch (EntityNotFoundException e) {
             return false;
         }
@@ -91,13 +106,18 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public TraineeDto changePassword(String userName, String newPassword) throws EntityNotFoundException {
-        Trainee trainee = traineeRepository.findByUserName(userName).get();
+        Trainee trainee = traineeRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+        );
         trainee.getUser().setPassword(newPassword);
         return traineeMapper.convertToDto(traineeRepository.save(trainee));
     }
 
     public boolean isFirstOrLastNamesChanged(TraineeDto traineeDto, Trainee oldTrainee) {
-        return !oldTrainee.getUser().getFirstName().equals(traineeDto.getUser().getFirstName())
-                || !oldTrainee.getUser().getLastName().equals(traineeDto.getUser().getLastName());
+        return !oldTrainee.getUser().getFirstName()
+                .equals(traineeDto.getUser().getFirstName())
+                || !oldTrainee.getUser().getLastName()
+                .equals(traineeDto.getUser().getLastName());
     }
 }

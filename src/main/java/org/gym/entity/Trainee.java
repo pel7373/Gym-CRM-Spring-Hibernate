@@ -1,13 +1,9 @@
 package org.gym.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.Cascade;
-import org.springframework.core.annotation.Order;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +36,7 @@ public class Trainee  {
 
     @ToString.Exclude
     @OneToMany
-            ( cascade = CascadeType.ALL, orphanRemoval = false)
+            ( cascade = CascadeType.ALL )
     @JoinColumn(name = "trainee_id")
     private List<Training> trainings;
 

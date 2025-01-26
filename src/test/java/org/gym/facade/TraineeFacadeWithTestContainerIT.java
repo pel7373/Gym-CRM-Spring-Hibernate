@@ -39,9 +39,9 @@ class TraineeFacadeWithTestContainerIT {
     @Autowired
     private TraineeRepository traineeRepository;
 
-    private TraineeDto traineeDto;
-    private TraineeDto traineeDto2;
-    private TraineeDto traineeDtoNotValid;
+    private final TraineeDto traineeDto;
+    private final TraineeDto traineeDto2;
+    private final TraineeDto traineeDtoNotValid;
     private String userNameForTrainee;
 
     @Container
@@ -103,21 +103,29 @@ class TraineeFacadeWithTestContainerIT {
         assertNotNull(createdTraineeDto.getUser());
         assertAll(
                 "Grouped assertions of created traineeDto",
-                () -> assertEquals("Maria", createdTraineeDto.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Petrenko", createdTraineeDto.getUser().getLastName(), "lastName should be Petrenko"),
-                () -> assertTrue(createdTraineeDto.getUser().getIsActive(), "isActive should be true"),
-                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTraineeDto.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+                () -> assertEquals("Maria", createdTraineeDto.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Petrenko", createdTraineeDto.getUser().getLastName(),
+                        "lastName should be Petrenko"),
+                () -> assertTrue(createdTraineeDto.getUser().getIsActive(),
+                        "isActive should be true"),
+                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTraineeDto.getAddress(),
+                        "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
 
-        Trainee createdTrainee = traineeRepository.findByUserName(createdTraineeDto.getUser().getUserName()).get();
+        Trainee createdTrainee = traineeRepository.findByUserName(
+                createdTraineeDto.getUser().getUserName()).get();
         assertNotNull(createdTrainee);
         assertNotNull(createdTrainee.getUser());
         assertAll(
                 "Grouped assertions of created trainee",
-                () -> assertEquals("Maria", createdTrainee.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Petrenko", createdTrainee.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals("Maria", createdTrainee.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Petrenko", createdTrainee.getUser().getLastName(),
+                        "lastName should be Petrenko"),
                 () -> assertTrue(createdTrainee.getUser().getIsActive(), "isActive should be true"),
-                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+                () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", createdTrainee.getAddress(),
+                        "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
     }
 
@@ -198,8 +206,10 @@ class TraineeFacadeWithTestContainerIT {
         assertNotNull(selectedTraineeDto);
         assertAll(
                 "Grouped assertions of selected traineeDto",
-                () -> assertEquals("Maria", selectedTraineeDto.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Petrenko", selectedTraineeDto.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals("Maria", selectedTraineeDto.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Petrenko", selectedTraineeDto.getUser().getLastName(),
+                        "lastName should be Petrenko"),
                 () -> assertTrue(selectedTraineeDto.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", selectedTraineeDto.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
@@ -209,8 +219,10 @@ class TraineeFacadeWithTestContainerIT {
         assertNotNull(selectedTrainee.getUser());
         assertAll(
                 "Grouped assertions of created trainee",
-                () -> assertEquals("Maria", selectedTrainee.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Petrenko", selectedTrainee.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals("Maria", selectedTrainee.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Petrenko", selectedTrainee.getUser().getLastName(),
+                        "lastName should be Petrenko"),
                 () -> assertTrue(selectedTrainee.getUser().getIsActive(), "isActive should be true"),
                 () -> assertEquals("Vinnitsya, Soborna str. 35, ap. 26", selectedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
@@ -228,21 +240,28 @@ class TraineeFacadeWithTestContainerIT {
         assertNotNull(updatedTraineeDto.getUser());
         assertAll(
                 "Grouped assertions of selected traineeDto",
-                () -> assertEquals("Petro", updatedTraineeDto.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Ivanenko", updatedTraineeDto.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals("Petro", updatedTraineeDto.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTraineeDto.getUser().getLastName(),
+                        "lastName should be Petrenko"),
                 () -> assertTrue(updatedTraineeDto.getUser().getIsActive(), "isActive should be true"),
-                () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTraineeDto.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+                () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTraineeDto.getAddress(),
+                        "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
 
-        Trainee updatedTrainee = traineeRepository.findByUserName(updatedTraineeDto.getUser().getUserName()).get();
+        Trainee updatedTrainee = traineeRepository.findByUserName(
+                updatedTraineeDto.getUser().getUserName()).get();
         assertNotNull(updatedTrainee);
         assertNotNull(updatedTrainee.getUser());
         assertAll(
                 "Grouped assertions of created trainee",
-                () -> assertEquals("Petro", updatedTrainee.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Ivanenko", updatedTrainee.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals("Petro", updatedTrainee.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTrainee.getUser().getLastName(),
+                        "lastName should be Petrenko"),
                 () -> assertTrue(updatedTrainee.getUser().getIsActive(), "isActive should be true"),
-                () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTrainee.getAddress(), "address should be Vinnitsya, Soborna str. 35, ap. 26")
+                () -> assertEquals("Kyiv, Soborna str. 35, ap. 26", updatedTrainee.getAddress(),
+                        "address should be Vinnitsya, Soborna str. 35, ap. 26")
         );
     }
 
@@ -256,7 +275,8 @@ class TraineeFacadeWithTestContainerIT {
         assertNotNull(createdTraineeDto.getUser());
         traineeFacade.delete(userNameForTrainee, password);
         String message = String.format(ENTITY_CANT_BE_NULL, "findByUserName", userNameForTrainee);
-        assertThrows(EntityNotFoundException.class, () -> traineeRepository.findByUserName(userNameForTrainee), message);
+        assertThrows(EntityNotFoundException.class,
+                () -> traineeRepository.findByUserName(userNameForTrainee), message);
     }
 
     @Test
@@ -370,6 +390,7 @@ class TraineeFacadeWithTestContainerIT {
         userNameForTrainee = createdTraineeDto.getUser().getUserName();
         System.out.println("368: " + userNameForTrainee);
         Trainee trainee = traineeRepository.findByUserName(userNameForTrainee).orElse(null);
+        assert trainee != null;
         TraineeDto result = traineeFacade.update("AAAAAA", trainee.getUser().getPassword(), traineeDto);
 
         assertNull(result, "update with wrong userName not successful");
@@ -466,7 +487,8 @@ class TraineeFacadeWithTestContainerIT {
         TraineeDto createdTraineeDto = traineeFacade.create(traineeDto);
         userNameForTrainee = createdTraineeDto.getUser().getUserName();
         Trainee trainee = traineeRepository.findByUserName(userNameForTrainee).get();
-        TraineeDto result = traineeFacade.changePassword("AAAAAA", trainee.getUser().getPassword(), "BBBBBB");
+        TraineeDto result = traineeFacade.changePassword("AAAAAA",
+                trainee.getUser().getPassword(), "BBBBBB");
 
         assertNull(result, "changePassword with wrong userName not successful");
 
@@ -477,7 +499,8 @@ class TraineeFacadeWithTestContainerIT {
     void changePasswordNotSuccessfulWrongPassword() {
         TraineeDto createdTraineeDto = traineeFacade.create(traineeDto);
         userNameForTrainee = createdTraineeDto.getUser().getUserName();
-        TraineeDto result = traineeFacade.changePassword(userNameForTrainee, "AAAAAAAAA", "BBBBBB");
+        TraineeDto result = traineeFacade.changePassword(
+                userNameForTrainee, "AAAAAAAAA", "BBBBBB");
 
         assertNull(result, "changePassword with wrong password not successful");
 

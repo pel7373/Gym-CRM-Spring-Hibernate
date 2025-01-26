@@ -1,16 +1,12 @@
 package org.gym.facade;
 
 import org.gym.config.Config;
-import org.gym.dto.TraineeDto;
 import org.gym.dto.TrainerDto;
 import org.gym.dto.TrainingTypeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainer;
-import org.gym.exception.EntityNotFoundException;
-import org.gym.facade.impl.TrainerFacadeImpl;
 import org.gym.repository.TrainerRepository;
 import org.gym.service.TrainerService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-
-import static org.gym.config.Config.ENTITY_CANT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -27,12 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class TrainerFacadeIT {
-    @Autowired
-    private TrainerFacade trainerFacade;
+class TrainerFacadeIT {
 
     @Autowired
-    private TrainerService trainerService;
+    private TrainerFacade trainerFacade;
 
     @Autowired
     private TrainerRepository trainerRepository;
@@ -79,10 +71,14 @@ public class TrainerFacadeIT {
         assertNotNull(createdTrainerDto.getUser());
         assertAll(
                 "Grouped assertions of created trainerDto",
-                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(), "specialization should be equal")
+                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(),
+                        "specialization should be equal")
         );
 
         Trainer createdTrainer = trainerRepository.findByUserName(createdTrainerDto.getUser().getUserName()).get();
@@ -90,10 +86,15 @@ public class TrainerFacadeIT {
         assertNotNull(createdTrainer.getUser());
         assertAll(
                 "Grouped assertions of created trainer",
-                () -> assertEquals("Maria", createdTrainer.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", createdTrainer.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainer.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), createdTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
+                () -> assertEquals("Maria", createdTrainer.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", createdTrainer.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainer.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(),
+                        createdTrainer.getSpecialization().getTrainingTypeName(),
+                        "specialization should be equal")
         );
     }
 
@@ -174,10 +175,14 @@ public class TrainerFacadeIT {
         assertNotNull(selectedTrainerDto);
         assertAll(
                 "Grouped assertions of created trainerDto",
-                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(), "specialization should be equal")
+                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(),
+                        "specialization should be equal")
         );
 
         Trainer selectedTrainer = trainerRepository.findByUserName(selectedTrainerDto.getUser().getUserName()).get();
@@ -185,10 +190,15 @@ public class TrainerFacadeIT {
         assertNotNull(selectedTrainer.getUser());
         assertAll(
                 "Grouped assertions of created trainer",
-                () -> assertEquals("Maria", selectedTrainer.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", selectedTrainer.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), selectedTrainer.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), selectedTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
+                () -> assertEquals("Maria", selectedTrainer.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", selectedTrainer.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), selectedTrainer.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(),
+                        selectedTrainer.getSpecialization().getTrainingTypeName(),
+                        "specialization should be equal")
         );
     }
 
@@ -204,10 +214,14 @@ public class TrainerFacadeIT {
         assertNotNull(updatedTrainerDto.getUser());
         assertAll(
                 "Grouped assertions of selected trainerDto",
-                () -> assertEquals("Petro", updatedTrainerDto.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Ivanenko", updatedTrainerDto.getUser().getLastName(), "lastName should be Petrenko"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainerDto.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization(), updatedTrainerDto.getSpecialization(), "specialization should be equal")
+                () -> assertEquals("Petro", updatedTrainerDto.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTrainerDto.getUser().getLastName(),
+                        "lastName should be Petrenko"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainerDto.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization(), updatedTrainerDto.getSpecialization(),
+                        "specialization should be equal")
 
         );
 
@@ -216,10 +230,15 @@ public class TrainerFacadeIT {
         assertNotNull(updatedTrainer.getUser());
         assertAll(
                 "Grouped assertions of created trainer",
-                () -> assertEquals("Petro", updatedTrainer.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Ivanenko", updatedTrainer.getUser().getLastName(), "lastName should be Petrenko"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainer.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), updatedTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
+                () -> assertEquals("Petro", updatedTrainer.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTrainer.getUser().getLastName(),
+                        "lastName should be Petrenko"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainer.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(),
+                        updatedTrainer.getSpecialization().getTrainingTypeName(),
+                        "specialization should be equal")
         );
     }
 

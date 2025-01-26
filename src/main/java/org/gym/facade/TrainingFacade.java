@@ -1,7 +1,6 @@
 package org.gym.facade;
 
 import org.gym.dto.TrainingDto;
-import org.gym.exception.EntityNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;

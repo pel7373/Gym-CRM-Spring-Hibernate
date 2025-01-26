@@ -4,6 +4,6 @@ import org.gym.entity.Trainer;
 
 import java.util.List;
 
-public interface TrainerRepository extends GenericPersonRepository<Trainer, Long> {
+public interface TrainerRepository extends GenericPersonRepository<Trainer> {
     List<Trainer> findAll();
 }

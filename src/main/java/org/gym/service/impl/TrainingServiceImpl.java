@@ -20,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -35,13 +37,22 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public TrainingDto create(TrainingDto trainingDto) {
         String trainingTypeName = trainingDto.getTrainingType().getTrainingTypeName();
-        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
+        TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainingTypeName))
+        );
 
         String trainerUserName = trainingDto.getTrainer().getUser().getUserName();
-        Trainer trainer = trainerRepository.findByUserName(trainerUserName).get();
+        Trainer trainer = trainerRepository.findByUserName(trainerUserName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainerUserName))
+                );
 
         String traineeUserName = trainingDto.getTrainee().getUser().getUserName();
-        Trainee trainee = traineeRepository.findByUserName(traineeUserName).get();
+        Trainee trainee = traineeRepository.findByUserName(traineeUserName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
+        );
 
         Training training = trainingMapper.convertToEntity(trainingDto);
 
@@ -56,11 +67,17 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     public List<TrainingDto> getTraineeTrainingsListCriteria(String traineeUserName, LocalDate fromDate,
-                                                             LocalDate toDate, String trainerUserName, String trainingType) {
+                                                             LocalDate toDate, String trainerUserName,
+                                                             String trainingType) {
 
-        traineeRepository.findByUserName(traineeUserName).get();
+        traineeRepository.findByUserName(traineeUserName)
+                .orElseThrow(() -> new org.gym.exception.EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
+        );
 
-        return trainingRepository.getByTraineeCriteria(traineeUserName, fromDate, toDate, trainerUserName, trainingType).stream()
+        return trainingRepository.getByTraineeCriteria(
+                traineeUserName, fromDate, toDate, trainerUserName, trainingType)
+                .stream()
                 .map(trainingMapper::convertToDto)
                 .toList();
     }
@@ -68,10 +85,13 @@ public class TrainingServiceImpl implements TrainingService {
     @Override
     public List<TrainingDto> getTrainerTrainingsListCriteria(String trainerUserName, LocalDate fromDate,
                                                              LocalDate toDate, String traineeUserName) {
-        trainerRepository.findByUserName(trainerUserName).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Trainer %s wasn't found", trainerUserName))
+        trainerRepository.findByUserName(trainerUserName)
+                .orElseThrow(() -> new org.gym.exception.EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainerUserName))
         );
-        return trainingRepository.getByTrainerCriteria(trainerUserName, fromDate, toDate, traineeUserName).stream()
+        return trainingRepository.getByTrainerCriteria(
+                trainerUserName, fromDate, toDate, traineeUserName)
+                .stream()
                 .map(trainingMapper::convertToDto)
                 .toList();
     }

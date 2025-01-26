@@ -35,7 +35,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         try {
             return Optional.of(entityManager.createQuery(criteriaQuery).getSingleResult());
         } catch (NoSuchElementException | NoResultException e) {
-            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userName));
+            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, userName));
         }
     }
 
@@ -47,7 +47,6 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         } else {
             savedTrainer = entityManager.merge(trainer);
         }
-
         return savedTrainer;
     }
 

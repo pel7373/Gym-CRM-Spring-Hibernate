@@ -35,9 +35,9 @@ class TraineeFacadeIT {
     @Autowired
     private TraineeRepository traineeRepository;
 
-    private TraineeDto traineeDto;
-    private TraineeDto traineeDto2;
-    private TraineeDto traineeDtoNotValid;
+    private final TraineeDto traineeDto;
+    private final TraineeDto traineeDto2;
+    private final TraineeDto traineeDtoNotValid;
     private String userNameForTrainee;
 
     {
@@ -231,8 +231,8 @@ class TraineeFacadeIT {
         assertNotNull(createdTraineeDto);
         assertNotNull(createdTraineeDto.getUser());
         traineeFacade.delete(userNameForTrainee, password);
-        String message = String.format(ENTITY_CANT_BE_NULL, "findByUserName", userNameForTrainee);
-        assertThrows(EntityNotFoundException.class, () -> traineeRepository.findByUserName(userNameForTrainee), message);
+        assertThrows(EntityNotFoundException.class,
+                () -> traineeRepository.findByUserName(userNameForTrainee), "findByUserName: entity can't be null");
     }
 
     @Test

@@ -10,6 +10,7 @@ import org.gym.repository.TraineeRepository;
 import org.gym.repository.TrainerRepository;
 import org.gym.repository.TrainingTypeRepository;
 import org.gym.service.impl.TrainerServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +31,7 @@ import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class TrainerServiceTest {
+class TrainerServiceTest {
     
     @Mock
     private TrainerRepository trainerRepository;
@@ -67,7 +68,8 @@ public class TrainerServiceTest {
             .trainingTypeName("Zumba")
             .build();
 
-    {
+    @BeforeEach
+    void setUp() {
         UserDto userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
         User user = new User(null, "Maria", "Petrenko", "Maria.Petrenko", passwordForUser, true);
 
@@ -109,7 +111,7 @@ public class TrainerServiceTest {
 
     @Test
     void selectTrainerSuccessfully() {
-        String userNameForTrainerDto = trainerDto.getUser().getFirstName();
+        userNameForTrainerDto = trainerDto.getUser().getFirstName();
         when(trainerRepository.findByUserName(userNameForTrainerDto)).thenReturn(Optional.ofNullable(trainer));
 
         trainerService.select(userNameForTrainerDto);
@@ -120,7 +122,7 @@ public class TrainerServiceTest {
     @Test
     void updateExistingTrainerSuccessfully() {
         UserDto userDto = new UserDto("John", "Doe", "John.Doe", true);
-        TrainerDto trainerDto = TrainerDto.builder()
+        trainerDto = TrainerDto.builder()
                 .user(userDto)
                 .specialization(trainerTrainingTypeDto)
                 .build();
@@ -146,8 +148,10 @@ public class TrainerServiceTest {
                 .build();
 
 
-        when(trainerRepository.findByUserName(userForUpdate.getUserName())).thenReturn(Optional.ofNullable(trainerForUpdate));
-        when(userNameGeneratorService.generate(userDto.getFirstName(), userDto.getLastName())).thenReturn(userDto.getUserName());
+        when(trainerRepository.findByUserName(userForUpdate.getUserName()))
+                .thenReturn(Optional.ofNullable(trainerForUpdate));
+        when(userNameGeneratorService.generate(userDto.getFirstName(), userDto.getLastName()))
+                .thenReturn(userDto.getUserName());
         when(trainerRepository.save(trainerUpdated)).thenReturn(trainerUpdated);
         when(trainerMapper.convertToDto(trainerUpdated)).thenReturn(trainerDtoUpdated);
         when(trainingTypeRepository.findByName(trainerTrainingTypeDto.getTrainingTypeName()))
@@ -159,16 +163,21 @@ public class TrainerServiceTest {
         assertNotNull(trainerDtoActual);
         assertAll(
                 "Grouped assertions of selected trainerDto",
-                () -> assertEquals(trainerDtoUpdated.getUser().getFirstName(), trainerDtoActual.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals(trainerDtoUpdated.getUser().getLastName(), trainerDtoActual.getUser().getLastName(), "lastName should be Petrenko"),
-                () -> assertEquals(trainerDtoUpdated.getSpecialization(), trainerDtoActual.getSpecialization(), "specialization should be equal")
+                () -> assertEquals(trainerDtoUpdated.getUser().getFirstName(),
+                        trainerDtoActual.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals(trainerDtoUpdated.getUser().getLastName(),
+                        trainerDtoActual.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals(trainerDtoUpdated.getSpecialization(),
+                        trainerDtoActual.getSpecialization(), "specialization should be equal")
         );
 
         verify(trainerRepository, times(1)).findByUserName("Maria.Ivanova");
         verify(trainerRepository, times(1)).save(trainerUpdated);
-        verify(userNameGeneratorService, times(1)).generate(userDto.getFirstName(), userDto.getLastName());
+        verify(userNameGeneratorService, times(1))
+                .generate(userDto.getFirstName(), userDto.getLastName());
         verify(trainerMapper, times(1)).convertToDto(trainerUpdated);
-        verify(trainingTypeRepository, times(1)).findByName(trainerTrainingTypeDto.getTrainingTypeName());
+        verify(trainingTypeRepository, times(1))
+                .findByName(trainerTrainingTypeDto.getTrainingTypeName());
         verify(trainerMapper, never()).convertToEntity(trainerDto);
     }
     

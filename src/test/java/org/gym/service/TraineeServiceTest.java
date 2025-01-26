@@ -1,7 +1,6 @@
 package org.gym.service;
 
 import jakarta.transaction.Transactional;
-import org.gym.dto.TrainerDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
 import org.gym.dto.TraineeDto;
@@ -10,6 +9,7 @@ import org.gym.exception.EntityNotFoundException;
 import org.gym.mapper.TraineeMapper;
 import org.gym.repository.TraineeRepository;
 import org.gym.service.impl.TraineeServiceImpl;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -48,21 +48,19 @@ class TraineeServiceTest {
     @InjectMocks
     private TraineeServiceImpl traineeService;
 
-    private final Trainee trainee;
-    private final TraineeDto traineeDto;
-    private Trainee traineeForUpdate;
-    private Trainee traineeUpdated;
+    private Trainee trainee;
+    private TraineeDto traineeDto;
     private TraineeDto traineeDtoUpdated;
-    private final String userNameForTrainee;
+    private String userNameForTrainee;
 
     private final String passwordForUser = "AAAAAAAAAA";
-    private final String newPassword = "BBBBBBBBBB";
     private final String userNameNotFound = "bbbbbbb";
 
     UserDto userDto;
     User user;
 
-    {
+    @BeforeEach
+    void setUp() {
         userDto = new UserDto("Maria", "Petrenko", "Maria.Petrenko", true);
         user = new User(null, "Maria", "Petrenko", "Maria.Petrenko", passwordForUser, true);
 
@@ -94,8 +92,9 @@ class TraineeServiceTest {
 
     @Test
     void selectNotFound() {
-        String exceptionMessage = String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", userNameNotFound);
-        when(traineeRepository.findByUserName(userNameNotFound)).thenThrow(new EntityNotFoundException(exceptionMessage));
+        String exceptionMessage = String.format(ENTITY_NOT_FOUND_EXCEPTION, userNameNotFound);
+        when(traineeRepository.findByUserName(userNameNotFound))
+                .thenThrow(new EntityNotFoundException(exceptionMessage));
         assertThrows(EntityNotFoundException.class, () -> traineeService.select(userNameNotFound), exceptionMessage);
         verify(traineeRepository, times(1)).findByUserName(userNameNotFound);
     }
@@ -126,15 +125,15 @@ class TraineeServiceTest {
 
     @Test
     void updateExistingTraineeSuccessfully() {
-        UserDto userDto = new UserDto("John", "Doe", "John.Doe", true);
-        TraineeDto traineeDto = TraineeDto.builder()
+        userDto = new UserDto("John", "Doe", "John.Doe", true);
+        traineeDto = TraineeDto.builder()
                 .user(userDto)
                 .dateOfBirth(LocalDate.of(1995, 1, 23))
                 .address("Vinnitsya, Soborna str. 35, ap. 26")
                 .build();
 
         User userForUpdate = new User(2L, "Maria", "Ivanova", "Maria.Ivanova", "BBBBBBBBBB", true);
-        traineeForUpdate = Trainee.builder()
+        Trainee traineeForUpdate = Trainee.builder()
                 .id(2L)
                 .user(userForUpdate)
                 .dateOfBirth(LocalDate.of(2000, 2, 13))
@@ -142,7 +141,7 @@ class TraineeServiceTest {
                 .build();
 
         User userUpdated = new User(2L, "John", "Doe", "John.Doe", "BBBBBBBBBB", true);
-        traineeUpdated = Trainee.builder()
+        Trainee traineeUpdated = Trainee.builder()
                 .id(2L)
                 .user(userUpdated)
                 .dateOfBirth(LocalDate.of(1995, 1, 23))
@@ -168,10 +167,14 @@ class TraineeServiceTest {
         assertNotNull(traineeDtoActual);
         assertAll(
                 "Grouped assertions of selected traineeDto",
-                () -> assertEquals(traineeDtoUpdated.getUser().getFirstName(), traineeDtoActual.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals(traineeDtoUpdated.getUser().getLastName(), traineeDtoActual.getUser().getLastName(), "lastName should be Petrenko"),
-                () -> assertEquals(traineeDtoUpdated.getAddress(), traineeDtoActual.getAddress(), "addresses should be equal"),
-                () -> assertEquals(traineeDtoUpdated.getDateOfBirth(), traineeDtoActual.getDateOfBirth(), "dates of birth should be equal")
+                () -> assertEquals(traineeDtoUpdated.getUser().getFirstName(),
+                        traineeDtoActual.getUser().getFirstName(), "firstName should be Maria"),
+                () -> assertEquals(traineeDtoUpdated.getUser().getLastName(),
+                        traineeDtoActual.getUser().getLastName(), "lastName should be Petrenko"),
+                () -> assertEquals(traineeDtoUpdated.getAddress(), traineeDtoActual.getAddress(),
+                        "addresses should be equal"),
+                () -> assertEquals(traineeDtoUpdated.getDateOfBirth(), traineeDtoActual.getDateOfBirth(),
+                        "dates of birth should be equal")
         );
 
         verify(traineeRepository, times(1)).findByUserName("Maria.Ivanova");
@@ -189,7 +192,7 @@ class TraineeServiceTest {
 
     @Test
     void changeStatusSuccessfullyWhenStatusDifferent() {
-        when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.ofNullable(trainee));
+        when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.of(trainee));
         when(traineeRepository.save(trainee)).thenReturn(trainee);
         when(traineeMapper.convertToDto(trainee)).thenReturn(traineeDto);
 
@@ -202,7 +205,7 @@ class TraineeServiceTest {
 
     @Test
     void changeStatusSuccessfullyWhenStatusTheSame() {
-        when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.ofNullable(trainee));
+        when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.of(trainee));
         when(traineeRepository.save(trainee)).thenReturn(trainee);
         when(traineeMapper.convertToDto(trainee)).thenReturn(traineeDto);
 
@@ -217,6 +220,7 @@ class TraineeServiceTest {
     void changePasswordSuccessfully() {
         when(traineeRepository.findByUserName(userNameForTrainee)).thenReturn(Optional.ofNullable(trainee));
 
+        String newPassword = "BBBBBBBBBB";
         traineeService.changePassword(userNameForTrainee, newPassword);
 
         verify(traineeRepository, times(1)).findByUserName(userNameForTrainee);

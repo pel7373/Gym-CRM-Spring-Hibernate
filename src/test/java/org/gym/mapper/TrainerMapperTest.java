@@ -1,6 +1,5 @@
 package org.gym.mapper;
 
-import org.gym.Main;
 import org.gym.config.TestConfig;
 import org.gym.dto.TrainerDto;
 import org.gym.dto.TrainingTypeDto;
@@ -8,13 +7,9 @@ import org.gym.dto.UserDto;
 import org.gym.entity.Trainer;
 import org.gym.entity.TrainingType;
 import org.gym.entity.User;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -22,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
-@ActiveProfiles("test")
 class TrainerMapperTest {
 
     @Autowired

@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
-public class TrainingServiceWithTestContainerIT {
+class TrainingServiceWithTestContainerIT {
     @Autowired
     private TrainingService trainingService;
 
@@ -59,10 +59,9 @@ public class TrainingServiceWithTestContainerIT {
     private Trainee trainee;
     private Trainer trainer;
     private TrainingDto trainingDto;
-    private TrainingTypeDto trainingTypeDto;
     private Training training;
     private TrainingType trainingType;
-    private String trainingTypeName = "Zumba";
+    private final String trainingTypeName = "Zumba";
 
     @Container
     static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
@@ -83,7 +82,6 @@ public class TrainingServiceWithTestContainerIT {
     @BeforeEach
     void setUp()
     {
-        String trainingTypeName = "Zumba";
         try {
             trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
         } catch (EntityNotFoundException e) {
@@ -141,11 +139,14 @@ public class TrainingServiceWithTestContainerIT {
                 () -> assertNotNull(createdTrainingDto.getTrainer(), "created trainer shouldn't be null"),
                 () -> assertNotNull(createdTrainingDto.getTrainee(), "created trainee shouldn't be null"),
                 () -> assertEquals(createdTrainingDto.getTrainee().getUser().getFirstName(),
-                        trainingDto.getTrainee().getUser().getFirstName(), "trainee's firstNames should be equal"),
+                        trainingDto.getTrainee().getUser().getFirstName(),
+                        "trainee's firstNames should be equal"),
                 () -> assertEquals(createdTrainingDto.getTrainer().getUser().getFirstName(),
-                        trainingDto.getTrainer().getUser().getFirstName(), "trainer's firstNames should be equal"),
+                        trainingDto.getTrainer().getUser().getFirstName(),
+                        "trainer's firstNames should be equal"),
                 () -> assertEquals(createdTrainingDto.getTrainer().getSpecialization(),
-                        trainingDto.getTrainer().getSpecialization(), "trainer's specialization should be equal"),
+                        trainingDto.getTrainer().getSpecialization(),
+                        "trainer's specialization should be equal"),
                 () -> assertEquals(createdTrainingDto.getTrainingName(),
                         trainingDto.getTrainingName(), "training names  should be equal"),
                 () -> assertEquals(createdTrainingDto.getDate(),
@@ -157,10 +158,10 @@ public class TrainingServiceWithTestContainerIT {
     void createNotValidTrainingFail() {
         TrainingDto createdTrainingDto = trainingService.create(trainingDto);
         createdTrainingDto.setTrainingType(new TrainingTypeDto("NotValidType"));
-        LOGGER.info("createNotValid: " + createdTrainingDto);
+        LOGGER.info("createNotValid: {}", createdTrainingDto);
 
         assertThrows(EntityNotFoundException.class, () -> trainingService.create(createdTrainingDto),
-                String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", "NotValidType"));
+                String.format(ENTITY_NOT_FOUND_EXCEPTION, "NotValidType"));
     }
 
     @Test
@@ -185,7 +186,7 @@ public class TrainingServiceWithTestContainerIT {
         LocalDate fromDate = LocalDate.of(2010, 2, 9);
         LocalDate toDate = LocalDate.of(2035, 3, 9);
         String trainerUserName = trainer.getUser().getUserName();
-        TrainingType trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
+        trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
 
         List<TrainingDto> trainingsList = trainingService.getTraineeTrainingsListCriteria(
                 trainee.getUser().getUserName(), fromDate, toDate,
@@ -206,7 +207,6 @@ public class TrainingServiceWithTestContainerIT {
         LocalDate fromDate = LocalDate.of(2010, 8, 1);
         LocalDate toDate = LocalDate.of(2040, 8, 1);
         String trainerName = trainer.getUser().getFirstName();
-        TrainingTypeDto trainingType = new TrainingTypeDto("Roga");
 
         assertThrows(EntityNotFoundException.class,
                 () -> trainingService.getTraineeTrainingsListCriteria(

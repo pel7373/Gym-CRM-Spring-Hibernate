@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
-public class TrainingFacadeWithTestContainerIT {
+class TrainingFacadeWithTestContainerIT {
 
     @Autowired
     private TrainingFacade trainingFacade;
@@ -63,10 +63,9 @@ public class TrainingFacadeWithTestContainerIT {
     private Trainee trainee;
     private Trainer trainer;
     private TrainingDto trainingDto;
-    private TrainingTypeDto trainingTypeDto;
     private Training training;
     private TrainingType trainingType;
-    private String trainingTypeName = "Zumba";
+    private final String trainingTypeName = "Zumba";
 
     @Container
     static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
@@ -91,7 +90,6 @@ public class TrainingFacadeWithTestContainerIT {
     @BeforeEach
     void setUp()
     {
-        String trainingTypeName = "Zumba";
         try {
             trainingType = trainingTypeRepository.findByName(trainingTypeName).get();
         } catch (EntityNotFoundException e) {
@@ -150,11 +148,14 @@ public class TrainingFacadeWithTestContainerIT {
                 () -> assertNotNull(createdTrainingDto.getTrainer(), "created trainer shouldn't be null"),
                 () -> assertNotNull(createdTrainingDto.getTrainee(), "created trainee shouldn't be null"),
                 () -> assertEquals(createdTrainingDto.getTrainee().getUser().getFirstName(),
-                        trainingDto.getTrainee().getUser().getFirstName(), "trainee's firstNames should be equal"),
+                        trainingDto.getTrainee().getUser().getFirstName(),
+                        "trainee's firstNames should be equal"),
                 () -> assertEquals(createdTrainingDto.getTrainer().getUser().getFirstName(),
-                        trainingDto.getTrainer().getUser().getFirstName(), "trainer's firstNames should be equal"),
+                        trainingDto.getTrainer().getUser().getFirstName(),
+                        "trainer's firstNames should be equal"),
                 () -> assertEquals(createdTrainingDto.getTrainer().getSpecialization(),
-                        trainingDto.getTrainer().getSpecialization(), "trainer's specialization should be equal"),
+                        trainingDto.getTrainer().getSpecialization(),
+                        "trainer's specialization should be equal"),
                 () -> assertEquals(createdTrainingDto.getTrainingName(),
                         trainingDto.getTrainingName(), "training names  should be equal"),
                 () -> assertEquals(createdTrainingDto.getDate(),
@@ -170,7 +171,7 @@ public class TrainingFacadeWithTestContainerIT {
         createdTrainingDto.setTrainingType(new TrainingTypeDto("NotValidType"));
 
         assertNull(trainingFacade.create(createdTrainingDto),
-                String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", "NotValidType"));
+                String.format(ENTITY_NOT_FOUND_EXCEPTION, "NotValidType"));
     }
 
     @Test
@@ -197,7 +198,7 @@ public class TrainingFacadeWithTestContainerIT {
         LocalDate fromDate = LocalDate.of(2010, 2, 9);
         LocalDate toDate = LocalDate.of(2035, 3, 9);
         String trainerUserName = trainer.getUser().getUserName();
-        TrainingType trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
+        trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
 
         List<TrainingDto> trainingsList = trainingFacade.getTraineeTrainings(
                 trainee.getUser().getUserName(), fromDate, toDate,
@@ -219,10 +220,10 @@ public class TrainingFacadeWithTestContainerIT {
         LocalDate fromDate = LocalDate.of(2010, 8, 1);
         LocalDate toDate = LocalDate.of(2040, 8, 1);
         String trainerName = trainer.getUser().getFirstName();
-        TrainingTypeDto trainingType = new TrainingTypeDto("Roga");
+        TrainingTypeDto trainingTypeDto = new TrainingTypeDto("Roga");
 
         assertNull(trainingFacade.getTraineeTrainings(
-                        "NotValidUserName", fromDate, toDate, trainerName, trainingType.getTrainingTypeName()),
+                        "NotValidUserName", fromDate, toDate, trainerName, trainingTypeDto.getTrainingTypeName()),
                 "findByUserName: entity not found by userName NotValidUserName");
     }
 
@@ -271,7 +272,6 @@ public class TrainingFacadeWithTestContainerIT {
 
         List<TrainingDto> trainings = trainingFacade.getTrainerTrainings(
                 trainer.getUser().getUserName(), fromDate, toDate, invalidTraineeName);
-
         assertTrue(trainings.isEmpty());
     }
 }

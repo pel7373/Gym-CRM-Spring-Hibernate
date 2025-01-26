@@ -96,7 +96,6 @@ public class TrainerFacadeImpl implements TrainerFacade {
         }
     }
 
-
     @Override
     public boolean authenticate(String userName, String password) {
         if (userNameAndPasswordChecker.isNullOrBlank(userName, password)) {

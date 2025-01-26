@@ -115,7 +115,6 @@ public class TraineeFacadeImpl implements TraineeFacade {
             LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, "authenticate", userName, password);
             return false;
         }
-
         return traineeService.authenticate(userName, password);
     }
 

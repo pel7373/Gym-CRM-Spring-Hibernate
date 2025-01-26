@@ -5,11 +5,9 @@ import org.gym.dto.TrainerDto;
 import org.gym.dto.TrainingTypeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainer;
-import org.gym.exception.EntityNotFoundException;
 import org.gym.facade.impl.TrainerFacadeImpl;
 import org.gym.repository.TrainerRepository;
 import org.gym.service.TrainerService;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,9 +20,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
-
-import static org.gym.config.Config.ENTITY_CANT_BE_NULL;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -32,7 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {Config.class})
 @jakarta.transaction.Transactional
-public class TrainerFacadeWithTestContainerIT {
+class TrainerFacadeWithTestContainerIT {
+
     @Autowired
     private TrainerFacadeImpl trainerFacade;
 
@@ -42,9 +38,9 @@ public class TrainerFacadeWithTestContainerIT {
     @Autowired
     private TrainerRepository trainerRepository;
 
-    private TrainerDto trainerDto;
-    private TrainerDto trainerDto2;
-    private TrainerDto trainerDtoNotValid;
+    private final TrainerDto trainerDto;
+    private final TrainerDto trainerDto2;
+    private final TrainerDto trainerDtoNotValid;
     private String userNameForTrainer;
 
     @Container
@@ -103,10 +99,14 @@ public class TrainerFacadeWithTestContainerIT {
         assertNotNull(createdTrainerDto);
         assertNotNull(createdTrainerDto.getUser());
         assertAll(
-                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(), "specialization should be equal")
+                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(),
+                        "specialization should be equal")
         );
 
         Trainer createdTrainer = trainerRepository.findByUserName(createdTrainerDto.getUser().getUserName()).get();
@@ -114,10 +114,15 @@ public class TrainerFacadeWithTestContainerIT {
         assertNotNull(createdTrainer.getUser());
         assertAll(
                 "Grouped assertions of created trainer",
-                () -> assertEquals("Maria", createdTrainer.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", createdTrainer.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainer.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), createdTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
+                () -> assertEquals("Maria", createdTrainer.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", createdTrainer.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainer.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(),
+                        createdTrainer.getSpecialization().getTrainingTypeName(),
+                        "specialization should be equal")
         );
     }
 
@@ -198,10 +203,14 @@ public class TrainerFacadeWithTestContainerIT {
         assertNotNull(selectedTrainerDto);
         assertAll(
                 "Grouped assertions of created trainerDto",
-                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(), "specialization should be equal")
+                () -> assertEquals("Maria", createdTrainerDto.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", createdTrainerDto.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), createdTrainerDto.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization(), createdTrainerDto.getSpecialization(),
+                        "specialization should be equal")
         );
 
         Trainer selectedTrainer = trainerRepository.findByUserName(selectedTrainerDto.getUser().getUserName()).get();
@@ -209,10 +218,15 @@ public class TrainerFacadeWithTestContainerIT {
         assertNotNull(selectedTrainer.getUser());
         assertAll(
                 "Grouped assertions of created trainer",
-                () -> assertEquals("Maria", selectedTrainer.getUser().getFirstName(), "firstName should be equal"),
-                () -> assertEquals("Petrenko", selectedTrainer.getUser().getLastName(), "lastName should be equal"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), selectedTrainer.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), selectedTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
+                () -> assertEquals("Maria", selectedTrainer.getUser().getFirstName(),
+                        "firstName should be equal"),
+                () -> assertEquals("Petrenko", selectedTrainer.getUser().getLastName(),
+                        "lastName should be equal"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), selectedTrainer.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(),
+                        selectedTrainer.getSpecialization().getTrainingTypeName(),
+                        "specialization should be equal")
         );
     }
 
@@ -228,10 +242,14 @@ public class TrainerFacadeWithTestContainerIT {
         assertNotNull(updatedTrainerDto.getUser());
         assertAll(
                 "Grouped assertions of selected trainerDto",
-                () -> assertEquals("Petro", updatedTrainerDto.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Ivanenko", updatedTrainerDto.getUser().getLastName(), "lastName should be Petrenko"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainerDto.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization(), updatedTrainerDto.getSpecialization(), "specialization should be equal")
+                () -> assertEquals("Petro", updatedTrainerDto.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTrainerDto.getUser().getLastName(),
+                        "lastName should be Petrenko"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainerDto.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization(), updatedTrainerDto.getSpecialization(),
+                        "specialization should be equal")
 
         );
 
@@ -240,10 +258,15 @@ public class TrainerFacadeWithTestContainerIT {
         assertNotNull(updatedTrainer.getUser());
         assertAll(
                 "Grouped assertions of created trainer",
-                () -> assertEquals("Petro", updatedTrainer.getUser().getFirstName(), "firstName should be Maria"),
-                () -> assertEquals("Ivanenko", updatedTrainer.getUser().getLastName(), "lastName should be Petrenko"),
-                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainer.getUser().getIsActive(), "isActive should be equal"),
-                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(), updatedTrainer.getSpecialization().getTrainingTypeName(), "specialization should be equal")
+                () -> assertEquals("Petro", updatedTrainer.getUser().getFirstName(),
+                        "firstName should be Maria"),
+                () -> assertEquals("Ivanenko", updatedTrainer.getUser().getLastName(),
+                        "lastName should be Petrenko"),
+                () -> assertEquals(trainerDto.getUser().getIsActive(), updatedTrainer.getUser().getIsActive(),
+                        "isActive should be equal"),
+                () -> assertEquals(trainerDto.getSpecialization().getTrainingTypeName(),
+                        updatedTrainer.getSpecialization().getTrainingTypeName(),
+                        "specialization should be equal")
         );
     }
 
@@ -358,6 +381,7 @@ public class TrainerFacadeWithTestContainerIT {
         userNameForTrainer = createdTrainerDto.getUser().getUserName();
         System.out.println("368: " + userNameForTrainer);
         Trainer trainer = trainerRepository.findByUserName(userNameForTrainer).orElse(null);
+        assert trainer != null;
         TrainerDto result = trainerFacade.update("AAAAAA", trainer.getUser().getPassword(), trainerDto);
 
         assertNull(result, "update with wrong userName not successful");
@@ -401,7 +425,8 @@ public class TrainerFacadeWithTestContainerIT {
         TrainerDto createdTrainerDto = trainerFacade.create(trainerDto);
         userNameForTrainer = createdTrainerDto.getUser().getUserName();
         Trainer trainer = trainerRepository.findByUserName(userNameForTrainer).get();
-        TrainerDto result = trainerFacade.changeStatus("AAAAAA", trainer.getUser().getPassword(), true);
+        TrainerDto result = trainerFacade.changeStatus(
+                "AAAAAA", trainer.getUser().getPassword(), true);
 
         assertNull(result, "changeStatus with wrong userName not successful");
     }
@@ -444,7 +469,8 @@ public class TrainerFacadeWithTestContainerIT {
         TrainerDto createdTrainerDto = trainerFacade.create(trainerDto);
         userNameForTrainer = createdTrainerDto.getUser().getUserName();
         Trainer trainer = trainerRepository.findByUserName(userNameForTrainer).get();
-        TrainerDto result = trainerFacade.changePassword("AAAAAA", trainer.getUser().getPassword(), "BBBBBB");
+        TrainerDto result = trainerFacade.changePassword(
+                "AAAAAA", trainer.getUser().getPassword(), "BBBBBB");
 
         assertNull(result, "changePassword with wrong userName not successful");
     }
@@ -453,7 +479,8 @@ public class TrainerFacadeWithTestContainerIT {
     void changePasswordNotSuccessfulWrongPassword() {
         TrainerDto createdTrainerDto = trainerFacade.create(trainerDto);
         userNameForTrainer = createdTrainerDto.getUser().getUserName();
-        TrainerDto result = trainerFacade.changePassword(userNameForTrainer, "AAAAAAAAA", "BBBBBB");
+        TrainerDto result = trainerFacade.changePassword(
+                userNameForTrainer, "AAAAAAAAA", "BBBBBB");
 
         assertNull(result, "changePassword with wrong password not successful");
     }

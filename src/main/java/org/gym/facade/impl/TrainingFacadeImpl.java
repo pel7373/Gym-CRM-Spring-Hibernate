@@ -2,7 +2,6 @@ package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.gym.dto.TraineeDto;
 import org.gym.dto.TrainingDto;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.facade.TrainingFacade;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.gym.config.Config.*;

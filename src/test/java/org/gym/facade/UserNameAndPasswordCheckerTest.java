@@ -3,17 +3,22 @@ package org.gym.facade;
 import org.gym.facade.impl.UserNameAndPasswordChecker;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class UserNameAndPasswordCheckerTest {
+class UserNameAndPasswordCheckerTest {
 
     @InjectMocks
     private UserNameAndPasswordChecker userNameAndPasswordChecker;
@@ -26,26 +31,23 @@ public class UserNameAndPasswordCheckerTest {
         assertFalse(result);
     }
 
-    @Test
-    void isNullOrBlankPasswordBlank() {
-        String userName = "aaa";
-        String password = "";
-        boolean result = userNameAndPasswordChecker.isNullOrBlank(userName, password);
-        assertTrue(result);
+    private static Stream<Arguments> provideStringsForTest() {
+        return Stream.of(
+                Arguments.of("alex", ""),
+                Arguments.of("", "alex"),
+                Arguments.of("", ""),
+                Arguments.of("   ", "   "),
+                Arguments.of(null, null),
+                Arguments.of(null, "aaaa"),
+                Arguments.of("aaaa", null),
+                Arguments.of(null, null),
+                Arguments.of("alex", "   ")
+        );
     }
 
-    @Test
-    void isNullOrBlankPasswordNull() {
-        String userName = "aaa";
-        String password = null;
-        boolean result = userNameAndPasswordChecker.isNullOrBlank(userName, password);
-        assertTrue(result);
-    }
-
-    @Test
-    void isNullOrBlankUserNameAndPasswordNull() {
-        String userName = null;
-        String password = null;
+    @ParameterizedTest
+    @MethodSource("provideStringsForTest")
+    void isNullOrBlankUserNameOrAndPassword(String userName, String password) {
         boolean result = userNameAndPasswordChecker.isNullOrBlank(userName, password);
         assertTrue(result);
     }

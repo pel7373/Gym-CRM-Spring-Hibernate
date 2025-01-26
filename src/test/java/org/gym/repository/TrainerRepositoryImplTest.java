@@ -2,7 +2,6 @@ package org.gym.repository;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gym.config.Config;
-import org.gym.dto.TrainingTypeDto;
 import org.gym.entity.Trainer;
 import org.gym.entity.TrainingType;
 import org.gym.entity.User;
@@ -34,7 +33,7 @@ class TrainerRepositoryImplTest {
     private TrainingTypeRepository trainingTypeRepository;
 
     private Trainer trainer;
-    private String userNameDoesntExist = "userNameDoesntExist";
+    private final String userNameDoesntExist = "userNameDoesntExist";
     private TrainingType trainingType;
 
     @BeforeEach

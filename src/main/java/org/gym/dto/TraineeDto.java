@@ -1,12 +1,10 @@
 package org.gym.dto;
 
-
 import lombok.*;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data

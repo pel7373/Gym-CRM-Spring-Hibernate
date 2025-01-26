@@ -3,11 +3,9 @@ package org.gym.mapper;
 import org.gym.config.TestConfig;
 import org.gym.dto.TrainingTypeDto;
 import org.gym.entity.TrainingType;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -15,10 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
-@ActiveProfiles("test")
 class TrainingTypeMapperTest {
 
-    private TrainingTypeMapper trainingTypeMapper = new TrainingTypeMapperImpl();
+    @Autowired
+    private TrainingTypeMapper trainingTypeMapper;
 
     @Test
     void convertToDto() {
