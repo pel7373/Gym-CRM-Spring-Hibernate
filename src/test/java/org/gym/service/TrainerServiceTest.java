@@ -5,6 +5,7 @@ import org.gym.dto.TrainingTypeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.*;
 import org.gym.entity.Trainer;
+import org.gym.exception.EntityNotFoundException;
 import org.gym.mapper.TrainerMapper;
 import org.gym.repository.TraineeRepository;
 import org.gym.repository.TrainerRepository;
@@ -21,7 +22,6 @@ import org.mockito.quality.Strictness;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,6 +44,9 @@ class TrainerServiceTest {
 
     @Mock
     private UserNameGeneratorService userNameGeneratorService;
+
+    @Mock
+    private PasswordGeneratorService passwordGeneratorService;
 
     @Mock
     private TrainerMapper trainerMapper;
@@ -329,7 +332,7 @@ class TrainerServiceTest {
 
         when(trainingTypeRepository.findByName(traineeUserName)).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchElementException.class,
+        assertThrows(EntityNotFoundException.class,
                 () -> trainerService.getUnassignedTrainersList(traineeUserName));
     }
 
