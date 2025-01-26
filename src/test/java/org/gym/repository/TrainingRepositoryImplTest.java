@@ -6,7 +6,6 @@ import org.gym.dto.*;
 import org.gym.entity.*;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.mapper.TrainingMapper;
-import org.gym.repository.impl.TrainingRepositoryImpl;
 import org.gym.service.PasswordGeneratorService;
 import org.gym.service.UserNameGeneratorService;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,9 +56,6 @@ class TrainingRepositoryImplTest {
     private Training training;
     private TrainingType trainingType;
     String trainingTypeName = "Zumba";
-
-    @Autowired
-    private TrainingRepositoryImpl trainingRepositoryImpl;
 
     @BeforeEach
     void setUp()

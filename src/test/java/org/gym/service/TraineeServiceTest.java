@@ -101,7 +101,7 @@ class TraineeServiceTest {
 
     @Test
     void selectNullThenException() {
-        String exceptionMessage = String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByUserName", null);
+        String exceptionMessage = String.format(ENTITY_NOT_FOUND_EXCEPTION, (Object) null);
         assertThrows(NoSuchElementException.class, () -> traineeService.select(null), exceptionMessage);
         verify(traineeRepository, times(1)).findByUserName(null);
     }

@@ -76,7 +76,7 @@ public class TrainerFacadeImpl implements TrainerFacade {
         try {
             return trainerService.update(userName, trainerDto);
         } catch (org.gym.exception.EntityNotFoundException e) {
-            LOGGER.warn(ENTITY_NOT_FOUND, "update", userName);
+            LOGGER.warn(ENTITY_NOT_FOUND, userName);
             return null;
         }
     }

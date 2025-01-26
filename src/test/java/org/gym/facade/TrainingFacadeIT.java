@@ -146,7 +146,7 @@ class TrainingFacadeIT {
         createdTrainingDto.setTrainingType(new TrainingTypeDto("NotValidType"));
 
         assertNull(trainingFacade.create(createdTrainingDto),
-                String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", "NotValidType"));
+                String.format(ENTITY_NOT_FOUND_EXCEPTION, "NotValidType"));
     }
 
     @Test

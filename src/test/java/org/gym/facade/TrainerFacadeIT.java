@@ -6,7 +6,7 @@ import org.gym.dto.TrainingTypeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainer;
 import org.gym.repository.TrainerRepository;
-import org.gym.service.TrainerService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

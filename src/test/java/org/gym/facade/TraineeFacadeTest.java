@@ -39,8 +39,8 @@ class TraineeFacadeTest {
 
     private TraineeDto traineeDto;
     private TraineeDto traineeDtoNotValid;
-    private String passwordForUser = "AAAAAAAAAA";
-    private String newPassword = "BBBBBBBBBB";
+    private final String passwordForUser = "AAAAAAAAAA";
+    private final String newPassword = "BBBBBBBBBB";
     String userNameForTraineeDto;
     String userNameNotFound = "bbbbbbb";
 

@@ -7,7 +7,6 @@ import org.gym.dto.UserDto;
 import org.gym.entity.Trainer;
 import org.gym.facade.impl.TrainerFacadeImpl;
 import org.gym.repository.TrainerRepository;
-import org.gym.service.TrainerService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,9 +30,6 @@ class TrainerFacadeWithTestContainerIT {
 
     @Autowired
     private TrainerFacadeImpl trainerFacade;
-
-    @Autowired
-    private TrainerService trainerService;
 
     @Autowired
     private TrainerRepository trainerRepository;

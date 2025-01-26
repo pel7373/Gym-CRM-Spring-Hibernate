@@ -141,7 +141,7 @@ class TrainingServiceIT {
         LOGGER.info("createNotValid: " + createdTrainingDto);
 
         assertThrows(EntityNotFoundException.class, () -> trainingService.create(createdTrainingDto),
-                String.format(ENTITY_NOT_FOUND_EXCEPTION, "findByName", "NotValidType"));
+                String.format(ENTITY_NOT_FOUND_EXCEPTION, "NotValidType"));
     }
 
     @Test

@@ -46,25 +46,19 @@ class TrainerServiceTest {
     private UserNameGeneratorService userNameGeneratorService;
 
     @Mock
-    private PasswordGeneratorService passwordGeneratorService;
-
-    @Mock
     private TrainerMapper trainerMapper;
 
     @InjectMocks
     private TrainerServiceImpl trainerService;
 
     private TrainerDto trainerDto;
-    private Trainer trainerForUpdate;
-    private Trainer trainerUpdated;
     private Trainer trainer;
-    private String passwordForUser = "AAAAAAAAAA";
-    private String newPassword = "BBBBBBBBBB";
+    private final String passwordForUser = "AAAAAAAAAA";
     private String userNameForTrainerDto;
     private TrainingType trainerTrainingType;
     private String userNameForTrainer;
     private TrainingTypeDto trainerTrainingTypeDto;
-    private TrainingType trainingType = TrainingType.builder()
+    private final TrainingType trainingType = TrainingType.builder()
             .trainingTypeName("Zumba")
             .build();
 
@@ -128,14 +122,14 @@ class TrainerServiceTest {
                 .build();
 
         User userForUpdate = new User(2L, "Maria", "Ivanova", "Maria.Ivanova", "BBBBBBBBBB", true);
-        trainerForUpdate = Trainer.builder()
+        Trainer trainerForUpdate = Trainer.builder()
                 .id(2L)
                 .user(userForUpdate)
                 .specialization(trainerTrainingType)
                 .build();
 
         User userUpdated = new User(2L, "John", "Doe", "John.Doe", "BBBBBBBBBB", true);
-        trainerUpdated = Trainer.builder()
+        Trainer trainerUpdated = Trainer.builder()
                 .id(2L)
                 .user(userUpdated)
                 .specialization(trainerTrainingType)
@@ -211,6 +205,7 @@ class TrainerServiceTest {
     void changePasswordSuccessfully() {
         when(trainerRepository.findByUserName(userNameForTrainerDto)).thenReturn(Optional.ofNullable(trainer));
 
+        String newPassword = "BBBBBBBBBB";
         trainerService.changePassword(userNameForTrainerDto, newPassword);
 
         verify(trainerRepository, times(1)).findByUserName(userNameForTrainerDto);

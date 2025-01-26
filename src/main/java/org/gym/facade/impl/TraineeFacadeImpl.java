@@ -80,7 +80,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
         try {
             return traineeService.update(userName, traineeDto);
         } catch (EntityNotFoundException e) {
-            LOGGER.warn(ENTITY_NOT_FOUND, "update", userName);
+            LOGGER.warn(ENTITY_NOT_FOUND, userName);
             return null;
         }
     }
