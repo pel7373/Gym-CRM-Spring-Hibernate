@@ -16,7 +16,6 @@ public class TraineeDto {
     @NotNull(message = "UserDto is required")
     private UserDto user;
 
-    @Past(message = "Date of birth should be in the past")
     @ToString.Exclude
     private LocalDate dateOfBirth;
 

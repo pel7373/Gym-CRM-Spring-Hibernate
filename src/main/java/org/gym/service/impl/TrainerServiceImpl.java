@@ -110,7 +110,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public boolean authenticate(String userName, String password) throws EntityNotFoundException {
+    public boolean authenticate(String userName, String password) {
         Trainer trainer;
         try {
             trainer = trainerRepository.findByUserName(userName)
@@ -127,7 +127,9 @@ public class TrainerServiceImpl implements TrainerService {
     public TrainerDto changePassword(String userName, String newPassword) throws EntityNotFoundException {
         Trainer trainer = trainerRepository.findByUserName(userName)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName)));
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION,
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                userName)));
         trainer.getUser().setPassword(newPassword);
         return trainerMapper.convertToDto(trainerRepository.save(trainer));
     }
@@ -136,7 +138,9 @@ public class TrainerServiceImpl implements TrainerService {
     public List<TrainerDto> getUnassignedTrainersList(String traineeUserName) throws EntityNotFoundException {
         Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION,
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                traineeUserName))
         );
         List<Trainer> trainers = trainerRepository.findAll();
 
@@ -150,7 +154,10 @@ public class TrainerServiceImpl implements TrainerService {
     public List<TrainerDto> updateTrainersList(String traineeUserName, List<String> trainersUserNames) throws EntityNotFoundException {
         Trainee existingTrainee = traineeRepository.findByUserName(traineeUserName)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
+                        String.format(
+                                ENTITY_NOT_FOUND_EXCEPTION,
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                traineeUserName))
         );
 
         List<Trainer> trainers = trainersUserNames.stream()

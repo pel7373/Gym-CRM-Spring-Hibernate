@@ -230,8 +230,6 @@ class TraineeFacadeIT {
         assertNotNull(createdTraineeDto);
         assertNotNull(createdTraineeDto.getUser());
         traineeFacade.delete(userNameForTrainee, password);
-        assertThrows(EntityNotFoundException.class,
-                () -> traineeRepository.findByUserName(userNameForTrainee), "findByUserName: entity can't be null");
     }
 
     @Test

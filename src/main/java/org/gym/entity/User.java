@@ -1,7 +1,6 @@
 package org.gym.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -11,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +17,12 @@ public class User {
     private Long id;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Column(name = "first_name", nullable = false)
-    @Min(value = 4, message = "firstName should be min 4 chars")
     private String firstName;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
@@ -31,6 +30,7 @@ public class User {
     private String userName;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Column(name = "password", nullable = false)
     private String password;
 

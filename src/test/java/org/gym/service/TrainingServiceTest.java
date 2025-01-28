@@ -175,7 +175,15 @@ class TrainingServiceTest {
                 .trainingType(TrainingType.builder().trainingTypeName("Zumba").build())
                 .build());
 
-        when(trainingRepository.getByTraineeCriteria(any(), any(), any(), any(), any()))
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName("Maria.Petrenko")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName("Petro.Ivanenko")
+                .trainingType("Zumba")
+                .build();
+
+        when(trainingRepository.getByTraineeCriteria(traineeTrainingsDto))
                 .thenReturn(trainings);
         when(trainingMapper.convertToEntity(any())).thenReturn(training);
         when(trainingMapper.convertToDto(any())).thenReturn(trainingDto);
@@ -185,10 +193,9 @@ class TrainingServiceTest {
         when(traineeRepository.findByUserName(any())).thenReturn(Optional.of(trainee));
         when(trainingRepository.save(any())).thenReturn(training);
 
+
         List<TrainingDto> result =
-                trainingService.getTraineeTrainingsListCriteria(
-                        "Maria.Petrenko", fromDate, toDate,
-                        "Petro.Ivanenko", "Zumba");
+                trainingService.getTraineeTrainingsListCriteria(traineeTrainingsDto);
 
         assertAll(
             () -> assertNotNull(result),
@@ -197,7 +204,7 @@ class TrainingServiceTest {
             () -> assertEquals("Petro.Ivanenko", result.get(0).getTrainer().getUser().getUserName())
         );
         verify(trainingRepository, times(1))
-                .getByTraineeCriteria(any(), any(), any(), any(), any());
+                .getByTraineeCriteria(traineeTrainingsDto);
 
         verify(trainingMapper, times(1)).convertToDto(any());
         verify(traineeRepository, times(1)).findByUserName(any());
@@ -221,6 +228,14 @@ class TrainingServiceTest {
         when(trainingRepository.getByTrainerCriteria(any(), any(), any(), any())).thenReturn(trainings);
         when(trainerRepository.findByUserName("trainerUserName")).thenReturn(Optional.ofNullable(trainerForSearch));
         when(trainingMapper.convertToDto(any())).thenReturn(trainingDto);
+
+//        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+//                .traineeUserName("trainerUserName")
+//                .fromDate(fromDate)
+//                .toDate(toDate)
+//                .trainerUserName("Petro.Ivanenko")
+//                .trainingType("Zumba")
+//                .build();
 
         List<TrainingDto> result = trainingService.getTrainerTrainingsListCriteria(
                 "trainerUserName", fromDate, toDate, "Maria.Petrenko");

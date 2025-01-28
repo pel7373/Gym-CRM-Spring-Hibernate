@@ -26,7 +26,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
     EntityManager entityManager;
 
     @Override
-    public Optional<Trainer> findByUserName(String userName) throws EntityNotFoundException {
+    public Optional<Trainer> findByUserName(String userName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Trainer> criteriaQuery = criteriaBuilder.createQuery(Trainer.class);
         Root<Trainer> root = criteriaQuery.from(Trainer.class);
@@ -35,7 +35,7 @@ public class TrainerRepositoryImpl implements TrainerRepository {
         try {
             return Optional.of(entityManager.createQuery(criteriaQuery).getSingleResult());
         } catch (NoSuchElementException | NoResultException e) {
-            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, userName));
+            return Optional.empty();
         }
     }
 

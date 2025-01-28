@@ -112,12 +112,20 @@ class TrainingFacadeTest {
         LocalDate fromDate = LocalDate.now().minusYears(10);
         LocalDate toDate = LocalDate.now().plusYears(10);
 
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName("Name")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName("Name")
+                .trainingType("stretching")
+                .build();
+
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(false);
 
-        trainingFacade.getTraineeTrainings("Name", fromDate, toDate, "Name", any());
+        trainingFacade.getTraineeTrainings(traineeTrainingsDto);
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
-        verify(trainingService, times(1)).getTraineeTrainingsListCriteria(any(), any(), any(), any(), any());
+        verify(trainingService, times(1)).getTraineeTrainingsListCriteria(traineeTrainingsDto);
     }
 
     @Test
@@ -125,19 +133,35 @@ class TrainingFacadeTest {
         LocalDate fromDate = LocalDate.now().minusYears(10);
         LocalDate toDate = LocalDate.now().plusYears(10);
 
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName(null)
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName("Name")
+                .trainingType("stretching")
+                .build();
+
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(true);
 
-        trainingFacade.getTraineeTrainings(null, fromDate, toDate, "Name", any());
+        trainingFacade.getTraineeTrainings(traineeTrainingsDto);
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
         verify(trainingService, never())
-                .getTraineeTrainingsListCriteria("Name", fromDate, toDate, "Name", trainingTypeName);
+                .getTraineeTrainingsListCriteria(traineeTrainingsDto);
     }
 
     @Test
     void getTrainerTrainingsListSuccess() {
         LocalDate fromDate = LocalDate.now().minusYears(10);
         LocalDate toDate = LocalDate.now().plusYears(10);
+
+//        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+//                .traineeUserName(null)
+//                .fromDate(fromDate)
+//                .toDate(toDate)
+//                .trainerUserName("Name")
+//                .trainingType("stretching")
+//                .build();
 
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(false);
 

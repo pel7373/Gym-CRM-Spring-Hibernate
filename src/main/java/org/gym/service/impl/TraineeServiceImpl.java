@@ -32,7 +32,9 @@ public class TraineeServiceImpl implements TraineeService {
     public TraineeDto select(String userName) throws EntityNotFoundException {
         return traineeMapper.convertToDto(traineeRepository.findByUserName(userName)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION,
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                userName))
         ));
     }
 
@@ -47,7 +49,6 @@ public class TraineeServiceImpl implements TraineeService {
         Trainee trainee = traineeMapper.convertToEntity(traineeDto);
         trainee.getUser().setPassword(passwordGeneratorService.generate());
         Trainee savedTrainee = traineeRepository.save(trainee);
-        LOGGER.info("create: trainee was created with userName {}", savedTrainee.getUser().getUserName());
         return traineeMapper.convertToDto(savedTrainee);
     }
 
@@ -55,7 +56,9 @@ public class TraineeServiceImpl implements TraineeService {
     public TraineeDto update(String userName, TraineeDto traineeDto) throws EntityNotFoundException {
         Trainee oldTrainee = traineeRepository.findByUserName(userName)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION,
+                                Thread.currentThread().getStackTrace()[2].getMethodName(),
+                                userName))
         );
         if(isFirstOrLastNamesChanged(traineeDto, oldTrainee)) {
             oldTrainee.getUser().setUserName(
@@ -75,7 +78,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public void delete(String userName) throws EntityNotFoundException {
+    public void delete(String userName) {
         traineeRepository.delete(userName);
     }
 
@@ -90,12 +93,12 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
-    public boolean authenticate(String userName, String password) throws EntityNotFoundException {
+    public boolean authenticate(String userName, String password) {
         Trainee trainee;
         try {
             trainee = traineeRepository.findByUserName(userName)
                     .orElseThrow(() -> new EntityNotFoundException(
-                            String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+                            String.format(ENTITY_NOT_FOUND_EXCEPTION, "authenticate", userName))
             );
         } catch (EntityNotFoundException e) {
             return false;

@@ -2,6 +2,7 @@ package org.gym.facade;
 
 import lombok.extern.slf4j.Slf4j;
 import org.gym.config.Config;
+import org.gym.dto.TraineeTrainingsDto;
 import org.gym.dto.TrainingDto;
 import org.gym.dto.TrainingTypeDto;
 import org.gym.entity.*;
@@ -158,9 +159,15 @@ class TrainingFacadeIT {
         LocalDate toDate = LocalDate.of(2050, 3, 5);
         String differentTrainerName = "";
 
-        List<TrainingDto> trainings = trainingFacade.getTraineeTrainings(
-                trainee.getUser().getUserName(), fromDate, toDate,
-                differentTrainerName, "stretching");
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName(trainee.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName(differentTrainerName)
+                .trainingType("stretching")
+                .build();
+
+        List<TrainingDto> trainings = trainingFacade.getTraineeTrainings(traineeTrainingsDto);
 
         assertTrue(trainings.isEmpty());
     }
@@ -173,11 +180,16 @@ class TrainingFacadeIT {
         LocalDate fromDate = LocalDate.of(2010, 2, 9);
         LocalDate toDate = LocalDate.of(2035, 3, 9);
         String trainerUserName = trainer.getUser().getUserName();
-        trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
 
-        List<TrainingDto> trainingsList = trainingFacade.getTraineeTrainings(
-                trainee.getUser().getUserName(), fromDate, toDate,
-                trainerUserName, trainingType.getTrainingTypeName());
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName(trainee.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName(trainerUserName)
+                .trainingType(trainingTypeName)
+                .build();
+
+        List<TrainingDto> trainingsList = trainingFacade.getTraineeTrainings(traineeTrainingsDto);
 
         assertAll(
                 () -> assertFalse(trainingsList.isEmpty()),
@@ -195,12 +207,17 @@ class TrainingFacadeIT {
 
         LocalDate fromDate = LocalDate.of(2010, 8, 1);
         LocalDate toDate = LocalDate.of(2040, 8, 1);
-        String trainerName = trainer.getUser().getFirstName();
-        TrainingTypeDto trainingTypeDto = new TrainingTypeDto("Roga");
+        String trainerUserName = trainer.getUser().getUserName();
 
-        assertNull(trainingFacade.getTraineeTrainings(
-                        "NotValidUserName", fromDate, toDate, trainerName,
-                        trainingTypeDto.getTrainingTypeName()),
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName("NotValidUserName")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName(trainerUserName)
+                .trainingType("Roga")
+                .build();
+
+        assertNull(trainingFacade.getTraineeTrainings(traineeTrainingsDto),
                 "findByUserName: entity not found by userName NotValidUserName");
     }
 

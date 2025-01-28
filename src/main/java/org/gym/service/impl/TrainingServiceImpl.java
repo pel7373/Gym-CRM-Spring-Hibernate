@@ -3,6 +3,7 @@ package org.gym.service.impl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gym.dto.TraineeTrainingsDto;
 import org.gym.dto.TrainingDto;
 import org.gym.entity.Trainee;
 import org.gym.entity.Trainer;
@@ -61,22 +62,18 @@ public class TrainingServiceImpl implements TrainingService {
         training.setTrainingType(trainingType);
 
         Training createdTraining = trainingRepository.save(training);
-        LOGGER.info("Training with id {} was created", createdTraining.getId());
         return trainingMapper.convertToDto(createdTraining);
     }
 
     @Override
-    public List<TrainingDto> getTraineeTrainingsListCriteria(String traineeUserName, LocalDate fromDate,
-                                                             LocalDate toDate, String trainerUserName,
-                                                             String trainingType) {
+    public List<TrainingDto> getTraineeTrainingsListCriteria(TraineeTrainingsDto traineeTrainingsDto) {
 
-        traineeRepository.findByUserName(traineeUserName)
+        traineeRepository.findByUserName(traineeTrainingsDto.getTraineeUserName())
                 .orElseThrow(() -> new org.gym.exception.EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeTrainingsDto.getTraineeUserName()))
         );
 
-        return trainingRepository.getByTraineeCriteria(
-                traineeUserName, fromDate, toDate, trainerUserName, trainingType)
+        return trainingRepository.getByTraineeCriteria(traineeTrainingsDto)
                 .stream()
                 .map(trainingMapper::convertToDto)
                 .toList();
@@ -86,7 +83,7 @@ public class TrainingServiceImpl implements TrainingService {
     public List<TrainingDto> getTrainerTrainingsListCriteria(String trainerUserName, LocalDate fromDate,
                                                              LocalDate toDate, String traineeUserName) {
         trainerRepository.findByUserName(trainerUserName)
-                .orElseThrow(() -> new org.gym.exception.EntityNotFoundException(
+                .orElseThrow(() -> new EntityNotFoundException(
                         String.format(ENTITY_NOT_FOUND_EXCEPTION, trainerUserName))
         );
         return trainingRepository.getByTrainerCriteria(

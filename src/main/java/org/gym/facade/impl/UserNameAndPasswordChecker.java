@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserNameAndPasswordChecker {
     public boolean isNullOrBlank(String userName, String password) {
-        return userName == null || userName.isBlank() || password == null || password.isBlank();
+        return isNullOrBlank(userName) || isNullOrBlank(password);
     }
 
     public boolean isNullOrBlank(String str) {

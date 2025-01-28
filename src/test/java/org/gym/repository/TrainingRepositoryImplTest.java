@@ -137,9 +137,15 @@ class TrainingRepositoryImplTest {
         LocalDate toDate = LocalDate.of(2050, 3, 5);
         String differentTrainerName = "";
 
-        List<Training> trainings = trainingRepository.getByTraineeCriteria(
-                trainee.getUser().getUserName(), fromDate, toDate,
-                differentTrainerName, "stretching");
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName(trainee.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName(differentTrainerName)
+                .trainingType("stretching")
+                .build();
+
+        List<Training> trainings = trainingRepository.getByTraineeCriteria(traineeTrainingsDto);
 
         assertTrue(trainings.isEmpty());
     }
@@ -151,10 +157,16 @@ class TrainingRepositoryImplTest {
         LocalDate fromDate = LocalDate.of(2010, 2, 9);
         LocalDate toDate = LocalDate.of(2035, 3, 9);
         String trainerUserName = trainer.getUser().getUserName();
-        trainingType = TrainingType.builder().trainingTypeName(trainingTypeName).build();
 
-        List<Training> trainingsList = trainingRepository.getByTraineeCriteria(
-                trainee.getUser().getUserName(), fromDate, toDate, trainerUserName, trainingType.getTrainingTypeName());
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName(trainee.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName(trainerUserName)
+                .trainingType(trainingTypeName)
+                .build();
+
+        List<Training> trainingsList = trainingRepository.getByTraineeCriteria(traineeTrainingsDto);
 
         assertAll(
                 () -> assertFalse(trainingsList.isEmpty()),
@@ -170,11 +182,17 @@ class TrainingRepositoryImplTest {
 
         LocalDate fromDate = LocalDate.of(2010, 8, 1);
         LocalDate toDate = LocalDate.of(2040, 8, 1);
-        String trainerName = trainer.getUser().getFirstName();
-        TrainingTypeDto trainingTypeDto = new TrainingTypeDto("Yoga");
+        String trainerUserName = trainer.getUser().getUserName();
 
-        List<Training> trainings = trainingRepository.getByTraineeCriteria(
-                "NotValidUserName", fromDate, toDate, trainerName, trainingTypeDto.getTrainingTypeName());
+        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
+                .traineeUserName("NotValidUserName")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .trainerUserName(trainerUserName)
+                .trainingType("Yoga")
+                .build();
+
+        List<Training> trainings = trainingRepository.getByTraineeCriteria(traineeTrainingsDto);
 
         assertTrue(trainings.isEmpty());
     }

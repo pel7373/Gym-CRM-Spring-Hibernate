@@ -2,6 +2,7 @@ package org.gym.facade.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.gym.dto.TraineeTrainingsDto;
 import org.gym.dto.TrainingDto;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.facade.TrainingFacade;
@@ -28,7 +29,8 @@ public class TrainingFacadeImpl implements TrainingFacade {
     @Override
     public TrainingDto create(TrainingDto trainingDto) {
         if(trainingDto == null) {
-            LOGGER.warn(ENTITY_CANT_BE_NULL, "create");
+            LOGGER.warn(ENTITY_CANT_BE_NULL,
+                    Thread.currentThread().getStackTrace()[2].getMethodName());
             return null;
         }
 
@@ -40,46 +42,50 @@ public class TrainingFacadeImpl implements TrainingFacade {
         TrainingDto trainingDtoResult = null;
         try {
             trainingDtoResult = trainingService.create(trainingDto);
-            LOGGER.trace("create: training with trainingName {} was created", trainingDtoResult.getTrainingName());
+            LOGGER.trace("{}: training with trainingName {} was created",
+                    Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    trainingDtoResult.getTrainingName());
             return trainingDtoResult;
         } catch (EntityNotFoundException e) {
-            LOGGER.warn("create: trainee with userName {} doesn't found", trainingDto.getTrainee().getUser().getUserName());
+            LOGGER.warn("{}: trainee with userName {} doesn't found",
+                    Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    trainingDto.getTrainee().getUser().getUserName());
         }
         return trainingDtoResult;
     }
 
     @Override
-    public List<TrainingDto> getTraineeTrainings(String traineeUserName, LocalDate fromDate,
-                                                 LocalDate toDate, String traineeName, String trainingType) {
-        if (userNameAndPasswordChecker.isNullOrBlank(traineeUserName)) {
-            LOGGER.warn(USERNAME_CANT_BE_NULL_OR_BLANK, "getTraineeTrainings", traineeUserName);
+    public List<TrainingDto> getTraineeTrainings(TraineeTrainingsDto traineeTrainingsDto) {
+        if (userNameAndPasswordChecker.isNullOrBlank(traineeTrainingsDto.getTraineeUserName())) {
+            LOGGER.warn(USERNAME_CANT_BE_NULL_OR_BLANK,
+                    Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    traineeTrainingsDto.getTraineeUserName());
             return null;
         }
 
-        List<TrainingDto> trainingDtoList = null;
         try {
-            trainingDtoList = trainingService.getTraineeTrainingsListCriteria(traineeUserName,
-                    fromDate, toDate, traineeName, trainingType);
+            return trainingService.getTraineeTrainingsListCriteria(traineeTrainingsDto);
         } catch (EntityNotFoundException e) {
-            LOGGER.warn("getTraineeTrainings: trainee {} doesn't found", traineeUserName);
+            LOGGER.warn(ENTITY_NOT_FOUND,
+                    Thread.currentThread().getStackTrace()[2].getMethodName(),
+                    traineeTrainingsDto.getTraineeUserName());
+            return null;
         }
-        return trainingDtoList;
     }
 
     @Override
     public List<TrainingDto> getTrainerTrainings(String trainerUserName, LocalDate fromDate,
                                                  LocalDate toDate, String trainerName) {
         if(userNameAndPasswordChecker.isNullOrBlank(trainerUserName)) {
-            LOGGER.warn(USERNAME_CANT_BE_NULL_OR_BLANK, "getTraineeTrainings", trainerUserName);
+            LOGGER.warn(USERNAME_CANT_BE_NULL_OR_BLANK, trainerUserName);
             return null;
         }
 
-        List<TrainingDto> trainingDtoList = null;
         try {
-            trainingDtoList = trainingService.getTrainerTrainingsListCriteria(trainerUserName, fromDate, toDate, trainerName);
+            return trainingService.getTrainerTrainingsListCriteria(trainerUserName, fromDate, toDate, trainerName);
         } catch (EntityNotFoundException e) {
-            LOGGER.warn("getTrainerTrainings: trainer {} doesn't found", trainerUserName);
+            LOGGER.warn(ENTITY_NOT_FOUND, trainerUserName);
+            return null;
         }
-        return trainingDtoList;
     }
 }

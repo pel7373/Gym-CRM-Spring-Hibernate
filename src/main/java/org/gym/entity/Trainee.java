@@ -8,25 +8,25 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode
 @Entity
 @Table(name = "trainees")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @SuperBuilder
-@ToString
-public class Trainee  {
+public class Trainee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @Column(name = "address")
     private String address;
 
@@ -35,12 +35,13 @@ public class Trainee  {
     private User user;
 
     @ToString.Exclude
-    @OneToMany
-            ( cascade = CascadeType.ALL )
+    @EqualsAndHashCode.Exclude
+    @OneToMany (cascade = CascadeType.ALL)
     @JoinColumn(name = "trainee_id")
     private List<Training> trainings;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE

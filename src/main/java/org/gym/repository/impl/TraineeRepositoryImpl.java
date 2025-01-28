@@ -25,7 +25,7 @@ public class TraineeRepositoryImpl implements TraineeRepository {
     private EntityManager entityManager;
 
     @Override
-    public Optional<Trainee> findByUserName(String userName) throws EntityNotFoundException {
+    public Optional<Trainee> findByUserName(String userName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Trainee> query = criteriaBuilder.createQuery(Trainee.class);
         Root<Trainee> root = query.from(Trainee.class);
@@ -34,7 +34,7 @@ public class TraineeRepositoryImpl implements TraineeRepository {
         try {
             return Optional.of(entityManager.createQuery(query).getSingleResult());
         } catch (NoSuchElementException | NoResultException e) {
-            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, userName));
+            return Optional.empty();
         }
     }
 
@@ -50,7 +50,7 @@ public class TraineeRepositoryImpl implements TraineeRepository {
     }
 
     @Override
-    public void delete(String userName) throws EntityNotFoundException {
+    public void delete(String userName) {
         findByUserName(userName).ifPresent(entityManager::remove);
     }
 }

@@ -10,13 +10,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "trainers")
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @SuperBuilder
-@ToString
-public class Trainer implements Serializable {
+public class Trainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -31,10 +29,12 @@ public class Trainer implements Serializable {
     private TrainingType specialization;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Training> trainings;
 
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "trainers", fetch = FetchType.LAZY)
     private List<Trainee> trainees = new ArrayList<>();
 }

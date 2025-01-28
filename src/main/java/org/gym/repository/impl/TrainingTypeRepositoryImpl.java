@@ -35,7 +35,7 @@ public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
         try {
             return Optional.of(entityManager.createQuery(criteriaQuery).getSingleResult());
         } catch (NoSuchElementException | NoResultException e) {
-            throw new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, trainingTypeName));
+            return Optional.empty();
         }
     }
 }

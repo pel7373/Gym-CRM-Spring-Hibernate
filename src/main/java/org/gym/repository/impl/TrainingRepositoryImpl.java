@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.gym.dto.TraineeTrainingsDto;
 import org.gym.repository.TrainingRepository;
 import org.gym.entity.Training;
 import org.springframework.stereotype.Repository;
@@ -34,19 +35,17 @@ public class TrainingRepositoryImpl implements TrainingRepository {
     }
 
     @Override
-    public List<Training> getByTraineeCriteria(String traineeUserName,
-                                               LocalDate fromDate, LocalDate toDate,
-                                               String trainerUserName, String trainingType) {
+    public List<Training> getByTraineeCriteria(TraineeTrainingsDto traineeTrainingsDto) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Training> criteriaQuery = criteriaBuilder.createQuery(Training.class);
         Root<Training> root = criteriaQuery.from(Training.class);
 
         Predicate[] predicates = new Predicate[5];
-        predicates[0] = criteriaBuilder.equal(root.get("trainee").get("user").get(USER_NAME), traineeUserName);
-        predicates[1] = criteriaBuilder.greaterThanOrEqualTo(root.get("date"), fromDate);
-        predicates[2] = criteriaBuilder.lessThanOrEqualTo(root.get("date"), toDate);
-        predicates[3] = criteriaBuilder.equal(root.get("trainer").get("user").get(USER_NAME), trainerUserName);
-        predicates[4] = criteriaBuilder.equal(root.get("trainingType").get("trainingTypeName"), trainingType);
+        predicates[0] = criteriaBuilder.equal(root.get("trainee").get("user").get(USER_NAME), traineeTrainingsDto.getTraineeUserName());
+        predicates[1] = criteriaBuilder.greaterThanOrEqualTo(root.get("date"), traineeTrainingsDto.getFromDate());
+        predicates[2] = criteriaBuilder.lessThanOrEqualTo(root.get("date"), traineeTrainingsDto.getToDate());
+        predicates[3] = criteriaBuilder.equal(root.get("trainer").get("user").get(USER_NAME), traineeTrainingsDto.getTrainerUserName());
+        predicates[4] = criteriaBuilder.equal(root.get("trainingType").get("trainingTypeName"), traineeTrainingsDto.getTrainingType());
 
         criteriaQuery.select(root).where(predicates);
         return entityManager.createQuery(criteriaQuery).getResultList();
