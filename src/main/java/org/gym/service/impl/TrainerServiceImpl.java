@@ -7,7 +7,6 @@ import org.gym.entity.Trainee;
 import org.gym.entity.Trainer;
 import org.gym.entity.TrainingType;
 import org.gym.exception.EntityNotFoundException;
-import org.gym.exception.NullEntityException;
 import org.gym.mapper.TrainerMapper;
 import org.gym.repository.TraineeRepository;
 import org.gym.repository.TrainerRepository;

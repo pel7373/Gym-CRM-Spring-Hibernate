@@ -188,7 +188,6 @@ class TrainingServiceIT {
         LocalDate fromDate = LocalDate.of(2010, 8, 1);
         LocalDate toDate = LocalDate.of(2040, 8, 1);
         String trainerUserName = trainer.getUser().getFirstName();
-        TrainingTypeDto trainingTypeDto = new TrainingTypeDto("Roga");
 
         TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
                 .traineeUserName("NotValidUserName")

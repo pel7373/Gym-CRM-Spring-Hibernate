@@ -1,9 +1,7 @@
 package org.gym.facade;
 
-import jakarta.validation.Valid;
 import org.gym.dto.TrainerDto;
 import org.gym.entity.TrainingType;
-import org.gym.exception.EntityNotFoundException;
 
 import java.util.List;
 

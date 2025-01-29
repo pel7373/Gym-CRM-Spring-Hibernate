@@ -4,7 +4,6 @@ import org.gym.config.Config;
 import org.gym.dto.TraineeDto;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
-import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TraineeRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -53,10 +52,7 @@ class TraineeServiceIT {
 
     @AfterEach
     void destroy() {
-        try {
-            traineeRepository.delete(userNameForTrainee);
-        } catch (EntityNotFoundException ignored) {
-        }
+        traineeRepository.delete(userNameForTrainee);
     }
 
     @Test

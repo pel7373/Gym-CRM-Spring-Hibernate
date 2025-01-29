@@ -5,7 +5,6 @@ import org.gym.dto.TrainerTrainingsDto;
 import org.gym.dto.TrainingDto;
 import org.gym.exception.EntityNotFoundException;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface TrainingService {

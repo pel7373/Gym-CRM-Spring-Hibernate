@@ -11,7 +11,7 @@ import org.gym.service.TrainingService;
 import org.gym.validator.TrainingDtoValidator;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.gym.config.Config.*;
@@ -49,14 +49,14 @@ public class TrainingFacadeImpl implements TrainingFacade {
     public List<TrainingDto> getTraineeTrainings(TraineeTrainingsDto traineeTrainingsDto) {
         if (userNameAndPasswordChecker.isNullOrBlank(traineeTrainingsDto.getTraineeUserName())) {
             LOGGER.warn(USERNAME_CANT_BE_NULL_OR_BLANK);
-            return null;
+            return new ArrayList<>();
         }
 
         try {
             return trainingService.getTraineeTrainingsListCriteria(traineeTrainingsDto);
         } catch (EntityNotFoundException e) {
             LOGGER.warn(ENTITY_NOT_FOUND, traineeTrainingsDto.getTraineeUserName());
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -64,14 +64,14 @@ public class TrainingFacadeImpl implements TrainingFacade {
     public List<TrainingDto> getTrainerTrainings(TrainerTrainingsDto trainerTrainingsDto) {
         if(userNameAndPasswordChecker.isNullOrBlank(trainerTrainingsDto.getTrainerUserName())) {
             LOGGER.warn(USERNAME_CANT_BE_NULL_OR_BLANK);
-            return null;
+            return new ArrayList<>();
         }
 
         try {
             return trainingService.getTrainerTrainingsListCriteria(trainerTrainingsDto);
         } catch (EntityNotFoundException e) {
             LOGGER.warn(ENTITY_NOT_FOUND, trainerTrainingsDto.getTrainerUserName());
-            return null;
+            return new ArrayList<>();
         }
     }
 }

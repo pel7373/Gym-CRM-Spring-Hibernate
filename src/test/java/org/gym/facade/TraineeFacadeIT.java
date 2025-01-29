@@ -4,7 +4,6 @@ import org.gym.config.Config;
 import org.gym.dto.UserDto;
 import org.gym.entity.Trainee;
 import org.gym.dto.TraineeDto;
-import org.gym.exception.EntityNotFoundException;
 import org.gym.facade.impl.TraineeFacadeImpl;
 import org.gym.repository.TraineeRepository;
 import org.gym.service.TraineeService;
@@ -63,10 +62,7 @@ class TraineeFacadeIT {
 
     @AfterEach
     void destroy() {
-        try {
-            traineeService.delete(userNameForTrainee);
-        } catch (EntityNotFoundException ignored) {
-        }
+        traineeService.delete(userNameForTrainee);
     }
 
     @Test

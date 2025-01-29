@@ -66,10 +66,7 @@ class TraineeFacadeWithTestContainerIT {
 
     @AfterEach
     void destroy() {
-        try {
-            traineeService.delete(userNameForTrainee);
-        } catch (EntityNotFoundException ignored) {
-        }
+        traineeService.delete(userNameForTrainee);
     }
 
     {

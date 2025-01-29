@@ -10,6 +10,7 @@ import org.gym.service.TrainerService;
 import org.gym.validator.UserDtoValidator;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.gym.config.Config.*;
@@ -163,7 +164,7 @@ public class TrainerFacadeImpl implements TrainerFacade {
             return trainerService.getUnassignedTrainersList(trainerUserName);
         } catch (EntityNotFoundException e) {
             LOGGER.warn(ENTITY_NOT_FOUND, trainerUserName);
-            return null;
+            return new ArrayList<>();
         }
     }
 
@@ -173,7 +174,7 @@ public class TrainerFacadeImpl implements TrainerFacade {
             return trainerService.updateTrainersList(trainerUserName, trainersUserNames);
         } catch (EntityNotFoundException e) {
             LOGGER.warn(ENTITY_NOT_FOUND, trainerUserName);
-            return null;
+            return new ArrayList<>();
         }
     }
 }

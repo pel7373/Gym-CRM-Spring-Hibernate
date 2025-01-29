@@ -19,7 +19,6 @@ import org.gym.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;

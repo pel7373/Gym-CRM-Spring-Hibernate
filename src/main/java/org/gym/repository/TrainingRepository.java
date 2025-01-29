@@ -4,7 +4,6 @@ import org.gym.dto.TraineeTrainingsDto;
 import org.gym.dto.TrainerTrainingsDto;
 import org.gym.entity.Training;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface TrainingRepository  {

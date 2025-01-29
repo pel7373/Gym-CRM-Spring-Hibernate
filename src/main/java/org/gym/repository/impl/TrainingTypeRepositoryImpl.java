@@ -8,14 +8,11 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.gym.entity.TrainingType;
-import org.gym.exception.EntityNotFoundException;
 import org.gym.repository.TrainingTypeRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
-import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 
 @Repository
 @RequiredArgsConstructor
