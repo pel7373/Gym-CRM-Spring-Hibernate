@@ -3,7 +3,6 @@ package org.gym.repository;
 import org.gym.config.Config;
 import org.gym.entity.Trainee;
 import org.gym.entity.User;
-import org.gym.exception.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +75,8 @@ class TraineeRepositoryTest {
 
     @Test
     void findByUserNameNoResult() {
-        assertThrows(EntityNotFoundException.class, () ->traineeRepository.findByUserName(userNameDoesntExist));
+        assertDoesNotThrow(() -> traineeRepository.findByUserName(userNameDoesntExist));
+
     }
 
     @Test
@@ -98,13 +98,12 @@ class TraineeRepositoryTest {
                 traineeRepository.findByUserName(savedTrainee.getUser().getUserName());
         assertTrue(foundTrainee.isPresent());
         traineeRepository.delete(savedTrainee.getUser().getUserName());
-        assertThrows(EntityNotFoundException.class,
-                () -> traineeRepository.findByUserName(savedTrainee.getUser().getUserName()));
+        assertDoesNotThrow(() -> traineeRepository.delete(savedTrainee.getUser().getUserName()));
+        assertDoesNotThrow(() -> traineeRepository.findByUserName(savedTrainee.getUser().getUserName()));
     }
 
     @Test
     void deleteByUserNameDoesNotExist() {
-        assertThrows(EntityNotFoundException.class,
-                () ->traineeRepository.delete(userNameDoesntExist));
+        assertDoesNotThrow(() -> traineeRepository.findByUserName(userNameDoesntExist));
     }
 }

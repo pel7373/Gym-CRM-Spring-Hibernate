@@ -23,7 +23,7 @@ import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 public class TrainerRepositoryImpl implements TrainerRepository {
 
     @PersistenceContext
-    EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Override
     public Optional<Trainer> findByUserName(String userName) {

@@ -26,8 +26,7 @@ public class TrainerFacadeImpl implements TrainerFacade {
     @Override
     public TrainerDto create(TrainerDto trainerDto) {
         if(trainerDto == null) {
-            LOGGER.warn(ENTITY_CANT_BE_NULL,
-                    Thread.currentThread().getStackTrace()[2].getMethodName());
+            LOGGER.warn(ENTITY_CANT_BE_NULL);
             return null;
         }
 
@@ -44,9 +43,7 @@ public class TrainerFacadeImpl implements TrainerFacade {
                     trainerDtoResult);
             return trainerDtoResult;
         } catch (EntityNotFoundException e) {
-            LOGGER.warn(ENTITY_NOT_FOUND,
-                    Thread.currentThread().getStackTrace()[2].getMethodName(),
-                    trainerDto.getUser().getFirstName());
+            LOGGER.warn(ENTITY_NOT_FOUND, trainerDto.getUser().getFirstName());
         }
         return trainerDtoResult;
     }
@@ -92,7 +89,6 @@ public class TrainerFacadeImpl implements TrainerFacade {
 
     @Override
     public TrainerDto changeStatus(String userName, String password, Boolean isActive) {
-
         if(isActive == null) {
             LOGGER.warn(ENTITY_CANT_BE_NULL);
             return null;
@@ -114,7 +110,7 @@ public class TrainerFacadeImpl implements TrainerFacade {
     @Override
     public boolean authenticate(String userName, String password) {
         if (userNameAndPasswordChecker.isNullOrBlank(userName, password)) {
-            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, userName);
+            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK);
             return false;
         }
 

@@ -22,7 +22,7 @@ import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 public class TrainingTypeRepositoryImpl implements TrainingTypeRepository {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    private final EntityManager entityManager;
 
     @Override
     public Optional<TrainingType> findByName(String trainingTypeName) {

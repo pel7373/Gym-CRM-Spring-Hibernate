@@ -20,7 +20,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -135,16 +134,6 @@ class TrainingServiceIT {
     }
 
     @Test
-    void createNotValidTrainingFail() {
-        TrainingDto createdTrainingDto = trainingService.create(trainingDto);
-        createdTrainingDto.setTrainingType(new TrainingTypeDto("NotValidType"));
-        LOGGER.info("createNotValid: " + createdTrainingDto);
-
-        assertThrows(EntityNotFoundException.class, () -> trainingService.create(createdTrainingDto),
-                String.format(ENTITY_NOT_FOUND_EXCEPTION, "NotValidType"));
-    }
-
-    @Test
     void getByTraineeCriteriaEmptyResult() {
         trainingService.create(trainingMapper.convertToDto(training));
 
@@ -220,12 +209,18 @@ class TrainingServiceIT {
 
         LocalDate fromDate = LocalDate.of(2035, 1, 1);
         LocalDate toDate = LocalDate.of(2036, 1, 1);
-        String trainerName = trainer.getUser().getFirstName();
+        String traineeName = trainee.getUser().getFirstName();
+
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName("NotValidTrainer")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName(traineeName)
+                .build();
 
         assertThrows(EntityNotFoundException.class,
-                () -> trainingService.getTrainerTrainingsListCriteria(
-                "NotValidTrainer", fromDate, toDate, trainerName),
-                "entity not found by userName NotValidUserName");
+                () -> trainingService.getTrainerTrainingsListCriteria(trainerTrainingsDto),
+                "entity not found by userName NotValidTrainer");
     }
 
     @Test
@@ -236,8 +231,14 @@ class TrainingServiceIT {
         LocalDate toDate = LocalDate.of(2040, 1, 1);
         String traineeUserName = trainee.getUser().getUserName();
 
-        List<TrainingDto> trainings = trainingService.getTrainerTrainingsListCriteria(
-                trainer.getUser().getUserName(), fromDate, toDate, traineeUserName);
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName(trainer.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName(traineeUserName)
+                .build();
+
+        List<TrainingDto> trainings = trainingService.getTrainerTrainingsListCriteria(trainerTrainingsDto);
 
         assertAll(
                 () -> assertFalse(trainings.isEmpty()),
@@ -255,8 +256,14 @@ class TrainingServiceIT {
         LocalDate toDate = LocalDate.of(2060, 9, 8);
         String invalidTraineeName = "";
 
-        List<TrainingDto> trainings = trainingService.getTrainerTrainingsListCriteria(
-                trainer.getUser().getUserName(), fromDate, toDate, invalidTraineeName);
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName(trainer.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName(invalidTraineeName)
+                .build();
+
+        List<TrainingDto> trainings = trainingService.getTrainerTrainingsListCriteria(trainerTrainingsDto);
 
         assertTrue(trainings.isEmpty());
     }

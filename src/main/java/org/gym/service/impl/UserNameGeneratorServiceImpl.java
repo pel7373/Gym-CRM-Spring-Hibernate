@@ -26,7 +26,7 @@ public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
         String temporaryUserName = userName;
         int serialNumberForUserName = 0;
 
-        while(isExistsByUserName(temporaryUserName)) {
+        while(userRepository.isExistsByUserName(temporaryUserName)) {
             temporaryUserName = userName + serialNumberForUserName++;
         }
 
@@ -35,13 +35,5 @@ public class UserNameGeneratorServiceImpl implements UserNameGeneratorService {
 
     private boolean isFirstAndLastNamesNullOrBlank(String firstName, String lastName) {
         return firstName == null || firstName.isBlank() || lastName == null || lastName.isBlank();
-    }
-
-    private boolean isExistsByUserName(String temporaryUserName) {
-        try {
-            return userRepository.isExistsByUserName(temporaryUserName);
-        } catch (EntityNotFoundException e) {
-            return false;
-        }
     }
 }

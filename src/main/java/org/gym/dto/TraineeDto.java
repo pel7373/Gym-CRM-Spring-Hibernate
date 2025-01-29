@@ -1,5 +1,6 @@
 package org.gym.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 public class TraineeDto {
 
     @NotNull(message = "UserDto is required")
+    @NotBlank
     private UserDto user;
 
     @ToString.Exclude

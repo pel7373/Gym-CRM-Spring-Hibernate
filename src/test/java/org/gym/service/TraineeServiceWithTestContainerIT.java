@@ -198,8 +198,8 @@ public class TraineeServiceWithTestContainerIT {
         assertNotNull(createdTraineeDto);
         assertNotNull(createdTraineeDto.getUser());
         traineeService.delete(userNameForTrainee);
-        assertThrows(EntityNotFoundException.class,
-                () -> traineeRepository.findByUserName(userNameForTrainee), "findByUserName: entity can't be null");
+        assertDoesNotThrow(() -> traineeRepository.findByUserName(userNameForTrainee));
+        assertDoesNotThrow(() -> traineeService.delete(userNameForTrainee));
     }
 
     @Test

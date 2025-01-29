@@ -91,7 +91,7 @@ class TrainerRepositoryImplTest {
 
     @Test
     void findByUserNameNoResult() {
-        assertThrows(EntityNotFoundException.class, () -> trainerRepository.findByUserName(userNameDoesntExist));
+        assertDoesNotThrow(() -> trainerRepository.findByUserName(userNameDoesntExist));
     }
 
     @Test

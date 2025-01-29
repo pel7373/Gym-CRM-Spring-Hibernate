@@ -176,9 +176,7 @@ class TraineeServiceIT {
         assertNotNull(createdTraineeDto);
         assertNotNull(createdTraineeDto.getUser());
         traineeService.delete(userNameForTrainee);
-        String message = "findByUserName: entity can't be null";
-        assertThrows(EntityNotFoundException.class,
-                () -> traineeRepository.findByUserName(userNameForTrainee), message);
+        assertDoesNotThrow(() -> traineeRepository.findByUserName(userNameForTrainee));
     }
 
     @Test

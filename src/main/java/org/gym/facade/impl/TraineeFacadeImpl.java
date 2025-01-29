@@ -92,10 +92,8 @@ public class TraineeFacadeImpl implements TraineeFacade {
 
     @Override
     public TraineeDto changeStatus(String userName, String password, Boolean isActive) {
-        String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-
         if(isActive == null) {
-            LOGGER.warn(ENTITY_CANT_BE_NULL, methodName);
+            LOGGER.warn(ENTITY_CANT_BE_NULL);
             return null;
         }
 
@@ -103,11 +101,11 @@ public class TraineeFacadeImpl implements TraineeFacade {
             try {
                 return traineeService.changeStatus(userName, isActive);
             } catch (EntityNotFoundException e) {
-            LOGGER.warn(ENTITY_NOT_FOUND, methodName, userName);
+            LOGGER.warn(ENTITY_NOT_FOUND, userName);
             return null;
             }
         } else {
-            LOGGER.warn(ACCESS_DENIED, methodName, userName);
+            LOGGER.warn(ACCESS_DENIED, userName);
             return null;
         }
     }
@@ -115,7 +113,7 @@ public class TraineeFacadeImpl implements TraineeFacade {
     @Override
     public boolean authenticate(String userName, String password) {
         if(userNameAndPasswordChecker.isNullOrBlank(userName, password)) {
-            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK, userName);
+            LOGGER.warn(USERNAME_PASSWORD_CANT_BE_NULL_OR_BLANK);
             return false;
         }
         return traineeService.authenticate(userName, password);

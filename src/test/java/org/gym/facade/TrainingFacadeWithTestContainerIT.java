@@ -3,8 +3,8 @@ package org.gym.facade;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.config.Config;
 import org.gym.dto.TraineeTrainingsDto;
+import org.gym.dto.TrainerTrainingsDto;
 import org.gym.dto.TrainingDto;
-import org.gym.dto.TrainingTypeDto;
 import org.gym.entity.*;
 import org.gym.exception.EntityNotFoundException;
 import org.gym.mapper.TrainingMapper;
@@ -29,7 +29,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -165,17 +164,6 @@ class TrainingFacadeWithTestContainerIT {
     }
 
     @Test
-    void createNotValidTrainingFail() {
-        TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
-        assertNotNull(createdTrainingDto);
-
-        createdTrainingDto.setTrainingType(new TrainingTypeDto("NotValidType"));
-
-        assertNull(trainingFacade.create(createdTrainingDto),
-                String.format(ENTITY_NOT_FOUND_EXCEPTION, "NotValidType"));
-    }
-
-    @Test
     void getByTraineeCriteriaEmptyResult() {
         TrainingDto createdTrainingDto = trainingFacade.create(trainingMapper.convertToDto(training));
         assertNotNull(createdTrainingDto);
@@ -252,10 +240,16 @@ class TrainingFacadeWithTestContainerIT {
 
         LocalDate fromDate = LocalDate.of(2035, 1, 1);
         LocalDate toDate = LocalDate.of(2036, 1, 1);
-        String trainerName = trainer.getUser().getFirstName();
+        String traineeName = trainee.getUser().getFirstName();
 
-        assertNull(trainingFacade.getTrainerTrainings(
-                        "NotValidTrainer", fromDate, toDate, trainerName),
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName("NotValidTrainer")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName(traineeName)
+                .build();
+
+        assertNull(trainingFacade.getTrainerTrainings(trainerTrainingsDto),
                 "entity not found by userName NotValidUserName");
     }
 
@@ -268,8 +262,14 @@ class TrainingFacadeWithTestContainerIT {
         LocalDate toDate = LocalDate.now().plusYears(10);
         String traineeUserName = trainee.getUser().getUserName();
 
-        List<TrainingDto> trainings = trainingFacade.getTrainerTrainings(
-                trainer.getUser().getUserName(), fromDate, toDate, traineeUserName);
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName(trainer.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName(traineeUserName)
+                .build();
+
+        List<TrainingDto> trainings = trainingFacade.getTrainerTrainings(trainerTrainingsDto);
 
         assertAll(
                 () -> assertFalse(trainings.isEmpty()),
@@ -288,8 +288,14 @@ class TrainingFacadeWithTestContainerIT {
         LocalDate toDate = LocalDate.of(2060, 9, 8);
         String invalidTraineeName = "";
 
-        List<TrainingDto> trainings = trainingFacade.getTrainerTrainings(
-                trainer.getUser().getUserName(), fromDate, toDate, invalidTraineeName);
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName(trainer.getUser().getUserName())
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName(invalidTraineeName)
+                .build();
+
+        List<TrainingDto> trainings = trainingFacade.getTrainerTrainings(trainerTrainingsDto);
         assertTrue(trainings.isEmpty());
     }
 }

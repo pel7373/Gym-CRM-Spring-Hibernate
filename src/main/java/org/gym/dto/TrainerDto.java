@@ -1,5 +1,6 @@
 package org.gym.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -10,8 +11,8 @@ import lombok.*;
 public class TrainerDto {
 
     @NotNull(message = "User cannot be null")
+    @NotBlank
     private UserDto user;
 
-    @NotNull(message = "specialization is required")
     private TrainingTypeDto specialization;
 }

@@ -155,21 +155,20 @@ class TrainingFacadeTest {
         LocalDate fromDate = LocalDate.now().minusYears(10);
         LocalDate toDate = LocalDate.now().plusYears(10);
 
-//        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
-//                .traineeUserName(null)
-//                .fromDate(fromDate)
-//                .toDate(toDate)
-//                .trainerUserName("Name")
-//                .trainingType("stretching")
-//                .build();
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName("Name")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName("Name")
+                .build();
 
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(false);
 
-        trainingFacade.getTrainerTrainings("Name", fromDate, toDate, "Name");
+        trainingFacade.getTrainerTrainings(trainerTrainingsDto);
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
         verify(trainingService, times(1))
-                .getTrainerTrainingsListCriteria(any(), any(), any(), any());
+                .getTrainerTrainingsListCriteria(any());
     }
 
     @Test
@@ -177,11 +176,18 @@ class TrainingFacadeTest {
         LocalDate fromDate = LocalDate.now().minusYears(10);
         LocalDate toDate = LocalDate.now().plusYears(10);
 
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName(null)
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName("Name")
+                .build();
+
         when(userNameAndPasswordChecker.isNullOrBlank(any())).thenReturn(true);
 
-        trainingFacade.getTrainerTrainings(null, fromDate, toDate, "Name");
+        trainingFacade.getTrainerTrainings(trainerTrainingsDto);
 
         verify(userNameAndPasswordChecker, times(1)).isNullOrBlank(any());
-        verify(trainingService, never()).getTrainerTrainingsListCriteria(eq("Name"), any(), any(), any());
+        verify(trainingService, never()).getTrainerTrainingsListCriteria(any());
     }
 }

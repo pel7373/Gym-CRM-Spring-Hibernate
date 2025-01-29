@@ -22,7 +22,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import java.time.LocalDate;
 
 import static org.gym.config.Config.ENTITY_NOT_FOUND;
-import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
@@ -277,8 +276,8 @@ class TraineeFacadeWithTestContainerIT {
         assertNotNull(createdTraineeDto);
         assertNotNull(createdTraineeDto.getUser());
         traineeFacade.delete(userNameForTrainee, password);
-        assertThrows(EntityNotFoundException.class,
-                () -> traineeRepository.findByUserName(userNameForTrainee), "findByUserName: entity can't be null");
+        assertDoesNotThrow(() -> traineeRepository.findByUserName(userNameForTrainee));
+        assertDoesNotThrow(() -> traineeFacade.delete(userNameForTrainee, password));
     }
 
     @Test

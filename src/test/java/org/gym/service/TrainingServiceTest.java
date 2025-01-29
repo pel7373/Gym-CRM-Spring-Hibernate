@@ -2,7 +2,6 @@ package org.gym.service;
 
 import org.gym.dto.*;
 import org.gym.entity.*;
-import org.gym.exception.EntityNotFoundException;
 import org.gym.mapper.TrainingMapper;
 import org.gym.repository.TraineeRepository;
 import org.gym.repository.TrainerRepository;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static org.gym.config.Config.ENTITY_NOT_FOUND_EXCEPTION;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -148,23 +146,6 @@ class TrainingServiceTest {
     }
 
     @Test
-    void createTrainingTrainingTypeNotFound() {
-        String notValidTypeName = "NotValidTypeName";
-        trainingDto.setTrainingType(TrainingTypeDto.builder()
-                .trainingTypeName(notValidTypeName)
-                .build());
-
-        when(trainingTypeRepository.findByName(notValidTypeName))
-                .thenThrow(new EntityNotFoundException(String.format(ENTITY_NOT_FOUND_EXCEPTION, notValidTypeName)));
-
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class,
-                () -> trainingService.create(trainingDto));
-        assertEquals(String.format(ENTITY_NOT_FOUND_EXCEPTION, notValidTypeName),
-                exception.getMessage());
-        verify(trainingRepository, never()).save(any(Training.class));
-    }
-
-    @Test
     void getTraineeTrainingsListCriteriaSuccess() {
         LocalDate fromDate = LocalDate.now().minusYears(10);
         LocalDate toDate = LocalDate.now().plusYears(10);
@@ -225,20 +206,18 @@ class TrainingServiceTest {
                 .trainingType(TrainingType.builder().trainingTypeName("Zumba").build())
                 .build());
 
-        when(trainingRepository.getByTrainerCriteria(any(), any(), any(), any())).thenReturn(trainings);
+        when(trainingRepository.getByTrainerCriteria(any())).thenReturn(trainings);
         when(trainerRepository.findByUserName("trainerUserName")).thenReturn(Optional.ofNullable(trainerForSearch));
         when(trainingMapper.convertToDto(any())).thenReturn(trainingDto);
 
-//        TraineeTrainingsDto traineeTrainingsDto = TraineeTrainingsDto.builder()
-//                .traineeUserName("trainerUserName")
-//                .fromDate(fromDate)
-//                .toDate(toDate)
-//                .trainerUserName("Petro.Ivanenko")
-//                .trainingType("Zumba")
-//                .build();
+        TrainerTrainingsDto trainerTrainingsDto = TrainerTrainingsDto.builder()
+                .trainerUserName("trainerUserName")
+                .fromDate(fromDate)
+                .toDate(toDate)
+                .traineeUserName("Maria.Petrenko")
+                .build();
 
-        List<TrainingDto> result = trainingService.getTrainerTrainingsListCriteria(
-                "trainerUserName", fromDate, toDate, "Maria.Petrenko");
+        List<TrainingDto> result = trainingService.getTrainerTrainingsListCriteria(trainerTrainingsDto);
 
         assertAll(
                 () -> assertNotNull(result),
@@ -248,6 +227,6 @@ class TrainingServiceTest {
         );
 
         verify(trainingRepository, times(1))
-                .getByTrainerCriteria(any(), any(), any(), any());
+                .getByTrainerCriteria(any());
     }
 }

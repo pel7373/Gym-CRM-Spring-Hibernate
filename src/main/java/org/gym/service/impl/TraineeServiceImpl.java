@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.entity.Trainee;
 import org.gym.dto.TraineeDto;
-import org.gym.exception.NullEntityException;
 import org.gym.mapper.TraineeMapper;
 import org.gym.repository.TraineeRepository;
 import org.gym.service.PasswordGeneratorService;
@@ -29,17 +28,7 @@ public class TraineeServiceImpl implements TraineeService {
     private final PasswordGeneratorService passwordGeneratorService;
 
     @Override
-    public TraineeDto select(String userName) throws EntityNotFoundException {
-        return traineeMapper.convertToDto(traineeRepository.findByUserName(userName)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION,
-                                Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                userName))
-        ));
-    }
-
-    @Override
-    public TraineeDto create(TraineeDto traineeDto) throws NullEntityException {
+    public TraineeDto create(TraineeDto traineeDto) {
         traineeDto.getUser().setUserName(
                 userNameGeneratorService.generate(
                         traineeDto.getUser().getFirstName(),
@@ -53,12 +42,18 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    public TraineeDto select(String userName) throws EntityNotFoundException {
+        return traineeMapper.convertToDto(traineeRepository.findByUserName(userName)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
+        ));
+    }
+
+    @Override
     public TraineeDto update(String userName, TraineeDto traineeDto) throws EntityNotFoundException {
         Trainee oldTrainee = traineeRepository.findByUserName(userName)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION,
-                                Thread.currentThread().getStackTrace()[2].getMethodName(),
-                                userName))
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
         );
         if(isFirstOrLastNamesChanged(traineeDto, oldTrainee)) {
             oldTrainee.getUser().setUserName(
@@ -98,7 +93,7 @@ public class TraineeServiceImpl implements TraineeService {
         try {
             trainee = traineeRepository.findByUserName(userName)
                     .orElseThrow(() -> new EntityNotFoundException(
-                            String.format(ENTITY_NOT_FOUND_EXCEPTION, "authenticate", userName))
+                            String.format(ENTITY_NOT_FOUND_EXCEPTION, userName))
             );
         } catch (EntityNotFoundException e) {
             return false;

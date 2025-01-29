@@ -1,9 +1,9 @@
 package org.gym.service.impl;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.gym.dto.TraineeTrainingsDto;
+import org.gym.dto.TrainerTrainingsDto;
 import org.gym.dto.TrainingDto;
 import org.gym.entity.Trainee;
 import org.gym.entity.Trainer;
@@ -15,6 +15,7 @@ import org.gym.repository.TrainerRepository;
 import org.gym.repository.TrainingRepository;
 import org.gym.repository.TrainingTypeRepository;
 import org.gym.service.TrainingService;
+import org.gym.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,24 +37,18 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingMapper trainingMapper;
 
     @Override
-    public TrainingDto create(TrainingDto trainingDto) {
+    public TrainingDto create(TrainingDto trainingDto) throws EntityNotFoundException {
         String trainingTypeName = trainingDto.getTrainingType().getTrainingTypeName();
         TrainingType trainingType = trainingTypeRepository.findByName(trainingTypeName)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainingTypeName))
-        );
+                .orElse(null);
 
         String trainerUserName = trainingDto.getTrainer().getUser().getUserName();
         Trainer trainer = trainerRepository.findByUserName(trainerUserName)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainerUserName))
-                );
+                .orElse(null);
 
         String traineeUserName = trainingDto.getTrainee().getUser().getUserName();
         Trainee trainee = traineeRepository.findByUserName(traineeUserName)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, traineeUserName))
-        );
+                .orElse(null);
 
         Training training = trainingMapper.convertToEntity(trainingDto);
 
@@ -80,14 +75,12 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public List<TrainingDto> getTrainerTrainingsListCriteria(String trainerUserName, LocalDate fromDate,
-                                                             LocalDate toDate, String traineeUserName) {
-        trainerRepository.findByUserName(trainerUserName)
+    public List<TrainingDto> getTrainerTrainingsListCriteria(TrainerTrainingsDto trainerTrainingsDto) {
+        trainerRepository.findByUserName(trainerTrainingsDto.getTrainerUserName())
                 .orElseThrow(() -> new EntityNotFoundException(
-                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainerUserName))
+                        String.format(ENTITY_NOT_FOUND_EXCEPTION, trainerTrainingsDto.getTrainerUserName()))
         );
-        return trainingRepository.getByTrainerCriteria(
-                trainerUserName, fromDate, toDate, traineeUserName)
+        return trainingRepository.getByTrainerCriteria(trainerTrainingsDto)
                 .stream()
                 .map(trainingMapper::convertToDto)
                 .toList();
