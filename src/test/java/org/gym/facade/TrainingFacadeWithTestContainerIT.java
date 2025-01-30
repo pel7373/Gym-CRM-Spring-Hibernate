@@ -230,8 +230,9 @@ class TrainingFacadeWithTestContainerIT {
                 .trainingType("Roga")
                 .build();
 
-        assertNull(trainingFacade.getTraineeTrainings(traineeTrainingsDto),
-                "findByUserName: entity not found by userName NotValidUserName");
+        List<TrainingDto> traineeTrainings = trainingFacade.getTraineeTrainings(traineeTrainingsDto);
+        assertNotNull(traineeTrainings);
+        assertEquals(0, traineeTrainings.size());
     }
     @Test
     void getByTrainerCriteriaNoResultAndException() {
@@ -249,8 +250,10 @@ class TrainingFacadeWithTestContainerIT {
                 .traineeUserName(traineeName)
                 .build();
 
-        assertNull(trainingFacade.getTrainerTrainings(trainerTrainingsDto),
-                "entity not found by userName NotValidUserName");
+        List<TrainingDto> trainerTrainings = trainingFacade.getTrainerTrainings(trainerTrainingsDto);
+
+        assertNotNull(trainerTrainings);
+        assertEquals(0, trainerTrainings.size());
     }
 
     @Test
